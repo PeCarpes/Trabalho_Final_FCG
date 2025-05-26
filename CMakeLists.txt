@@ -10,7 +10,8 @@ set(SOURCES
   src/main.cpp
   src/Camera.cpp
   src/Matrices.cpp
-)
+  src/glad.c
+  )
 
 
 cmake_minimum_required(VERSION 3.31)
