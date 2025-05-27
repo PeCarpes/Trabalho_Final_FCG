@@ -1,6 +1,12 @@
 
-#include <../include/glad/glad.h>
-#include <../include/GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <VirtualScene.h>
+#include <Matrices.h>
 
 #include <iostream>
 #include <fstream>
@@ -23,30 +29,24 @@ GLint g_view_uniform;
 GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
+VirtualScene g_VirtualScene;
 int main(void)
 {
-
     int success = glfwInit();
     if (!success)
     {
-
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
         std::exit(EXIT_FAILURE);
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-
-    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-    // funções modernas de OpenGL.
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *window;
-    window = glfwCreateWindow(screen_width, screen_height, "INF01047 - Seu Cartao - Seu Nome", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(screen_width, screen_height, "INF01047 - Seu Cartao - Seu Nome", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -54,49 +54,70 @@ int main(void)
         std::exit(EXIT_FAILURE);
     }
 
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor = glGetString(GL_VENDOR);
     const GLubyte *renderer = glGetString(GL_RENDERER);
     const GLubyte *glversion = glGetString(GL_VERSION);
     const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
-    // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
-
-    // Habilitamos o Backface Culling. Veja slides 8-13 do documento Aula_02_Fundamentos_Matematicos.pdf, slides 23-34 do documento Aula_13_Clipping_and_Culling.pdf e slides 112-123 do documento Aula_14_Laboratorio_3_Revisao.pdf.
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
     LoadShadersFromFiles();
 
+    GLfloat triangle_vertices[] = {
+        // Posição (x, y, z)
+        -0.5f, -0.5f, 0.0f,  // Vértice 0
+         0.5f, -0.5f, 0.0f,  // Vértice 1
+         0.0f,  0.5f, 0.0f   // Vértice 2
+    };
+
+    GLuint triangle_indices[] = {
+        0, 1, 2  // Triângulo formado pelos vértices 0, 1 e 2
+    };
+
+    int num_vertices = sizeof(triangle_vertices) / (3 * sizeof(GLfloat));
+    int num_indices = sizeof(triangle_indices) / sizeof(GLuint);
+
+    SceneObject triangle("Triangle", triangle_vertices, num_vertices, triangle_indices, num_indices, GL_TRIANGLES);
+
     while (!glfwWindowShouldClose(window))
     {
-        //           R     G     B     A
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         glUseProgram(g_GpuProgramID);
 
-        static int count = 0;
+        glm::mat4 model = Matrix_Identity();
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f),
+                                     glm::vec3(0.0f, 0.0f, 0.0f),
+                                     glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f),
+                                                screen_width / (float)screen_height,
+                                                0.1f, 100.0f);
 
-        std::cout << "Rendering frame... " << count++ << std::endl;
+        GLuint model_loc = glGetUniformLocation(g_GpuProgramID, "model");
+        GLuint view_loc = glGetUniformLocation(g_GpuProgramID, "view");
+        GLuint proj_loc = glGetUniformLocation(g_GpuProgramID, "projection");
+
+        glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        triangle.draw();
+
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glfwTerminate();
-
     return 0;
 }
+
 
 // Função auxilar, utilizada pelas duas funções acima. Carrega código de GPU de
 // um arquivo GLSL e faz sua compilação.
