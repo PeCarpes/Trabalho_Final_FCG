@@ -11,6 +11,8 @@ set(SOURCES
   src/Camera.cpp
   src/Matrices.cpp
   src/glad.c
+  src/SceneObject.cpp
+  src/VirtualScene.cpp
   )
 
 
