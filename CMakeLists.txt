@@ -78,20 +78,12 @@ if(WIN32)
       RESULT_VARIABLE COMPILER_VERSION_RESULT
     )
 
-    if (COMPILER_VERSION_RESULT EQUAL 0)
-      # NOTE: É importante que o primeiro teste seja buscando pela
-      # string ucrt64 no output do compilador, pois a string "mingw64"
-      # sempre aparece no output (mesmo quando ucrt64 é a libc utilizada).
-      if (COMPILER_VERSION_OUTPUT MATCHES "ucrt64")
-        set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-ucrt-64/libglfw3.a)
-      elseif (COMPILER_VERSION_OUTPUT MATCHES "mingw64")
-        set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-mingw-64/libglfw3.a)
-      else()
-        set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-mingw-32/libglfw3.a)
-      endif()
-    else()
-      message(FATAL_ERROR "Failed to get MinGW compiler version.")
-    endif()
+  # NOTE: É importante que o primeiro teste seja buscando pela
+  # string ucrt64 no output do compilador, pois a string "mingw64"
+  # sempre aparece no output (mesmo quando ucrt64 é a libc utilizada).
+  
+  # Modifiquei essa parte pq não precisamos considerar as outras opções para o nosso projeto.
+  set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-mingw-64/libglfw3.a)
 
   elseif(MSVC)
     set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-vc2022/glfw3.lib)
