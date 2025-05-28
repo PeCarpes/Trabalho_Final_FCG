@@ -22,3 +22,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Instala dependências para o OpenGL no Windows
+RUN apt-get update && apt-get install -y \
+    cmake \
+    make \
+    g++ \
+    mingw-w64
+
