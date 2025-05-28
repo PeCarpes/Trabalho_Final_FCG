@@ -7,16 +7,17 @@
 
 #include <VirtualScene.h>
 #include <Matrices.h>
+#include <Callbacks.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 void LoadShadersFromFiles();
-GLuint LoadShader_Fragment(const char *filename);
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
 void LoadShader(const char *filename, GLuint shader_id);
+GLuint LoadShader_Fragment(const char *filename);
 GLuint LoadShader_Vertex(const char *filename);
+GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
 
 const int screen_width = 1200;
 const int screen_height = 800;
@@ -54,6 +55,7 @@ int main(void)
         std::exit(EXIT_FAILURE);
     }
 
+    Callbacks::initializeCallbacks(window);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
@@ -72,22 +74,27 @@ int main(void)
 
     GLfloat triangle_vertices[] = {
         // Posição (x, y, z)
-        -0.5f, -0.5f, 0.0f,  // Vértice 0
-         0.5f, -0.5f, 0.0f,  // Vértice 1
-         0.0f,  0.5f, 0.0f   // Vértice 2
+        -0.5f, -0.5f, 0.0f, // Vértice 0
+        0.5f, -0.5f, 0.0f,  // Vértice 1
+        0.0f, 0.5f, 0.0f    // Vértice 2
     };
 
     GLuint triangle_indices[] = {
-        0, 1, 2  // Triângulo formado pelos vértices 0, 1 e 2
+        0, 1, 2 // Triângulo formado pelos vértices 0, 1 e 2
     };
 
     int num_vertices = sizeof(triangle_vertices) / (3 * sizeof(GLfloat));
     int num_indices = sizeof(triangle_indices) / sizeof(GLuint);
 
-    SceneObject triangle("Triangle", triangle_vertices, num_vertices, triangle_indices, num_indices, GL_TRIANGLES);
+    SceneObject triangle("Triangle", g_GpuProgramID, triangle_vertices, num_vertices, triangle_indices, num_indices, GL_TRIANGLES);
+
+    g_VirtualScene.addObject(triangle);
 
     while (!glfwWindowShouldClose(window))
     {
+
+        std::cout << "Cursor Position: " << Callbacks::getCursorPosition().x << ", " << Callbacks::getCursorPosition().y << std::endl;
+
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
@@ -108,7 +115,8 @@ int main(void)
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        triangle.draw();
+        g_VirtualScene["Triangle"]->setPosition(glm::vec3(Callbacks::getCursorPosition(), 1.0f));
+        g_VirtualScene.drawScene();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -117,7 +125,6 @@ int main(void)
     glfwTerminate();
     return 0;
 }
-
 
 // Função auxilar, utilizada pelas duas funções acima. Carrega código de GPU de
 // um arquivo GLSL e faz sua compilação.
