@@ -13,6 +13,7 @@ set(SOURCES
   src/glad.c
   src/SceneObject.cpp
   src/VirtualScene.cpp
+  src/Callbacks.cpp
   )
 
 
