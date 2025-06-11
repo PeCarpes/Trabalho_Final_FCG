@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <ObjModel.h>
 
 #include <VirtualScene.h>
 #include <Matrices.h>
@@ -86,9 +87,14 @@ int main(void)
     int num_vertices = sizeof(triangle_vertices) / (3 * sizeof(GLfloat));
     int num_indices = sizeof(triangle_indices) / sizeof(GLuint);
 
-    SceneObject triangle("Triangle", g_GpuProgramID, triangle_vertices, num_vertices, triangle_indices, num_indices, GL_TRIANGLES);
+    ObjModel bunny("../../data/bunny.obj");
+    bunny.ComputeNormals();
+    bunny.BuildTriangles();
 
-    g_VirtualScene.addObject(triangle);
+    g_VirtualScene.addObject(bunny);
+
+
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -115,8 +121,7 @@ int main(void)
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        g_VirtualScene["Triangle"]->setPosition(glm::vec3(Callbacks::getCursorPosition(), 1.0f));
-        g_VirtualScene.drawScene();
+       // g_VirtualScene.drawScene();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

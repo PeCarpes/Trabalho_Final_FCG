@@ -11,9 +11,10 @@ set(SOURCES
   src/Camera.cpp
   src/Matrices.cpp
   src/glad.c
-  src/SceneObject.cpp
   src/VirtualScene.cpp
   src/Callbacks.cpp
+  src/tiny_obj_loader.cpp
+  src/ObjModel.cpp
   )
 
 
