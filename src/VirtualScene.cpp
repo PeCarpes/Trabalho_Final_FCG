@@ -1,11 +1,11 @@
-#include "../include/VirtualScene.h"
+#include <../include/VirtualScene.h>
 
-void VirtualScene::addObject(const ObjModel &object)
+void VirtualScene::addObject(const SceneObject &object)
 {
     objects.insert({object.getName(), object});
 }
 
-ObjModel* VirtualScene::operator[](const char* name) {
+SceneObject* VirtualScene::operator[](const char* name) {
     auto it = objects.find(name);
     if (it != objects.end())
     {
@@ -17,12 +17,11 @@ ObjModel* VirtualScene::operator[](const char* name) {
     }
 }
 
-
 void VirtualScene::drawScene()
 {
     for (const auto &pair : objects)
     {
-        const ObjModel &object = pair.second;
+        const SceneObject &object = pair.second;
         object.draw();
     }
 }

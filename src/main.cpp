@@ -4,9 +4,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <ObjModel.h>
 
+#include <ObjModel.h>
 #include <VirtualScene.h>
+#include <SceneObject.h>
 #include <Matrices.h>
 #include <Callbacks.h>
 
@@ -87,41 +88,42 @@ int main(void)
     int num_vertices = sizeof(triangle_vertices) / (3 * sizeof(GLfloat));
     int num_indices = sizeof(triangle_indices) / sizeof(GLuint);
 
-    ObjModel bunny("../../data/bunny.obj");
-    bunny.ComputeNormals();
-    bunny.BuildTriangles();
+    ObjModel bunny_obj("../../data/bunny.obj");
+    bunny_obj.ComputeNormals();
+    bunny_obj.BuildTriangles();
 
-    g_VirtualScene.addObject(bunny);
+    SceneObject bunny_sobj(bunny_obj, g_GpuProgramID);
 
-
-
+    g_VirtualScene.addObject(bunny_sobj);
 
     while (!glfwWindowShouldClose(window))
     {
-
-        std::cout << "Cursor Position: " << Callbacks::getCursorPosition().x << ", " << Callbacks::getCursorPosition().y << std::endl;
-
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
 
+        glm::vec2 mouse_pos = Callbacks::getCursorPosition();
+
         glm::mat4 model = Matrix_Identity();
+
+        bunny_sobj.setTranslationMatrix(glm::translate(model, glm::vec3
+                            (Callbacks::getCursorPosition().x * 0.01f - 6, 
+                             4 - Callbacks::getCursorPosition().y * 0.01f, 
+                             0.0f)));
+
         glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f),
                                      glm::vec3(0.0f, 0.0f, 0.0f),
                                      glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f),
-                                                screen_width / (float)screen_height,
-                                                0.1f, 100.0f);
 
-        GLuint model_loc = glGetUniformLocation(g_GpuProgramID, "model");
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+
         GLuint view_loc = glGetUniformLocation(g_GpuProgramID, "view");
         GLuint proj_loc = glGetUniformLocation(g_GpuProgramID, "projection");
 
-        glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-       // g_VirtualScene.drawScene();
+        g_VirtualScene.drawScene();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
