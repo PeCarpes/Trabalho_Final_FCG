@@ -1,4 +1,5 @@
 #include "../include/Matrices.h"
+#include <iostream>
 
 glm::mat4 Matrix(
     float m00, float m01, float m02, float m03, // LINHA 1
@@ -150,6 +151,7 @@ float dotproduct(glm::vec4 u, glm::vec4 v)
     float v2 = v.y;
     float v3 = v.z;
     float v4 = v.w;
+
     if ( u4 != 0.0f || v4 != 0.0f )
     {
         fprintf(stderr, "ERROR: Produto escalar não definido para pontos.\n");
@@ -258,4 +260,13 @@ glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f
     // w seja positivo.
     //
     return -M*P;
+}
+
+void PrintMatrix(glm::mat4 M)
+{
+    printf("\n");
+    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][0], M[1][0], M[2][0], M[3][0]);
+    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][1], M[1][1], M[2][1], M[3][1]);
+    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][2], M[1][2], M[2][2], M[3][2]);
+    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][3], M[1][3], M[2][3], M[3][3]);
 }
