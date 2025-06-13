@@ -15,6 +15,7 @@ set(SOURCES
   src/Callbacks.cpp
   src/tiny_obj_loader.cpp
   src/ObjModel.cpp
+  src/SceneObject.cpp
   )
 
 
