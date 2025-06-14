@@ -41,7 +41,7 @@ class Camera {
         float mouse_sensitivity;
         float fov;
 
-        Camera(glm::vec4 position = glm::vec4(0.0f, 0.0f, 3.0f, 0.1f), glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+        Camera(glm::vec4 position = glm::vec4(0.0f, 0.0f, 3.0f, 1.0f), glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
         glm::mat4 getViewMatrix();
         glm::mat4 getProjectionMatrix(float aspectRatio);

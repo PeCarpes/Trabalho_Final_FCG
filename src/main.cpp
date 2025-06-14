@@ -99,6 +99,10 @@ int main(void)
 
     g_VirtualScene.addObject(bunny_sobj);
 
+    Camera cam(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    bool freecam = false; // Uma variável para controlar o modo
+    glm::vec4 lookat_pos = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -107,18 +111,30 @@ int main(void)
 
         glm::vec2 mouse_pos = Callbacks::getCursorPosition();
 
-        glm::mat4 model = Matrix_Identity();
+       // glm::mat4 model = Matrix_Identity();
 
-        bunny_sobj.setTranslationMatrix(glm::translate(model, glm::vec3
-                            (Callbacks::getCursorPosition().x * 0.01f - 6, 
-                             4 - Callbacks::getCursorPosition().y * 0.01f, 
-                             0.0f)));
+        if (freecam) {
+            // --- Controle de Câmera Livre ---
+            // Verifique o teclado (ex: if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS))
+            // e chame minhaCamera.processKeyboard(CameraMovement::FORWARD, delta_time);
+            
+            // Obtenha a variação do mouse (x_offset, y_offset)
+            // e chame minhaCamera.processMouseMovement(x_offset, y_offset);
 
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f),
-                                     glm::vec3(0.0f, 0.0f, 0.0f),
-                                     glm::vec3(0.0f, 1.0f, 0.0f));
+        } else {
+            // --- Controle de Look-At ---
+            // A câmera vai sempre olhar para o alvo.
+            // Você pode até mover o alvo para testar. ex: posicao_do_alvo.x = sin(glfwGetTime());
+            cam.lookAt(lookat_pos);
+        }
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+        // bunny_sobj.setTranslationMatrix(glm::translate(model, glm::vec3
+        //                    (Callbacks::getCursorPosition().x * 0.01f - 6, 
+        //                     4 - Callbacks::getCursorPosition().y * 0.01f, 
+        //                     0.0f)));
+
+        glm::mat4 view = cam.getViewMatrix();
+        glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
 
         GLuint view_loc = glGetUniformLocation(g_GpuProgramID, "view");
         GLuint proj_loc = glGetUniformLocation(g_GpuProgramID, "projection");
