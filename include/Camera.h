@@ -1,39 +1,58 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 #include "../include/Matrices.h"
+#include <vector>
+
+// Enum para facilitar o processamento do teclado
+enum class CameraMovement {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+};
 
 enum class CameraProjectionType {
     ORTHOGRAPHIC,
     PERSPECTIVE
 };
 
+const float YAW         = -90.0f; // obs: Yaw = phi
+const float PITCH       =  0.0f;  //  e pitch = tetha
+const float SPEED       =  2.5f;
+const float SENSITIVITY =  0.1f;
+const float FOV         =  45.0f;
+
 class Camera {
-    private:
+    public:
         glm::vec4 position;
+        glm::vec4 forward_vector;
         glm::vec4 up_vector;
         glm::vec4 right_vector;
-        glm::vec4 view_vector;
+        glm::vec4 world_up;
 
-        float FOV_angle_deg;
+        // Ângulos de Euler (em graus)
+        float yaw;
+        float pitch;
 
-        float nearPlane = 0.1f;
-        float farPlane = 100.0f;
+        // Opções da Câmera
+        float movement_speed;
+        float mouse_sensitivity;
+        float fov;
 
-        CameraProjectionType projectionType = CameraProjectionType::PERSPECTIVE;
-    public:
-        Camera(glm::vec4 position, glm::vec4 up, glm::vec4 right, glm::vec4 forward, CameraProjectionType type = CameraProjectionType::PERSPECTIVE)
-            : position(position), up_vector(up), right_vector(right), view_vector(forward), projectionType(type) {}
+        Camera(glm::vec4 position = glm::vec4(0.0f, 0.0f, 3.0f, 0.1f), glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
-        glm::mat4 getViewMatrix() const;
-        glm::mat4 getProjectionMatrix(float aspectRatio) const;
+        glm::mat4 getViewMatrix();
+        glm::mat4 getProjectionMatrix(float aspectRatio);
 
-        void setPosition(const glm::vec4& newPosition);
-        void setUp(const glm::vec4& newUp);
-        void setRight(const glm::vec4& newRight);
-        void setForward(const glm::vec4& newForward);
+        void lookAt(glm::vec4 target_position);
 
+        void processKeyboard(CameraMovement direction, float delta_time);
+        void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true);
+
+    private:
+        // Calcula os vetores de orientação a partir dos ângulos de Euler
+        void updateCameraVectors();
 };
 

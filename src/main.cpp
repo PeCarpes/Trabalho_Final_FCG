@@ -10,6 +10,7 @@
 #include <SceneObject.h>
 #include <Matrices.h>
 #include <Callbacks.h>
+#include <Camera.h>
 
 #include <iostream>
 #include <fstream>
@@ -41,6 +42,8 @@ int main(void)
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
         std::exit(EXIT_FAILURE);
     }
+
+    
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
