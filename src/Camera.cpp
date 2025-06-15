@@ -1,4 +1,4 @@
-#include "camera.h"
+#include "Camera.h"
 #include <cmath>
 
 Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch) 
