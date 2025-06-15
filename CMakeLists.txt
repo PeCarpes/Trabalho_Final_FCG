@@ -16,6 +16,8 @@ set(SOURCES
   src/tiny_obj_loader.cpp
   src/ObjModel.cpp
   src/SceneObject.cpp
+  src/textrendering.cpp
+  src/dejavufont.cpp
   )
 
 
