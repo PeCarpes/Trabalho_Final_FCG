@@ -37,7 +37,8 @@ const float aspect_ratio = (float)screen_width / (float)screen_height;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
-GLuint g_PositionDebugGpuProgramID = 0; // TEMP --------------
+GLuint g_DebugGpuProgramID = 0; // TEMP --------------
+GLuint g_DebugCubeVAO = 0; // TEMP --------------
 GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
@@ -94,9 +95,11 @@ int main(void)
 
     LoadShadersFromFiles();
 
-    GLuint debug_vertex_shader_id = LoadShader_Vertex("../../src/debug_pos_vertex.glsl");
-    GLuint debug_fragment_shader_id = LoadShader_Fragment("../../src/debug_pos_fragment.glsl");
-    g_PositionDebugGpuProgramID = CreateGpuProgram(debug_vertex_shader_id, debug_fragment_shader_id);
+    // TEMP -------------
+    GLuint debug_vertex_shader_id = LoadShader_Vertex("../../src/debug_shader_vertex.glsl");
+    GLuint debug_fragment_shader_id = LoadShader_Fragment("../../src/debug_shader_fragment.glsl");
+    g_DebugGpuProgramID = CreateGpuProgram(debug_vertex_shader_id, debug_fragment_shader_id);
+    // TEMP -------------
 
     GLfloat triangle_vertices[] = {
         // Posição (x, y, z)
@@ -120,20 +123,75 @@ int main(void)
 
     g_VirtualScene.addObject(bunny_sobj);
 
+    // TEMP -------------
+    GLfloat debug_cube_vertices[] = {
+        // Posições (x, y, z)
+        -100.0f, -100.0f, -100.0f, // 0
+         100.0f, -100.0f, -100.0f, // 1
+         100.0f,  100.0f, -100.0f, // 2
+        -100.0f,  100.0f, -100.0f, // 3
+        -100.0f, -100.0f,  100.0f, // 4
+         100.0f, -100.0f,  100.0f, // 5
+         100.0f,  100.0f,  100.0f, // 6
+        -100.0f,  100.0f,  100.0f  // 7
+    };
+
+    GLuint debug_cube_indices[] = {
+        // Face de trás
+        0, 1, 2,  2, 3, 0,
+        // Face da frente
+        4, 5, 6,  6, 7, 4,
+        // Face da esquerda
+        4, 7, 3,  3, 0, 4,
+        // Face da direita
+        5, 6, 2,  2, 1, 5,
+        // Face de baixo
+        4, 5, 1,  1, 0, 4,
+        // Face de cima
+        7, 6, 2,  2, 3, 7
+    };
+
+    GLuint vbo, ebo;
+    glGenVertexArrays(1, &g_DebugCubeVAO);
+    glBindVertexArray(g_DebugCubeVAO);
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(debug_cube_vertices), debug_cube_vertices, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(debug_cube_indices), debug_cube_indices, GL_STATIC_DRAW);
+
+    // O atributo do vértice (posição) é o layout location 0
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0); // Desvincula o VAO
+    // TEMP -------------
+
     Camera cam(glm::vec4(0.0f, 0.0f, 3.0f, 1.0f));
-    bool freecam = false; // Uma variável para controlar o modo
+    bool freecam = true; // Uma variável para controlar o modo
     glm::vec4 lookat_pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
     TextRendering_Init();
+
+    glm::vec2 mouse_pos = glm::vec2 (0, 0);
+    glm::vec2 last_mouse_pos = glm::vec2 (0, 0);
+    glm::vec2 mouse_offset = glm::vec2 (0, 0);
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(g_PositionDebugGpuProgramID);
+        // Linha movida TEMPORARIAMENTE para baixo:
+        // glUseProgram(g_GpuProgramID);
 
-        glm::vec2 mouse_pos = Callbacks::getCursorPosition();
+        last_mouse_pos = mouse_pos;
+        mouse_pos = Callbacks::getCursorPosition();
+        mouse_offset = mouse_pos - last_mouse_pos;
+
 
         glm::mat4 model = Matrix_Identity();
 
@@ -144,6 +202,8 @@ int main(void)
             
             // Obtenha a variação do mouse (x_offset, y_offset)
             // e chame minhaCamera.processMouseMovement(x_offset, y_offset);
+            
+            cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
 
         } else {
             // --- Controle de Look-At ---
@@ -158,14 +218,54 @@ int main(void)
         // Para modificar o coelho agora, usar o operador '->'
         // Exemplo: bunny_sobj->setTranslationMatrix(...);
 
-        bunny_sobj->setTranslationMatrix(glm::translate(model, glm::vec3
-                            (Callbacks::getCursorPosition().x * 0.01f - 6, 
-                             4 - Callbacks::getCursorPosition().y * 0.01f, 
-                             0.0f)));
+        // bunny_sobj->setTranslationMatrix(glm::translate(model, glm::vec3
+        //                    (Callbacks::getCursorPosition().x * 0.01f - 6, 
+        //                     4 - Callbacks::getCursorPosition().y * 0.01f, 
+        //                     0.0f)));
 
         glm::mat4 view = cam.getViewMatrix();
-        // glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+        glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
+        // glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f); // Linha temp
+
+
+         // --- BLOCO DE CÓDIGO PARA DESENHAR O CUBO DE DEBUG ---
+    {
+        glUseProgram(g_DebugGpuProgramID);
+
+        // Truque para ver o interior do cubo: desabilitar o backface culling
+        glDisable(GL_CULL_FACE);
+
+        // Matrizes para o cubo
+        glm::mat4 cube_model = Matrix_Identity(); // O cubo já é grande, não precisa mover
+        glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "model"), 1, GL_FALSE, glm::value_ptr(cube_model));
+        glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        
+        glBindVertexArray(g_DebugCubeVAO);
+
+        // Cores para cada face
+        glm::vec3 colors[] = {
+            {1.0f, 0.0f, 0.0f}, // Vermelho - Trás
+            {0.0f, 1.0f, 0.0f}, // Verde - Frente
+            {0.0f, 0.0f, 1.0f}, // Azul - Esquerda
+            {1.0f, 1.0f, 0.0f}, // Amarelo - Direita
+            {1.0f, 0.0f, 1.0f}, // Magenta - Baixo
+            {0.0f, 1.0f, 1.0f}  // Ciano - Cima
+        };
+        
+        GLuint color_loc = glGetUniformLocation(g_DebugGpuProgramID, "u_color");
+
+        // Desenha cada face (6 vértices por face) com uma cor diferente
+        for (int i = 0; i < 6; ++i) {
+            glUniform3fv(color_loc, 1, glm::value_ptr(colors[i]));
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(i * 6 * sizeof(GLuint)));
+        }
+
+        glBindVertexArray(0);
+        glEnable(GL_CULL_FACE); // Reabilita o culling para o resto da cena
+    }
+    // --- FIM DO BLOCO DO CUBO DE DEBUG ---
+
 
         glUseProgram(g_GpuProgramID);
 
@@ -179,8 +279,7 @@ int main(void)
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
         TextRendering_ShowModelViewProjection(window, projection, view, model, p_model);
-        // TextRendering_ShowCameraInfo(window, cam, -1.0f, -0.1f);
-
+        TextRendering_ShowCameraInfo(window, cam, -1.0f, -0.5f);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
