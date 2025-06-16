@@ -207,13 +207,15 @@ int main(void)
         if (freecam) {
             if(Callbacks::isLeftMouseButtonPressed())
                 cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
+            cam.processKeyboard(deltaTime);
+            // Atualiza a posição da câmera
+            
 
         } else {
             // Modo look-at, NÃO ESTÁ FUNCIONANDO AINDA
             cam.lookAt(lookat_pos);
         }
-        cam.processKeyboard(deltaTime);
-        // Atualiza a posição da câmera
+        
         
 
         bunny_sobj.setTranslationMatrix(glm::translate(model, glm::vec3
