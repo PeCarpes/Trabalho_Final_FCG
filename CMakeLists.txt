@@ -18,6 +18,7 @@ set(SOURCES
   src/SceneObject.cpp
   src/textrendering.cpp
   src/dejavufont.cpp
+  src/Player.cpp
   )
 
 
