@@ -19,7 +19,7 @@ glm::mat4 Camera::getViewMatrix()
 
 glm::mat4 Camera::getProjectionMatrix(float aspectRatio)
 {
-    float field_of_view = 3.141592 / 3.0f;
+    float field_of_view = fov;
     return Matrix_Perspective(field_of_view, aspectRatio, -0.1f, -100.0f);
 }
 
@@ -41,15 +41,19 @@ void Camera::processKeyboard(float delta_time) {
     int a_pressed = Callbacks::getKeyState(GLFW_KEY_A);
     int d_pressed = Callbacks::getKeyState(GLFW_KEY_D);
 
+    glm::vec4 mov_vector = forward_vector;
+    mov_vector.y = 0.0f;
+    mov_vector = normalize(mov_vector);
+
     if (w_pressed == GLFW_PRESS || w_pressed == GLFW_REPEAT)
-        position += forward_vector * velocity;
+        position += mov_vector * velocity;
     if (s_pressed == GLFW_PRESS || s_pressed == GLFW_REPEAT)
-        position -= forward_vector * velocity;
+        position -= mov_vector * velocity;
     if (a_pressed == GLFW_PRESS || a_pressed == GLFW_REPEAT)
         position -= right_vector * velocity;
     if (d_pressed == GLFW_PRESS || d_pressed == GLFW_REPEAT)
         position += right_vector * velocity;
-}
+    }
 
 void Camera::processMouseMovement(float x_offset, float y_offset, bool constrain_pitch) {
     x_offset *= mouse_sensitivity;
