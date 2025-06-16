@@ -27,5 +27,4 @@ void VirtualScene::drawScene()
         object->draw();
         i++;
     }
-    std::cout << i << std::endl;
 }
