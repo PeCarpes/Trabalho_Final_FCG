@@ -19,7 +19,8 @@ glm::mat4 Camera::getViewMatrix()
 
 glm::mat4 Camera::getProjectionMatrix(float aspectRatio)
 {
-    return Matrix_Perspective(45.0f, aspectRatio, 0.1f, 100.0f);
+    float field_of_view = 3.141592 / 3.0f;
+    return Matrix_Perspective(field_of_view, aspectRatio, -0.1f, -100.0f);
 }
 
 void Camera::lookAt(glm::vec4 target_position) {

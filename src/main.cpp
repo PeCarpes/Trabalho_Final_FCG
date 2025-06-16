@@ -234,13 +234,13 @@ int main(void)
         //                    (Callbacks::getCursorPosition().x * 0.01f - 6, 
         //                     4 - Callbacks::getCursorPosition().y * 0.01f, 
         //                     0.0f)));
-        float field_of_view = 3.141592 / 3.0f;
+
+        
         aspect_ratio = Callbacks::getScreenRatio();
         glm::mat4 view = cam.getViewMatrix();
-        // glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
-        glm::mat4 projection = glm::perspective(field_of_view, aspect_ratio, 0.1f, 100.0f); // Linha temp
+        glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
 
-         // --- BLOCO DE CÓDIGO PARA DESENHAR O CUBO DE DEBUG ---
+        // --- BLOCO DE CÓDIGO PARA DESENHAR O CUBO DE DEBUG ---
     {
         glUseProgram(g_DebugGpuProgramID);
 
