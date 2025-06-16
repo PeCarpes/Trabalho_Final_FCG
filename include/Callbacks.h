@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
+typedef std::unordered_map<int, int> KeyStateMap;
+
 class Callbacks
 {
 private:
@@ -16,7 +18,7 @@ private:
     static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos);
     static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-    static inline std::unordered_map<int, int> key_states;
+    static inline KeyStateMap key_states;
 
 public:
     static void initializeCallbacks(GLFWwindow *window);
