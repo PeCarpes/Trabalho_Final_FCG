@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Callbacks.h"
 #include <cmath>
 
 Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch) 
@@ -31,15 +32,21 @@ void Camera::lookAt(glm::vec4 target_position) {
     updateCameraVectors();
 }
 
-void Camera::processKeyboard(CameraMovement direction, float delta_time) {
+void Camera::processKeyboard(float delta_time) {
     float velocity = movement_speed * delta_time;
-    if (direction == CameraMovement::FORWARD)
+
+    int w_pressed = Callbacks::getKeyState(GLFW_KEY_W);
+    int s_pressed = Callbacks::getKeyState(GLFW_KEY_S);
+    int a_pressed = Callbacks::getKeyState(GLFW_KEY_A);
+    int d_pressed = Callbacks::getKeyState(GLFW_KEY_D);
+
+    if (w_pressed == GLFW_PRESS)
         position += forward_vector * velocity;
-    if (direction == CameraMovement::BACKWARD)
+    if (s_pressed == GLFW_PRESS)
         position -= forward_vector * velocity;
-    if (direction == CameraMovement::LEFT)
+    if (a_pressed == GLFW_PRESS)
         position -= right_vector * velocity;
-    if (direction == CameraMovement::RIGHT)
+    if (d_pressed == GLFW_PRESS)
         position += right_vector * velocity;
 }
 

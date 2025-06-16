@@ -1,19 +1,27 @@
 #include <../include/VirtualScene.h>
 
-void VirtualScene::addObject(std::shared_ptr<SceneObject> object)
+void VirtualScene::addObject(const SceneObject &object)
 {
-    objects[object->getName()] = object;
+    objects.insert({object.getName(), object});
 }
 
 SceneObject* VirtualScene::operator[](const char* name) {
-    return objects.at(name).get();
+    auto it = objects.find(name);
+    if (it != objects.end())
+    {
+        return &(it->second);
+    }
+    else
+    {
+        throw std::runtime_error("Object not found in the scene.");
+    }
 }
 
 void VirtualScene::drawScene()
 {
     for (const auto &pair : objects)
     {
-        const auto &object_ptr = pair.second;
-        object_ptr->draw();
+        const SceneObject &object = pair.second;
+        object.draw();
     }
 }

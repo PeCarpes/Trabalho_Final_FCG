@@ -50,7 +50,6 @@ glm::vec2 Callbacks::getCursorPosition()
 bool Callbacks::isLeftMouseButtonPressed()
 {
     return left_mouse_button_pressed;
-    printf("entra na função booleana\n");
 }
 
 int Callbacks::getKeyState(int key)

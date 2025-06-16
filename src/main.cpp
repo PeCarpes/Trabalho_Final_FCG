@@ -119,9 +119,11 @@ int main(void)
     bunny_obj.ComputeNormals();
     bunny_obj.BuildTriangles();
 
-    auto bunny_sobj = std::make_shared<SceneObject>(bunny_obj, g_GpuProgramID);
+    // auto bunny_sobj = std::make_shared<SceneObject>(bunny_obj, g_GpuProgramID);
 
+    SceneObject bunny_sobj(bunny_obj, g_GpuProgramID);
     g_VirtualScene.addObject(bunny_sobj);
+    
 
     // TEMP -------------
     GLfloat debug_cube_vertices[] = {
@@ -180,6 +182,9 @@ int main(void)
     glm::vec2 last_mouse_pos = glm::vec2 (0, 0);
     glm::vec2 mouse_offset = glm::vec2 (0, 0);
 
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -191,6 +196,10 @@ int main(void)
         last_mouse_pos = mouse_pos;
         mouse_pos = Callbacks::getCursorPosition();
         mouse_offset = mouse_pos - last_mouse_pos;
+
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
 
         glm::mat4 model = Matrix_Identity();
@@ -205,6 +214,7 @@ int main(void)
             if(Callbacks::isLeftMouseButtonPressed())
             {
                 cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
+                cam.processKeyboard(deltaTime);
             }
 
         } else {
