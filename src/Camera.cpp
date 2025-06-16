@@ -13,6 +13,7 @@ Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch)
 glm::mat4 Camera::getViewMatrix() 
 {
     return Matrix_Camera_View(this->position, this->forward_vector, this->up_vector);
+    
 }
 
 glm::mat4 Camera::getProjectionMatrix(float aspectRatio)

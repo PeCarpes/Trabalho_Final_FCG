@@ -33,7 +33,7 @@ GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
 
 const int screen_width = 1200;
 const int screen_height = 800;
-const float aspect_ratio = (float)screen_width / (float)screen_height;
+float aspect_ratio = (float)screen_width / (float)screen_height;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
@@ -126,14 +126,14 @@ int main(void)
     // TEMP -------------
     GLfloat debug_cube_vertices[] = {
         // Posições (x, y, z)
-        -100.0f, -100.0f, -100.0f, // 0
-         100.0f, -100.0f, -100.0f, // 1
-         100.0f,  100.0f, -100.0f, // 2
-        -100.0f,  100.0f, -100.0f, // 3
-        -100.0f, -100.0f,  100.0f, // 4
-         100.0f, -100.0f,  100.0f, // 5
-         100.0f,  100.0f,  100.0f, // 6
-        -100.0f,  100.0f,  100.0f  // 7
+        -10.0f, -10.0f, -10.0f, // 0
+         10.0f, -10.0f, -10.0f, // 1
+         10.0f,  10.0f, -10.0f, // 2
+        -10.0f,  10.0f, -10.0f, // 3
+        -10.0f, -10.0f,  10.0f, // 4
+         10.0f, -10.0f,  10.0f, // 5
+         10.0f,  10.0f,  10.0f, // 6
+        -10.0f,  10.0f,  10.0f  // 7
     };
 
     GLuint debug_cube_indices[] = {
@@ -202,8 +202,10 @@ int main(void)
             
             // Obtenha a variação do mouse (x_offset, y_offset)
             // e chame minhaCamera.processMouseMovement(x_offset, y_offset);
-            
-            cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
+            if(Callbacks::isLeftMouseButtonPressed())
+            {
+                cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
+            }
 
         } else {
             // --- Controle de Look-At ---
@@ -222,11 +224,11 @@ int main(void)
         //                    (Callbacks::getCursorPosition().x * 0.01f - 6, 
         //                     4 - Callbacks::getCursorPosition().y * 0.01f, 
         //                     0.0f)));
-
+        float field_of_view = 3.141592 / 3.0f;
+        aspect_ratio = Callbacks::getScreenRatio();
         glm::mat4 view = cam.getViewMatrix();
-        glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
-        // glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f); // Linha temp
-
+        // glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
+        glm::mat4 projection = glm::perspective(field_of_view, aspect_ratio, 0.1f, 100.0f); // Linha temp
 
          // --- BLOCO DE CÓDIGO PARA DESENHAR O CUBO DE DEBUG ---
     {
