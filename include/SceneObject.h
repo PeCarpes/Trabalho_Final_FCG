@@ -20,6 +20,8 @@ private:
     glm::mat4 scaleMatrix;
     glm::mat4 translationMatrix;
 
+    std::string name;
+
 protected:
 GLuint GpuProgramID;
 
@@ -37,5 +39,5 @@ ObjModel objModel;
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, GLuint programID);
+    SceneObject(const ObjModel &model, GLuint programID, const std::string& name);
 };

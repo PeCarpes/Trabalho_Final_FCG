@@ -1,12 +1,13 @@
 #include <../include/SceneObject.h>
 
-SceneObject::SceneObject(const ObjModel &model, GLuint programID)
+SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::string& name)
     : objModel(model), GpuProgramID(programID),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
       rotationMatrix(Matrix_Identity()),
       scaleMatrix(Matrix_Identity()),
-      translationMatrix(Matrix_Identity()) {}
+      translationMatrix(Matrix_Identity()),
+      name(name) {}
 
 void SceneObject::setPosition(const glm::vec4 &newPosition)
 {
@@ -45,15 +46,13 @@ glm::vec4 SceneObject::getPosition() const
 
 std::string SceneObject::getName() const
 {
-    return objModel.getName();
+    return name;
 }
 
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();
     model = model * translationMatrix * rotationMatrix * scaleMatrix;
-
-    // PrintMatrix(translationMatrix);
 
     GLuint model_loc = glGetUniformLocation(GpuProgramID, "model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));

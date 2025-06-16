@@ -1,15 +1,16 @@
 #include <../include/VirtualScene.h>
+#include <iostream>
 
-void VirtualScene::addObject(const SceneObject &object)
+void VirtualScene::addObject(SceneObject *object)
 {
-    objects.insert({object.getName(), object});
+    objects.insert({object->getName(), object});
 }
 
 SceneObject* VirtualScene::operator[](const char* name) {
     auto it = objects.find(name);
     if (it != objects.end())
     {
-        return &(it->second);
+        return it->second;
     }
     else
     {
@@ -19,9 +20,12 @@ SceneObject* VirtualScene::operator[](const char* name) {
 
 void VirtualScene::drawScene()
 {
+    int i = 0;
     for (const auto &pair : objects)
     {
-        const SceneObject &object = pair.second;
-        object.draw();
+        const SceneObject *object = pair.second;
+        object->draw();
+        i++;
     }
+    std::cout << i << std::endl;
 }
