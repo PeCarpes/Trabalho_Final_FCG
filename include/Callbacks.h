@@ -9,14 +9,20 @@ class Callbacks
 {
 private:
     static inline glm::vec2 cursor_pos = glm::vec2(0.0f, 0.0f);
+    static inline bool left_mouse_button_pressed = false;
+    static inline float screen_ratio = 1.0;
 
     static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
     static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos);
-    static std::unordered_map<int, int> key_states;
+    static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static inline std::unordered_map<int, int> key_states;
 
 public:
     static void initializeCallbacks(GLFWwindow *window);
     static glm::vec2 getCursorPosition();
+    static bool isLeftMouseButtonPressed();
+    static float getScreenRatio();
 
     static int getKeyState(int key);
 };

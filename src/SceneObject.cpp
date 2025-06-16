@@ -52,13 +52,12 @@ void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();
     model = model * translationMatrix * rotationMatrix * scaleMatrix;
-    
-    PrintMatrix(translationMatrix);
+
+    // PrintMatrix(translationMatrix);
 
     GLuint model_loc = glGetUniformLocation(GpuProgramID, "model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 
-    
     objModel.draw();
 
 }

@@ -5,18 +5,6 @@
 #include "../include/Matrices.h"
 #include <vector>
 
-// Enum para facilitar o processamento do teclado
-enum class CameraMovement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT
-};
-
-enum class CameraProjectionType {
-    ORTHOGRAPHIC,
-    PERSPECTIVE
-};
 
 const float YAW         = -90.0f; // obs: Yaw = phi
 const float PITCH       =  0.0f;  //  e pitch = tetha
@@ -48,7 +36,7 @@ class Camera {
 
         void lookAt(glm::vec4 target_position);
 
-        void processKeyboard(CameraMovement direction, float delta_time);
+        void processKeyboard(float delta_time);
         void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true);
 
     private:
