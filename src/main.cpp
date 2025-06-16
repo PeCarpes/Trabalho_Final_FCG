@@ -12,6 +12,7 @@
 #include <Callbacks.h>
 #include <Camera.h>
 #include <textrendering.h>
+#include <Player.h>
 
 #include <iostream>
 #include <fstream>
@@ -45,6 +46,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
+Player g_Player(nullptr, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -93,6 +95,8 @@ int main(void)
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     LoadShadersFromFiles();
 
     // TEMP -------------
@@ -100,6 +104,13 @@ int main(void)
     GLuint debug_fragment_shader_id = LoadShader_Fragment("../../src/debug_shader_fragment.glsl");
     g_DebugGpuProgramID = CreateGpuProgram(debug_vertex_shader_id, debug_fragment_shader_id);
     // TEMP -------------
+
+    ObjModel weapon_obj("../../data/weapon.obj");
+    weapon_obj.ComputeNormals();
+    weapon_obj.BuildTriangles();
+
+    SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon");
+    g_VirtualScene.addObject(&weapon_sobj);
 
     ObjModel bunny_obj("../../data/bunny.obj");
     bunny_obj.ComputeNormals();
@@ -144,13 +155,13 @@ int main(void)
 
         if (freecam)
         {
-            if (Callbacks::isLeftMouseButtonPressed())
-                cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
+            if (Callbacks::isLeftMouseButtonPressed() || true)
+                cam.processMouseMovement(mouse_offset.x, -mouse_offset.y);
             cam.processKeyboard(deltaTime);
             // Atualiza a posição da câmera
         }
         else
-        {
+        {            
             // Modo look-at, NÃO ESTÁ FUNCIONANDO AINDA
             cam.lookAt(lookat_pos);
         }
@@ -256,8 +267,13 @@ int main(void)
         static float x = 0.0f;
         x += 0.1f * deltaTime;
 
+        g_Player.move(deltaTime, cam);
+        glm::vec4 p_pos = g_Player.getPosition();
+
         bunny_sobj.setTranslationMatrix(Matrix_Translate(0.0f, 0.0f, -x));
-        bunny_sobj2.setTranslationMatrix(Matrix_Translate(0.0f, x, 0.0f));
+        bunny_sobj2.setTranslationMatrix(Matrix_Translate(p_pos.x, p_pos.y + 3.0f, p_pos.z - 3.0f));
+
+        weapon_sobj.setTranslationMatrix(Matrix_Translate(p_pos.x + 0.5f, p_pos.y, p_pos.z + 0.5f));
 
         g_VirtualScene.drawScene();
 
