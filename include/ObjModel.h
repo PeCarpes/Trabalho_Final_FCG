@@ -5,6 +5,7 @@
 #include <Matrices.h>
 #include <glad/glad.h>
 #include <stdexcept>
+#include <malloc.h> 
 
 #include <string>
 #include <vector>
@@ -15,6 +16,8 @@ public:
     void ComputeNormals();
     void BuildTriangles();
     void draw() const;
+
+    std::vector<ObjModel*> children = {};
 
     std::string getName() const;
 
