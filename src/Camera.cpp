@@ -41,13 +41,13 @@ void Camera::processKeyboard(float delta_time) {
     int a_pressed = Callbacks::getKeyState(GLFW_KEY_A);
     int d_pressed = Callbacks::getKeyState(GLFW_KEY_D);
 
-    if (w_pressed == GLFW_PRESS)
+    if (w_pressed == GLFW_PRESS || w_pressed == GLFW_REPEAT)
         position += forward_vector * velocity;
-    if (s_pressed == GLFW_PRESS)
+    if (s_pressed == GLFW_PRESS || s_pressed == GLFW_REPEAT)
         position -= forward_vector * velocity;
-    if (a_pressed == GLFW_PRESS)
+    if (a_pressed == GLFW_PRESS || a_pressed == GLFW_REPEAT)
         position -= right_vector * velocity;
-    if (d_pressed == GLFW_PRESS)
+    if (d_pressed == GLFW_PRESS || d_pressed == GLFW_REPEAT)
         position += right_vector * velocity;
 }
 

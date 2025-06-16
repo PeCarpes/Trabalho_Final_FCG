@@ -205,35 +205,21 @@ int main(void)
         glm::mat4 model = Matrix_Identity();
 
         if (freecam) {
-            // --- Controle de Câmera Livre ---
-            // Verifique o teclado (ex: if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS))
-            // e chame minhaCamera.processKeyboard(CameraMovement::FORWARD, delta_time);
-            
-            // Obtenha a variação do mouse (x_offset, y_offset)
-            // e chame minhaCamera.processMouseMovement(x_offset, y_offset);
             if(Callbacks::isLeftMouseButtonPressed())
-            {
                 cam.processMouseMovement(mouse_offset.x, mouse_offset.y);
-                cam.processKeyboard(deltaTime);
-            }
 
         } else {
-            // --- Controle de Look-At ---
-            // A câmera vai sempre olhar para o alvo.
-            // Você pode até mover o alvo para testar. ex: posicao_do_alvo.x = sin(glfwGetTime());
+            // Modo look-at, NÃO ESTÁ FUNCIONANDO AINDA
             cam.lookAt(lookat_pos);
-
-
         }
+        cam.processKeyboard(deltaTime);
+        // Atualiza a posição da câmera
+        
 
-        // Obs:
-        // Para modificar o coelho agora, usar o operador '->'
-        // Exemplo: bunny_sobj->setTranslationMatrix(...);
-
-        // bunny_sobj->setTranslationMatrix(glm::translate(model, glm::vec3
-        //                    (Callbacks::getCursorPosition().x * 0.01f - 6, 
-        //                     4 - Callbacks::getCursorPosition().y * 0.01f, 
-        //                     0.0f)));
+        bunny_sobj.setTranslationMatrix(glm::translate(model, glm::vec3
+                            (Callbacks::getCursorPosition().x * 0.01f - 6, 
+                             4 - Callbacks::getCursorPosition().y * 0.01f, 
+                             0.0f)));
 
         
         aspect_ratio = Callbacks::getScreenRatio();
