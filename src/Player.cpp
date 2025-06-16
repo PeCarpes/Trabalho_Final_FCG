@@ -6,17 +6,19 @@ void Player::updateForwardVector(const glm::vec4 &newForward){
     forward = normalize(forward);
 }
 
-void Player::move(float deltaTime) {
+void Player::move(float deltaTime, Camera cam) {
+    position = cam.position; // Update position to camera position    
+    updateDirection();
 
     glm::vec4 movement;
     movement.w = 0.0f; // No movement in the fourth dimension, please 
     movement.y = 0.0f; // No vertical movement, that's handled by jumping
 
-    movement.x = crossproduct(forward, up).x * vel.x;
 
     movement.z = forward.z * vel.z;
     
     movement = normalize(movement);
+
     position += movement * speed * deltaTime;
 
 }
