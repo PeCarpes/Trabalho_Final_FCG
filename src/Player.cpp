@@ -60,7 +60,7 @@ void Player::updateObject(void) {
     if (player_obj) {
         player_obj->setPosition(position);
         player_obj->setUpVector(up);
-        player_obj->setTranslationMatrix(Matrix_Translate(position.x, position.y, position.z));
+        player_obj->setPosition(glm::vec3(position.x, position.y, position.z));
     }
 }
 

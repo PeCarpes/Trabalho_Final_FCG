@@ -14,30 +14,36 @@ class SceneObject
 {
 private:
     glm::vec4 position;
-    glm::vec4 upVector;
+    glm::vec3 rotation; // Stored in RADIANS
+    glm::vec3 scale;
 
-    glm::mat4 rotationMatrix;
-    glm::mat4 scaleMatrix;
-    glm::mat4 translationMatrix;
+    glm::vec4 upVector;
 
     std::string name;
 
 protected:
-GLuint GpuProgramID;
+    GLuint GpuProgramID;
 
 public:
-ObjModel objModel;
-    void setPosition(const glm::vec4 &newPosition);
-    void addPosition(const glm::vec4 &deltaPosition);
+    ObjModel objModel;
+    void setPosition(const glm::vec3 &newPosition);
+    void addPosition(const glm::vec3 &deltaPosition);
+    void setRotationX(float degrees);
+    void setRotationY(float degrees);
+    void setRotationZ(float degrees);
+    void setRotation(glm::vec3 newRotation);
+    void addRotation(glm::vec3 deltaRotation);
+    void setScaleX(float factor);
+    void setScaleY(float factor);
+    void setScaleZ(float factor);
+    void setScale(const glm::vec3 &newScale);
+
     void setUpVector(const glm::vec4 &newUp);
-    void setRotationMatrix(const glm::mat4 &newRotation);
-    void setScaleMatrix(const glm::mat4 &newScale);
-    void setTranslationMatrix(const glm::mat4 &newTranslation);
 
     std::string getName() const;
     glm::vec4 getPosition() const;
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, GLuint programID, const std::string& name);
+    SceneObject(const ObjModel &model, GLuint programID, const std::string &name);
 };

@@ -33,6 +33,23 @@ void Camera::lookAt(glm::vec4 target_position) {
     updateCameraVectors();
 }
 
+glm::vec4 Camera::getPosition() const {
+    return position;
+}
+
+glm::vec4 Camera::getForwardVector() const {
+    return forward_vector;
+}
+
+glm::vec4 Camera::getUpVector() const{
+    return up_vector;
+}
+
+glm::vec4 Camera::getRightVector() const{
+    return right_vector;
+}
+
+
 void Camera::processKeyboard(float delta_time) {
     float velocity = movement_speed * delta_time;
 

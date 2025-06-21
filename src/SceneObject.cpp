@@ -4,39 +4,23 @@ SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::str
     : objModel(model), GpuProgramID(programID),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
-      rotationMatrix(Matrix_Identity()),
-      scaleMatrix(Matrix_Identity()),
-      translationMatrix(Matrix_Identity()),
+      rotation(glm::vec3(0.0f, 0.0f, 0.0f)),
+      scale(glm::vec3(1.0f, 1.0f, 1.0f)),
       name(name) {}
 
-void SceneObject::setPosition(const glm::vec4 &newPosition)
+void SceneObject::setPosition(const glm::vec3 &newPosition)
 {
-    position = newPosition;
+    position = glm::vec4(newPosition, 1.0f);
 }
 
-void SceneObject::addPosition(const glm::vec4 &deltaPosition)
+void SceneObject::addPosition(const glm::vec3 &deltaPosition)
 {
-    position += deltaPosition;
+    position += glm::vec4(deltaPosition, 0.0f);
 }
 
 void SceneObject::setUpVector(const glm::vec4 &newUp)
 {
     upVector = newUp;
-}
-
-void SceneObject::setRotationMatrix(const glm::mat4 &newRotation)
-{
-    rotationMatrix = newRotation;
-}
-
-void SceneObject::setScaleMatrix(const glm::mat4 &newScale)
-{
-    scaleMatrix = newScale;
-}
-
-void SceneObject::setTranslationMatrix(const glm::mat4 &newTranslation)
-{
-    translationMatrix = newTranslation;
 }
 
 glm::vec4 SceneObject::getPosition() const
@@ -49,14 +33,59 @@ std::string SceneObject::getName() const
     return name;
 }
 
+void SceneObject::setRotationX(float degrees)
+{
+    rotation.x = glm::radians(degrees);
+}
+void SceneObject::setRotationY(float degrees)
+{
+    rotation.y = glm::radians(degrees);
+}
+void SceneObject::setRotationZ(float degrees)
+{
+    rotation.z = glm::radians(degrees);
+}
+void SceneObject::setRotation(glm::vec3 newRotation)
+{
+    rotation = glm::radians(newRotation);
+}
+void SceneObject::addRotation(glm::vec3 deltaRotation)
+{
+    rotation += glm::radians(deltaRotation);
+}
+
+void SceneObject::setScaleX(float factor)
+{
+    scale.x = factor;
+}
+
+void SceneObject::setScaleY(float factor)
+{
+    scale.y = factor;
+}
+
+void SceneObject::setScaleZ(float factor)
+{
+    scale.z = factor;
+}
+
+void SceneObject::setScale(const glm::vec3 &newScale)
+{
+    scale = newScale;
+}
+
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();
-    model = model * translationMatrix * rotationMatrix * scaleMatrix;
+    
+    model = model * Matrix_Translate(position.x, position.y, position.z);
+    model = model * Matrix_Scale(scale.x, scale.y, scale.z);
+    model = model * Matrix_Rotate(rotation.x, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+    model = model * Matrix_Rotate(rotation.y, glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
+    model = model * Matrix_Rotate(rotation.z, glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
 
     GLuint model_loc = glGetUniformLocation(GpuProgramID, "model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 
     objModel.draw();
-
 }
