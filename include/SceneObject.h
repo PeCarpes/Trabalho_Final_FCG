@@ -17,6 +17,8 @@ private:
     glm::vec3 rotation; // Stored in RADIANS
     glm::vec3 scale;
 
+    bool useViewMatrix = true; // If false, uses the identity matrix
+
     glm::vec4 upVector;
 
     std::string name;
@@ -45,5 +47,5 @@ public:
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, GLuint programID, const std::string &name);
+    SceneObject(const ObjModel &model, GLuint programID, const std::string &name, bool useViewMatrix = true);
 };

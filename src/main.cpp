@@ -109,7 +109,7 @@ int main(void)
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
 
-    SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon");
+    SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon", false);
     g_VirtualScene.addObject(&weapon_sobj);
 
     ObjModel bunny_obj("../../data/bunny.obj");
@@ -271,18 +271,13 @@ int main(void)
         glm::vec4 c_pos = cam.getPosition();
         glm::vec4 p_pos = g_Player.getPosition();
 
-        glm::vec4 weapon_pos = c_pos + cam.getForwardVector() * 2.0f;
-        glm::vec4 weapon_offset = glm::vec4(-0.1f, -0.4f, 0.0f, 0.0f);
+        glm::vec4 weapon_pos = c_pos + 0.25f * cam.getForwardVector() + 0.1f * cam.getRightVector();
+        glm::vec4 weapon_offset = glm::vec4(0.0f, -0.1f, 0.0f, 0.0f);
         weapon_pos += weapon_offset;
 
-        std::cout << cam.forward_vector.x << ", "
-                  << cam.forward_vector.y << ", "
-                  << cam.forward_vector.z << std::endl;
-
-        weapon_sobj.setScale(glm::vec3(0.01f, 0.01f, 0.01f));
-        weapon_sobj.setRotationY(glm::radians(cam.yaw + 10.0f));
-        weapon_sobj.setPosition(glm::vec3(weapon_pos.x, weapon_pos.y, weapon_pos.z));
-        weapon_sobj.setRotationZ(cam.pitch);
+        weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
+        weapon_sobj.setPosition(glm::vec3(0.4f, -0.3f, -1.0f));
+        weapon_sobj.setRotationY(90.0f);
         
         bunny_sobj.setPosition(glm::vec3(0.0f, 0.0f, -x));
         bunny_sobj2.setPosition(glm::vec3(p_pos.x, p_pos.y + 3.0f, p_pos.z - 3.0f));
