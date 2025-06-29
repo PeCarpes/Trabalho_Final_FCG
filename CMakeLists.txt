@@ -19,6 +19,7 @@ set(SOURCES
   src/textrendering.cpp
   src/dejavufont.cpp
   src/Player.cpp
+  src/stb_image.cpp
   )
 
 
