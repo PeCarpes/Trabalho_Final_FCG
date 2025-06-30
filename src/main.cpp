@@ -105,12 +105,17 @@ int main(void)
     g_DebugGpuProgramID = CreateGpuProgram(debug_vertex_shader_id, debug_fragment_shader_id);
     // TEMP -------------
 
-    ObjModel weapon_obj("../../data/Weapon_01.obj");
+
+    /* =================== WEAPON OBJECT =================== */
+    ObjModel weapon_obj("../../data/Pistol_01.obj");
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
-
+    
     SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon", false);
+    weapon_sobj.setTexture("../../data/Pistol_01_Albedo.png");
     g_VirtualScene.addObject(&weapon_sobj);
+    /* ===================================================== */
+
 
     ObjModel bunny_obj("../../data/bunny.obj");
     bunny_obj.ComputeNormals();

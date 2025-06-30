@@ -1,5 +1,7 @@
 #include <../include/SceneObject.h>
 
+#include <iostream>
+
 SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::string& name, bool useViewMatrix)
     : objModel(model), GpuProgramID(programID),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
@@ -7,7 +9,9 @@ SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::str
       rotation(glm::vec3(0.0f, 0.0f, 0.0f)),
       scale(glm::vec3(1.0f, 1.0f, 1.0f)),
       useViewMatrix(useViewMatrix), // Use view matrix by default
-      name(name) {}
+      name(name),
+      texture_id(0)
+      {}
 
 
 void SceneObject::setID(int newID)
@@ -101,6 +105,11 @@ void SceneObject::draw() const
         GLuint view_loc = glGetUniformLocation(GpuProgramID, "view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     }
+
+    std::cout << "texture_id: " << texture_id << std::endl;
+
+    GLuint texture_id_loc = glGetUniformLocation(GpuProgramID, "texture_id");
+    glUniform1i(texture_id_loc, texture_id);
 
     GLuint object_id_loc = glGetUniformLocation(GpuProgramID, "object_id");
     glUniform1i(object_id_loc, object_id);

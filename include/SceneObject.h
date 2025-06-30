@@ -7,6 +7,7 @@
 #include <Matrices.h>
 
 #include <ObjModel.h>
+#include <Texture.h>
 
 #include <stack>
 
@@ -22,7 +23,10 @@ private:
     std::string name;
     ObjModel objModel;
 
+    GLuint texture_id;
     GLuint object_id;
+
+    Texture3D texture;
 
 public:
     void setPosition(const glm::vec3 &newPosition);
@@ -39,6 +43,12 @@ public:
     void setID(int newID);
 
     void setUpVector(const glm::vec4 &newUp);
+
+    void setTexture(const std::string &filename)
+    {
+        texture.LoadTextureImage(filename.c_str());
+        texture_id = texture.getTextureID();
+    }
 
     std::string getName() const;
     glm::vec4 getPosition() const;
