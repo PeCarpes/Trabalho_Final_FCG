@@ -20,6 +20,7 @@ set(SOURCES
   src/dejavufont.cpp
   src/Player.cpp
   src/stb_image.cpp
+  src/Texture.cpp
   )
 
 
