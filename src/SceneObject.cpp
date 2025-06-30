@@ -9,6 +9,12 @@ SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::str
       useViewMatrix(useViewMatrix), // Use view matrix by default
       name(name) {}
 
+
+void SceneObject::setID(int newID)
+{
+    object_id = newID;
+}
+
 void SceneObject::setPosition(const glm::vec3 &newPosition)
 {
     position = glm::vec4(newPosition, 1.0f);
@@ -95,6 +101,9 @@ void SceneObject::draw() const
         GLuint view_loc = glGetUniformLocation(GpuProgramID, "view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     }
+
+    GLuint object_id_loc = glGetUniformLocation(GpuProgramID, "object_id");
+    glUniform1i(object_id_loc, object_id);
 
     GLuint model_loc = glGetUniformLocation(GpuProgramID, "model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));

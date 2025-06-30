@@ -16,18 +16,15 @@ private:
     glm::vec4 position;
     glm::vec3 rotation; // Stored in RADIANS
     glm::vec3 scale;
-
-    bool useViewMatrix = true; // If false, uses the identity matrix
-
     glm::vec4 upVector;
-
-    std::string name;
-
-protected:
+    bool useViewMatrix = true; // If false, uses the identity matrix
     GLuint GpuProgramID;
+    std::string name;
+    ObjModel objModel;
+
+    GLuint object_id;
 
 public:
-    ObjModel objModel;
     void setPosition(const glm::vec3 &newPosition);
     void addPosition(const glm::vec3 &deltaPosition);
     void setRotationX(float degrees);
@@ -39,6 +36,7 @@ public:
     void setScaleY(float factor);
     void setScaleZ(float factor);
     void setScale(const glm::vec3 &newScale);
+    void setID(int newID);
 
     void setUpVector(const glm::vec4 &newUp);
 

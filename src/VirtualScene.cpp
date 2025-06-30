@@ -1,9 +1,15 @@
 #include <../include/VirtualScene.h>
 #include <iostream>
 
+int VirtualScene::num_objects = 0;
+
 void VirtualScene::addObject(SceneObject *object)
 {
     objects.insert({object->getName(), object});
+    num_objects++;
+
+    object->setID(num_objects);
+
 }
 
 SceneObject* VirtualScene::operator[](const char* name) {

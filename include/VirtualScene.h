@@ -9,6 +9,7 @@ class VirtualScene
 {
 private:
     static inline std::map<std::string, SceneObject *> objects;
+    static int num_objects;
 
 public:
     static void drawScene();
