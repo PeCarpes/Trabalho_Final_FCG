@@ -21,6 +21,7 @@ set(SOURCES
   src/Player.cpp
   src/stb_image.cpp
   src/Texture.cpp
+  src/Bezier.cpp
   )
 
 
