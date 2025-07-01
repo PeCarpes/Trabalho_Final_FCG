@@ -14,6 +14,7 @@
 #include <textrendering.h>
 #include <Player.h>
 #include <Bezier.h>
+#include <Enemy.h>
 
 #include <iostream>
 #include <fstream>
@@ -100,13 +101,6 @@ int main(void)
 
     LoadShadersFromFiles();
 
-    // TEMP -------------
-    GLuint debug_vertex_shader_id = LoadShader_Vertex("../../src/debug_shader_vertex.glsl");
-    GLuint debug_fragment_shader_id = LoadShader_Fragment("../../src/debug_shader_fragment.glsl");
-    g_DebugGpuProgramID = CreateGpuProgram(debug_vertex_shader_id, debug_fragment_shader_id);
-    // TEMP -------------
-
-
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/Pistol_01.obj");
     weapon_obj.ComputeNormals();
@@ -115,6 +109,14 @@ int main(void)
     SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon", false);
     weapon_sobj.setTexture("../../data/Pistol_01_Albedo.png");
     g_VirtualScene.addObject(&weapon_sobj);
+    /* ===================================================== */
+    /* =================== ENEMY OBJECT =================== */
+    ObjModel enemy_obj("../../data/enemy.obj");
+    enemy_obj.ComputeNormals();
+    enemy_obj.BuildTriangles();
+
+    Enemy enemy(enemy_obj, g_GpuProgramID, "enemy1", glm::vec4(10.0f, 0.0f, 10.0f, 1.0f), 1.0f);
+    g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
 
 
@@ -176,92 +178,6 @@ int main(void)
         glm::mat4 view = cam.getViewMatrix();
         glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
 
-        // --- BLOCO DE CÓDIGO PARA DESENHAR O CUBO DE DEBUG ---
-        {
-
-            // TEMP -------------
-            GLfloat debug_cube_vertices[] = {
-                // Posições (x, y, z)
-                -10.0f, -10.0f, -10.0f, // 0
-                10.0f, -10.0f, -10.0f,  // 1
-                10.0f, 10.0f, -10.0f,   // 2
-                -10.0f, 10.0f, -10.0f,  // 3
-                -10.0f, -10.0f, 10.0f,  // 4
-                10.0f, -10.0f, 10.0f,   // 5
-                10.0f, 10.0f, 10.0f,    // 6
-                -10.0f, 10.0f, 10.0f    // 7
-            };
-
-            GLuint debug_cube_indices[] = {
-                // Face de trás
-                0, 1, 2, 2, 3, 0,
-                // Face da frente
-                4, 5, 6, 6, 7, 4,
-                // Face da esquerda
-                4, 7, 3, 3, 0, 4,
-                // Face da direita
-                5, 6, 2, 2, 1, 5,
-                // Face de baixo
-                4, 5, 1, 1, 0, 4,
-                // Face de cima
-                7, 6, 2, 2, 3, 7};
-
-            GLuint vbo, ebo;
-            glGenVertexArrays(1, &g_DebugCubeVAO);
-            glBindVertexArray(g_DebugCubeVAO);
-
-            glGenBuffers(1, &vbo);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(debug_cube_vertices), debug_cube_vertices, GL_STATIC_DRAW);
-
-            glGenBuffers(1, &ebo);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(debug_cube_indices), debug_cube_indices, GL_STATIC_DRAW);
-
-            // O atributo do vértice (posição) é o layout location 0
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void *)0);
-            glEnableVertexAttribArray(0);
-
-            glBindVertexArray(0); // Desvincula o VAO
-                                  // TEMP -------------
-
-            glUseProgram(g_DebugGpuProgramID);
-
-            // Truque para ver o interior do cubo: desabilitar o backface culling
-            glDisable(GL_CULL_FACE);
-
-            // Matrizes para o cubo
-            glm::mat4 cube_model = Matrix_Identity(); // O cubo já é grande, não precisa mover
-            glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "model"), 1, GL_FALSE, glm::value_ptr(cube_model));
-            glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-            glUniformMatrix4fv(glGetUniformLocation(g_DebugGpuProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-            glBindVertexArray(g_DebugCubeVAO);
-
-            // Cores para cada face
-            glm::vec3 colors[] = {
-                {1.0f, 0.0f, 0.0f}, // Vermelho - Trás
-                {0.0f, 1.0f, 0.0f}, // Verde - Frente
-                {0.0f, 0.0f, 1.0f}, // Azul - Esquerda
-                {1.0f, 1.0f, 0.0f}, // Amarelo - Direita
-                {1.0f, 0.0f, 1.0f}, // Magenta - Baixo
-                {0.0f, 1.0f, 1.0f}  // Ciano - Cima
-            };
-
-            GLuint color_loc = glGetUniformLocation(g_DebugGpuProgramID, "u_color");
-
-            // Desenha cada face (6 vértices por face) com uma cor diferente
-            for (int i = 0; i < 6; ++i)
-            {
-                glUniform3fv(color_loc, 1, glm::value_ptr(colors[i]));
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)(i * 6 * sizeof(GLuint)));
-            }
-
-            glBindVertexArray(0);
-            glEnable(GL_CULL_FACE); // Reabilita o culling para o resto da cena
-        }
-        // --- FIM DO BLOCO DO CUBO DE DEBUG ---
-
         glUseProgram(g_GpuProgramID);
 
         GLuint view_loc = glGetUniformLocation(g_GpuProgramID, "view");
@@ -277,30 +193,21 @@ int main(void)
         glm::vec4 c_pos = cam.getPosition();
         glm::vec4 p_pos = g_Player.getPosition();
 
-        glm::vec4 weapon_pos = c_pos + 0.25f * cam.getForwardVector() + 0.1f * cam.getRightVector();
-        glm::vec4 weapon_offset = glm::vec4(0.0f, -0.1f, 0.0f, 0.0f);
-        weapon_pos += weapon_offset;
-
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
-        weapon_sobj.setPosition(glm::vec3(0.4f, -0.3f, -1.0f));
+        weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
         weapon_sobj.setRotationY(90.0f);
-        
-        bunny_sobj.setPosition(glm::vec3(0.0f, 0.0f, -x));
         
         Bezier b = Bezier(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f),
                                     glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
                                     glm::vec4( 5.0f, 5.0f, 0.0f, 1.0f),
-                                    glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f));
+                                    glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f));
         
         b.tick(glfwGetTime() * 0.5f); // Avança no tempo da curva
 
-        std::cout << "Bezier: " << b.evaluate().x << ", "
-                  << b.evaluate().y << ", "
-                  << b.evaluate().z << ", "
-                  << b.getT()
-                  << std::endl;
-
         bunny_sobj2.setPosition(b.evaluate());
+
+        enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+        enemy.move(deltaTime, p_pos);
 
         g_VirtualScene.drawScene();
 

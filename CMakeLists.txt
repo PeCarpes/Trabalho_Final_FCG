@@ -22,6 +22,7 @@ set(SOURCES
   src/stb_image.cpp
   src/Texture.cpp
   src/Bezier.cpp
+  src/Enemy.cpp
   )
 
 
