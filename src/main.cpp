@@ -13,6 +13,7 @@
 #include <Camera.h>
 #include <textrendering.h>
 #include <Player.h>
+#include <Bezier.h>
 
 #include <iostream>
 #include <fstream>
@@ -285,7 +286,21 @@ int main(void)
         weapon_sobj.setRotationY(90.0f);
         
         bunny_sobj.setPosition(glm::vec3(0.0f, 0.0f, -x));
-        bunny_sobj2.setPosition(glm::vec3(p_pos.x, p_pos.y + 3.0f, p_pos.z - 3.0f));
+        
+        Bezier b = Bezier(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f),
+                                    glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
+                                    glm::vec4( 5.0f, 5.0f, 0.0f, 1.0f),
+                                    glm::vec4(-5.0f, 5.0f, 0.0f, 1.0f));
+        
+        b.tick(glfwGetTime() * 0.5f); // Avança no tempo da curva
+
+        std::cout << "Bezier: " << b.evaluate().x << ", "
+                  << b.evaluate().y << ", "
+                  << b.evaluate().z << ", "
+                  << b.getT()
+                  << std::endl;
+
+        bunny_sobj2.setPosition(b.evaluate());
 
         g_VirtualScene.drawScene();
 
