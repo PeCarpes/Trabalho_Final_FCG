@@ -37,6 +37,8 @@ public:
     void reset();
     void tick(float deltaTime);
 
+    float getT() const; // Get current time in [0, 1]
+
     glm::vec4 evaluate();        // Get value at current time
     glm::vec4 evaluate(float t); // Get value at an arbitrary time
 };

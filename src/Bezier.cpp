@@ -1,5 +1,7 @@
 #include <Bezier.h>
 
+#include <iostream>
+
 /* ======== Bernstein polynomials ======== */
 
 float Bezier::b03(float t) const
@@ -36,7 +38,7 @@ glm::vec4 Bezier::c() const
 
 glm::vec4 Bezier::evaluate()
 {
-    return this->c();
+    return this->evaluate(current_t);
 }
 
 glm::vec4 Bezier::evaluate(float t)
@@ -57,21 +59,15 @@ glm::vec4 Bezier::evaluate(float t)
 }
 /* ========================================= */
 
-// logic defined here is slightly different from the one defined in evaluate(t)
-// because we dont really have to account for cases where t is too big
-// if t is too big here then the game is broken anyways 
-
 void Bezier::tick(float deltaTime){
-    increasing ? current_t += deltaTime: current_t -= deltaTime;
 
-    if(current_t > 1.0f){
-        increasing = false;
-        current_t = 1.0f - (current_t - 1.0f);
-    }
-    else if(current_t < 0){
-        increasing = true;
-        current_t = fabs(current_t);
-    }
+    current_t += deltaTime;
+
+}
+
+float Bezier::getT() const
+{
+    return current_t;
 }
 
 /* ============= Setters =================== */
