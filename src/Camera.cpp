@@ -71,12 +71,12 @@ void Camera::processKeyboard(float delta_time) {
         position += right_vector * velocity;
     }
 
-void Camera::processMouseMovement(float x_offset, float y_offset, bool constrain_pitch) {
-    x_offset *= mouse_sensitivity;
-    y_offset *= mouse_sensitivity;
+void Camera::processMouseMovement(glm::vec2 offset, bool constrain_pitch) {
+    offset.x *= mouse_sensitivity;
+    offset.y *= mouse_sensitivity;
 
-    yaw += x_offset;
-    pitch += y_offset;
+    yaw += offset.x;
+    pitch -= offset.y;
 
     if (constrain_pitch) {
         if (pitch > 89.0f)

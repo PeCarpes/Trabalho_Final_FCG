@@ -42,7 +42,7 @@ public:
     void lookAt(glm::vec4 target_position);
 
     void processKeyboard(float delta_time);
-    void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true);
+    void processMouseMovement(glm::vec2 offset, bool constrain_pitch = true);
 
 private:
     // Calcula os vetores de orientação a partir dos ângulos de Euler
