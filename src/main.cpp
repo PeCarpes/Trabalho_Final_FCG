@@ -97,14 +97,24 @@ int main(void)
     shader.Use();
     Camera cam = Camera();
 
+    /* =================== ID COLLECTION =================== */
+    // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
+
+    #define WEAPON 1
+    #define ENEMY 2
+    #define BUNNY 3
+    #define CUBE 4
+
 
     /* =================== WEAPON OBJECT =================== */
-    ObjModel weapon_obj("../../data/Pistol_01.obj");
+    ObjModel weapon_obj("../../data/pistol_01.obj");
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
 
     SceneObject weapon_sobj(weapon_obj, "weapon", shader, cam, false);
-    weapon_sobj.setTexture("../../data/Pistol_01_Albedo.png");
+    weapon_sobj.setTexture("../../data/pistol_01_Albedo.png");
+    weapon_sobj.setID(WEAPON);
+
     g_VirtualScene.addObject(&weapon_sobj);
     /* ===================================================== */
     /* =================== ENEMY OBJECT =================== */
@@ -167,6 +177,11 @@ int main(void)
 
         g_Player.move(deltaTime, cam);
         glm::vec4 p_pos = g_Player.getPosition();
+
+        // settings for gun.obj if needed
+        //weapon_sobj.setScale(glm::vec3(1.2f, 1.2f, 1.2f));
+        //weapon_sobj.setPosition(glm::vec3(0.5f, -0.35, -1.2f));
+        //weapon_sobj.setRotationY(-90.0f);
 
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
         weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
