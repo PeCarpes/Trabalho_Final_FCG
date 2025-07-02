@@ -129,6 +129,14 @@ int main(void)
     SceneObject bunny_sobj2(bunny_obj, g_GpuProgramID, "bunny2");
     g_VirtualScene.addObject(&bunny_sobj2);
     /* ===================================================== */
+    /* =================== CUBE OBJECT ===================== */
+    ObjModel cube_obj("../../data/cube.obj");
+    cube_obj.ComputeNormals();
+    cube_obj.BuildTriangles();
+    
+    SceneObject floor_sobj(cube_obj, g_GpuProgramID, "cube1");
+    g_VirtualScene.addObject(&floor_sobj);
+    /* ===================================================== */
 
 
     Camera cam(glm::vec4(0.0f, 0.0f, 3.0f, 1.0f));
@@ -209,6 +217,9 @@ int main(void)
 
         enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
         enemy.move(deltaTime, p_pos);
+
+        floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+        floor_sobj.setScale(glm::vec3(100.0f, 0.01f, 100.0f));
 
         g_VirtualScene.drawScene();
 
