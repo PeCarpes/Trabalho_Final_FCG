@@ -23,6 +23,7 @@ set(SOURCES
   src/Texture.cpp
   src/Bezier.cpp
   src/Enemy.cpp
+  src/Shader.cpp
   )
 
 

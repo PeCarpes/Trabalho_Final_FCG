@@ -2,8 +2,6 @@
 //   and on https://github.com/rougier/freetype-gl
 #include "textrendering.h"
 
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Função definida em main.cpp
-
 const GLchar* const textvertexshader_source = ""
 "#version 330\n"
 "layout (location = 0) in vec4 position;\n"
@@ -100,7 +98,9 @@ void TextRendering_Init()
     TextRendering_LoadShader(textfragmentshader_source, textfragmentshader_id);
     glCheckError();
 
-    textprogram_id = CreateGpuProgram(textvertexshader_id, textfragmentshader_id);
+    Shader shader = Shader(textvertexshader_id, textfragmentshader_id);
+
+    textprogram_id = shader.GetGpuProgramID();
     glLinkProgram(textprogram_id);
     glCheckError();
 
