@@ -21,7 +21,7 @@ void Shader::Use()
     glUseProgram(GpuProgramID);
 }
 
-void Shader::SetUniform(const char *name, const glm::mat4 &matrix)
+void Shader::SetUniform(const char *name, const glm::mat4 &matrix) const
 {
     GLint location = glGetUniformLocation(GpuProgramID, name);
     if (location != -1)
@@ -36,7 +36,7 @@ void Shader::SetUniform(const char *name, const glm::mat4 &matrix)
 
 }
 
-void Shader::SetUniform(const char *name, const glm::vec3 &vector)
+void Shader::SetUniform(const char *name, const glm::vec3 &vector)  const
 {
     GLint location = glGetUniformLocation(GpuProgramID, name);
     if (location != -1)
@@ -49,7 +49,7 @@ void Shader::SetUniform(const char *name, const glm::vec3 &vector)
     }
 }
 
-void Shader::SetUniform(const char *name, const glm::vec4 &vector)
+void Shader::SetUniform(const char *name, const glm::vec4 &vector) const
 {
     GLint location = glGetUniformLocation(GpuProgramID, name);
     if (location != -1)
@@ -62,7 +62,7 @@ void Shader::SetUniform(const char *name, const glm::vec4 &vector)
     }
 }
 
-void Shader::SetUniform(const char *name, float value)
+void Shader::SetUniform(const char *name, float value) const
 {
     GLint location = glGetUniformLocation(GpuProgramID, name);
     if (location != -1)
@@ -75,7 +75,7 @@ void Shader::SetUniform(const char *name, float value)
     }
 }
 
-void Shader::SetUniform(const char *name, int value)
+void Shader::SetUniform(const char *name, int value) const
 {
     GLint location = glGetUniformLocation(GpuProgramID, name);
     if (location != -1)

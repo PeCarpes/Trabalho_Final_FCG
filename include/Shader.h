@@ -30,9 +30,11 @@ class Shader{
         GLuint GetVertexShaderID() const { return vertex_shader_id; }
         GLuint GetFragmentShaderID() const { return fragment_shader_id; }
 
-        void SetUniform(const char *name, const glm::mat4 &matrix);
-        void SetUniform(const char *name, const glm::vec3 &vector);
-        void SetUniform(const char *name, const glm::vec4 &vector);
-        void SetUniform(const char *name, float value);
-        void SetUniform(const char *name, int value);
+        void SetUniform(const char *name, const glm::mat4 &matrix)const;
+        void SetUniform(const char *name, const glm::vec3 &vector)const;
+        void SetUniform(const char *name, const glm::vec4 &vector)const;
+        void SetUniform(const char *name, float value)const;
+        void SetUniform(const char *name, int value)const;
+
+        void ClearZBuffer() const { glClear(GL_DEPTH_BUFFER_BIT); }
 };
