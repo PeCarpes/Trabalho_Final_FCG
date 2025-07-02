@@ -157,7 +157,7 @@ int main(void)
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        cam.processMouseMovement(mouse_offset.x, -mouse_offset.y);
+        cam.processMouseMovement(mouse_offset);
         cam.processKeyboard(deltaTime);
     
         shader.Use();
