@@ -85,6 +85,12 @@ void SceneObject::setScale(const glm::vec3 &newScale)
     scale = newScale;
 }
 
+float SceneObject::height() const
+{
+    // Assuming the height is the difference between the max and min Y coordinates of the bounding box
+    return objModel.height();
+}
+
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();

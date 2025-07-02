@@ -19,6 +19,10 @@ public:
 
     std::vector<ObjModel*> children = {};
     
+    float height() const;
+    float width() const;
+    float depth() const;
+
     std::string getName() const;
 
 private:

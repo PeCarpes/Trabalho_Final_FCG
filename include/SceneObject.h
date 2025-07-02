@@ -50,6 +50,8 @@ public:
         texture_id = texture.getTextureID();
     }
 
+    float height() const;
+
     std::string getName() const;
     glm::vec4 getPosition() const;
 

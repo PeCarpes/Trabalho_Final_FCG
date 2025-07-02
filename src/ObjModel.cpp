@@ -3,6 +3,22 @@
 
 std::string ObjModel::getName() const { return name; }
 
+float ObjModel::height() const
+{
+    return bbox_max.y - bbox_min.y;
+}
+
+float ObjModel::width() const
+{
+    return bbox_max.x - bbox_min.x;
+}
+
+float ObjModel::depth() const
+{
+    return bbox_max.z - bbox_min.z;
+}
+
+
 ObjModel::ObjModel(const char *filename, const char *basepath, bool triangulate)
 {
     printf("Carregando objetos do arquivo \"%s\"...\n", filename);
