@@ -15,6 +15,21 @@ void Callbacks::cursor_position_callback(GLFWwindow *window, double xpos, double
     cursor_pos = glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
+double Callbacks::getDeltaTime()
+{
+    current_time = glfwGetTime();
+    double delta_time = current_time - last_time;
+    last_time = current_time;
+    return delta_time;
+}
+
+glm::vec2 Callbacks::getMouseOffset()
+{
+    glm::vec2 offset = cursor_pos - last_cursor_pos;
+    last_cursor_pos = cursor_pos; // Update last position
+    return offset;
+}
+
 void Callbacks::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
