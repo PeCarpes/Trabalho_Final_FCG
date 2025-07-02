@@ -130,6 +130,12 @@ void ObjModel::BuildTriangles()
     std::vector<float> normal_coefficients;
     std::vector<float> texture_coefficients;
 
+    const float minval = std::numeric_limits<float>::min();
+    const float maxval = std::numeric_limits<float>::max();
+
+    bbox_min = glm::vec3(maxval,maxval,maxval);
+    bbox_max = glm::vec3(minval,minval,minval);
+
     for (size_t shape = 0; shape < model->shapes.size(); ++shape)
     {
         size_t first_index = indices.size();
@@ -153,6 +159,13 @@ void ObjModel::BuildTriangles()
                 model_coefficients.push_back(vy);   // Y
                 model_coefficients.push_back(vz);   // Z
                 model_coefficients.push_back(1.0f); // W
+
+                bbox_min.x = std::min(bbox_min.x, vx);
+                bbox_min.y = std::min(bbox_min.y, vy);
+                bbox_min.z = std::min(bbox_min.z, vz);
+                bbox_max.x = std::max(bbox_max.x, vx);
+                bbox_max.y = std::max(bbox_max.y, vy);
+                bbox_max.z = std::max(bbox_max.z, vz);
 
                 // Inspecionando o código da tinyobjloader, o aluno Bernardo
                 // Sulzbach (2017/1) apontou que a maneira correta de testar se
@@ -241,6 +254,10 @@ void ObjModel::BuildTriangles()
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
     //
+
+    std::cout << bbox_max.x << " " << bbox_max.y << " " << bbox_max.z << std::endl;
+    std::cout << bbox_min.x << " " << bbox_min.y << " " << bbox_min.z << std::endl;
+
 
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.

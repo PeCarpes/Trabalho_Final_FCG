@@ -18,13 +18,16 @@ public:
     void draw() const;
 
     std::vector<ObjModel*> children = {};
-
+    
     std::string getName() const;
 
 private:
     tinyobj::attrib_t                attrib;
     std::vector<tinyobj::shape_t>    shapes;
     std::vector<tinyobj::material_t> materials;
+
+    glm::vec3 bbox_min;
+    glm::vec3 bbox_max;
 
     std::string name;
     int first_index;
