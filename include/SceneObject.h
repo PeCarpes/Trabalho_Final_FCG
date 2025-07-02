@@ -8,6 +8,8 @@
 
 #include <ObjModel.h>
 #include <Texture.h>
+#include <Shader.h>
+#include <Camera.h>
 
 #include <stack>
 
@@ -18,6 +20,7 @@ private:
     glm::vec3 rotation; // Stored in RADIANS
     glm::vec3 scale;
     glm::vec4 upVector;
+
     bool useViewMatrix = true; // If false, uses the identity matrix
     GLuint GpuProgramID;
     std::string name;
@@ -27,6 +30,8 @@ private:
     GLuint object_id;
 
     Texture3D texture;
+    const Camera& cam;
+    Shader shader;
 
 public:
     void setPosition(const glm::vec3 &newPosition);
@@ -57,5 +62,5 @@ public:
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, GLuint programID, const std::string &name, bool useViewMatrix = true);
+    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera& cam, bool useViewMatrix = true);
 };

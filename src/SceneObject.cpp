@@ -2,17 +2,20 @@
 
 #include <iostream>
 
-SceneObject::SceneObject(const ObjModel &model, GLuint programID, const std::string& name, bool useViewMatrix)
-    : objModel(model), GpuProgramID(programID),
+SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix)
+    : objModel(model),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
       rotation(glm::vec3(0.0f, 0.0f, 0.0f)),
       scale(glm::vec3(1.0f, 1.0f, 1.0f)),
       useViewMatrix(useViewMatrix), // Use view matrix by default
       name(name),
-      texture_id(0)
-      {}
-
+      texture_id(0),
+      cam(cam),
+      shader(shader)
+{
+    GpuProgramID = shader.GetGpuProgramID();
+}
 
 void SceneObject::setID(int newID)
 {
@@ -94,7 +97,7 @@ float SceneObject::height() const
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();
-    
+
     model = model * Matrix_Translate(position.x, position.y, position.z);
     model = model * Matrix_Scale(scale.x, scale.y, scale.z);
     model = model * Matrix_Rotate(rotation.x, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
@@ -104,22 +107,24 @@ void SceneObject::draw() const
     // If useViewMatrix is false, we clear the depth buffer and set the view matrix to identity.
     // This is useful for rendering objects like a gun in an FPS game, to draw the viewmodel space.
     // https://www.reddit.com/r/GraphicsProgramming/comments/3692ch/rendering_the_gun_in_an_fps_opengl_c/
-    if(!useViewMatrix) 
+    if (!useViewMatrix)
     {
-        glClear(GL_DEPTH_BUFFER_BIT); // avoid depth testing for this object
-        glm::mat4 view = Matrix_Identity();
-        GLuint view_loc = glGetUniformLocation(GpuProgramID, "view");
-        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+        shader.ClearZBuffer();
+        shader.SetUniform("view", Matrix_Identity());
+    }
+    else
+    {
+        shader.SetUniform("view", cam.getViewMatrix());
     }
 
-    GLuint texture_id_loc = glGetUniformLocation(GpuProgramID, "texture_id");
-    glUniform1i(texture_id_loc, texture_id);
+    // Importante: http://forum.lwjgl.org/index.php?topic=6967.0
+    // "OpenGL GLSL compiler agressively optimizes/removes unused uniforms"
+    // Se ocorrer mensagem de erro  "var is not found in shader", é porque o shader não está usando a variável var.
 
-    GLuint object_id_loc = glGetUniformLocation(GpuProgramID, "object_id");
-    glUniform1i(object_id_loc, object_id);
-
-    GLuint model_loc = glGetUniformLocation(GpuProgramID, "model");
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+    // shader.SetUniform("texture_id", (int) texture_id);
+    // shader.SetUniform("object_id", (int) object_id);
+    shader.SetUniform("model", model);
+    shader.SetUniform("projection", cam.getProjectionMatrix());
 
     objModel.draw();
 }

@@ -1,4 +1,5 @@
 #include <../include/Player.h>
+#include <iostream>
 
 void Player::updateForwardVector(const glm::vec4 &newForward){
     forward = newForward;
@@ -14,10 +15,8 @@ void Player::move(float deltaTime, Camera cam) {
     movement.w = 0.0f; // No movement in the fourth dimension, please 
     movement.y = 0.0f; // No vertical movement, that's handled by jumping
 
-
     movement.z = forward.z * vel.z;
-    
-    movement = normalize(movement);
+    movement = movement/norm(movement);
 
     position += movement * speed * deltaTime;
 

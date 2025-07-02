@@ -15,6 +15,7 @@
 #include <Player.h>
 #include <Bezier.h>
 #include <Enemy.h>
+#include <Shader.h>
 
 #include <iostream>
 #include <fstream>
@@ -28,15 +29,8 @@ void TextRendering_ShowModelViewProjection(GLFWwindow *window, glm::mat4 project
 void TextRendering_ShowProjection(GLFWwindow *window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow *window);
 
-void LoadShadersFromFiles();
-void LoadShader(const char *filename, GLuint shader_id);
-GLuint LoadShader_Fragment(const char *filename);
-GLuint LoadShader_Vertex(const char *filename);
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
-
 const int screen_width = 1200;
 const int screen_height = 800;
-float aspect_ratio = (float)screen_width / (float)screen_height;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
@@ -83,30 +77,33 @@ int main(void)
     Callbacks::initializeCallbacks(window);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
+    
     fflush(stdout);
-
+    
     const GLubyte *vendor = glGetString(GL_VENDOR);
     const GLubyte *renderer = glGetString(GL_RENDERER);
     const GLubyte *glversion = glGetString(GL_VERSION);
     const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
-
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
+    
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
+    Shader shader = Shader();
+    shader.Use();
+    Camera cam = Camera();
 
-    LoadShadersFromFiles();
 
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/Pistol_01.obj");
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
-    
-    SceneObject weapon_sobj(weapon_obj, g_GpuProgramID, "weapon", false);
+
+    SceneObject weapon_sobj(weapon_obj, "weapon", shader, cam, false);
     weapon_sobj.setTexture("../../data/Pistol_01_Albedo.png");
     g_VirtualScene.addObject(&weapon_sobj);
     /* ===================================================== */
@@ -115,7 +112,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, g_GpuProgramID, "enemy1", glm::vec4(10.0f, 0.0f, 10.0f, 1.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 0.0f, -10.0f), 1.0f);
     g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
     /* =================== BUNNY OBJECT ==================== */
@@ -123,28 +120,23 @@ int main(void)
     bunny_obj.ComputeNormals();
     bunny_obj.BuildTriangles();
 
-    SceneObject bunny_sobj(bunny_obj, g_GpuProgramID, "bunny1");
+    SceneObject bunny_sobj(bunny_obj, "bunny1", shader, cam);
     g_VirtualScene.addObject(&bunny_sobj);
 
-    SceneObject bunny_sobj2(bunny_obj, g_GpuProgramID, "bunny2");
+    SceneObject bunny_sobj2(bunny_obj, "bunny2", shader, cam);
     g_VirtualScene.addObject(&bunny_sobj2);
     /* ===================================================== */
     /* =================== CUBE OBJECT ===================== */
     ObjModel cube_obj("../../data/cube.obj");
     cube_obj.ComputeNormals();
     cube_obj.BuildTriangles();
-    
-    SceneObject floor_sobj(cube_obj, g_GpuProgramID, "cube1");
+
+    SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
     g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
 
-
-    Camera cam(glm::vec4(0.0f, 0.0f, 3.0f, 1.0f));
-    bool freecam = true; // Uma variável para controlar o modo
-    glm::vec4 lookat_pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
     TextRendering_Init();
-
+    
     glm::vec2 mouse_pos = glm::vec2(0, 0);
     glm::vec2 last_mouse_pos = glm::vec2(0, 0);
     glm::vec2 mouse_offset = glm::vec2(0, 0);
@@ -157,9 +149,6 @@ int main(void)
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Linha movida TEMPORARIAMENTE para baixo:
-        // glUseProgram(g_GpuProgramID);
-
         last_mouse_pos = mouse_pos;
         mouse_pos = Callbacks::getCursorPosition();
         mouse_offset = mouse_pos - last_mouse_pos;
@@ -168,38 +157,15 @@ int main(void)
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::mat4 model = Matrix_Identity();
-
-        if (freecam)
-        {
-            if (Callbacks::isLeftMouseButtonPressed() || true)
-                cam.processMouseMovement(mouse_offset.x, -mouse_offset.y);
-            cam.processKeyboard(deltaTime);
-            // Atualiza a posição da câmera
-        }
-        else
-        {            
-            // Modo look-at, NÃO ESTÁ FUNCIONANDO AINDA
-            cam.lookAt(lookat_pos);
-        }
-
-        aspect_ratio = Callbacks::getScreenRatio();
-        glm::mat4 view = cam.getViewMatrix();
-        glm::mat4 projection = cam.getProjectionMatrix(aspect_ratio);
-
-        glUseProgram(g_GpuProgramID);
-
-        GLuint view_loc = glGetUniformLocation(g_GpuProgramID, "view");
-        GLuint proj_loc = glGetUniformLocation(g_GpuProgramID, "projection");
-
-        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        cam.processMouseMovement(mouse_offset.x, -mouse_offset.y);
+        cam.processKeyboard(deltaTime);
+    
+        shader.Use();
 
         static float x = 0.0f;
         x += 0.1f * deltaTime;
 
         g_Player.move(deltaTime, cam);
-        glm::vec4 c_pos = cam.getPosition();
         glm::vec4 p_pos = g_Player.getPosition();
 
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
@@ -224,7 +190,7 @@ int main(void)
         g_VirtualScene.drawScene();
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
-        TextRendering_ShowModelViewProjection(window, projection, view, model, p_model);
+        TextRendering_ShowModelViewProjection(window, cam.getProjectionMatrix(), cam.getViewMatrix(), Matrix_Identity(), p_model);
         TextRendering_ShowCameraInfo(window, cam, -1.0f, -0.5f);
 
         glfwSwapBuffers(window);
@@ -233,185 +199,6 @@ int main(void)
 
     glfwTerminate();
     return 0;
-}
-
-// Função auxilar, utilizada pelas duas funções acima. Carrega código de GPU de
-// um arquivo GLSL e faz sua compilação.
-void LoadShader(const char *filename, GLuint shader_id)
-{
-    // Lemos o arquivo de texto indicado pela variável "filename"
-    // e colocamos seu conteúdo em memória, apontado pela variável
-    // "shader_string".
-    std::ifstream file;
-    try
-    {
-        file.exceptions(std::ifstream::failbit);
-        file.open(filename);
-    }
-    catch (std::exception &e)
-    {
-        fprintf(stderr, "ERROR: Cannot open file \"%s\".\n", filename);
-        std::exit(EXIT_FAILURE);
-    }
-    std::stringstream shader;
-    shader << file.rdbuf();
-    std::string str = shader.str();
-    const GLchar *shader_string = str.c_str();
-    const GLint shader_string_length = static_cast<GLint>(str.length());
-
-    // Define o código do shader GLSL, contido na string "shader_string"
-    glShaderSource(shader_id, 1, &shader_string, &shader_string_length);
-
-    // Compila o código do shader GLSL (em tempo de execução)
-    glCompileShader(shader_id);
-
-    // Verificamos se ocorreu algum erro ou "warning" durante a compilação
-    GLint compiled_ok;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled_ok);
-
-    GLint log_length = 0;
-    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
-
-    // Alocamos memória para guardar o log de compilação.
-    // A chamada "new" em C++ é equivalente ao "malloc()" do C.
-    GLchar *log = new GLchar[log_length];
-    glGetShaderInfoLog(shader_id, log_length, &log_length, log);
-
-    // Imprime no terminal qualquer erro ou "warning" de compilação
-    if (log_length != 0)
-    {
-        std::string output;
-
-        if (!compiled_ok)
-        {
-            output += "ERROR: OpenGL compilation of \"";
-            output += filename;
-            output += "\" failed.\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
-        }
-        else
-        {
-            output += "WARNING: OpenGL compilation of \"";
-            output += filename;
-            output += "\".\n";
-            output += "== Start of compilation log\n";
-            output += log;
-            output += "== End of compilation log\n";
-        }
-
-        fprintf(stderr, "%s", output.c_str());
-    }
-
-    // A chamada "delete" em C++ é equivalente ao "free()" do C
-    delete[] log;
-}
-
-// Esta função cria um programa de GPU, o qual contém obrigatoriamente um
-// Vertex Shader e um Fragment Shader.
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
-{
-    // Criamos um identificador (ID) para este programa de GPU
-    GLuint program_id = glCreateProgram();
-
-    // Definição dos dois shaders GLSL que devem ser executados pelo programa
-    glAttachShader(program_id, vertex_shader_id);
-    glAttachShader(program_id, fragment_shader_id);
-
-    // Linkagem dos shaders acima ao programa
-    glLinkProgram(program_id);
-
-    // Verificamos se ocorreu algum erro durante a linkagem
-    GLint linked_ok = GL_FALSE;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked_ok);
-
-    // Imprime no terminal qualquer erro de linkagem
-    if (linked_ok == GL_FALSE)
-    {
-        GLint log_length = 0;
-        glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &log_length);
-
-        // Alocamos memória para guardar o log de compilação.
-        // A chamada "new" em C++ é equivalente ao "malloc()" do C.
-        GLchar *log = new GLchar[log_length];
-
-        glGetProgramInfoLog(program_id, log_length, &log_length, log);
-
-        std::string output;
-
-        output += "ERROR: OpenGL linking of program failed.\n";
-        output += "== Start of link log\n";
-        output += log;
-        output += "== End of link log\n";
-
-        // A chamada "delete" em C++ é equivalente ao "free()" do C
-        delete[] log;
-
-        fprintf(stderr, "%s", output.c_str());
-    }
-
-    // Retorna o ID gerado acima
-    return program_id;
-}
-
-// Carrega um Fragment Shader de um arquivo GLSL . Veja definição de LoadShader() abaixo.
-GLuint LoadShader_Fragment(const char *filename)
-{
-    // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos fragmentos.
-    GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Carregamos e compilamos o shader
-    LoadShader(filename, fragment_shader_id);
-
-    // Retorna o ID gerado acima
-    return fragment_shader_id;
-}
-
-// Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
-GLuint LoadShader_Vertex(const char *filename)
-{
-    // Criamos um identificador (ID) para este shader, informando que o mesmo
-    // será aplicado nos vértices.
-    GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
-
-    // Carregamos e compilamos o shader
-    LoadShader(filename, vertex_shader_id);
-
-    // Retorna o ID gerado acima
-    return vertex_shader_id;
-}
-
-void LoadShadersFromFiles()
-{
-    // Note que o caminho para os arquivos "shader_vertex.glsl" e
-    // "shader_fragment.glsl" estão fixados, sendo que assumimos a existência
-    // da seguinte estrutura no sistema de arquivos:
-    //
-    //    + FCG_Lab_01/
-    //    |
-    //    +--+ bin/
-    //    |  |
-    //    |  +--+ Release/  (ou Debug/ ou Linux/)
-    //    |     |
-    //    |     o-- main.exe
-    //    |
-    //    +--+ src/
-    //       |
-    //       o-- shader_vertex.glsl
-    //       |
-    //       o-- shader_fragment.glsl
-    //
-    GLuint vertex_shader_id = LoadShader_Vertex("../../src/shader_vertex.glsl");
-    GLuint fragment_shader_id = LoadShader_Fragment("../../src/shader_fragment.glsl");
-
-    // Deletamos o programa de GPU anterior, caso ele exista.
-    if (g_GpuProgramID != 0)
-        glDeleteProgram(g_GpuProgramID);
-
-    // Criamos um programa de GPU utilizando os shaders carregados acima.
-    g_GpuProgramID = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
 }
 
 void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, float y)
@@ -503,9 +290,6 @@ void TextRendering_ShowProjection(GLFWwindow *window)
 {
     if (!g_ShowInfoText)
         return;
-
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
 }
 
 // Escrevemos na tela o número de quadros renderizados por segundo (frames per

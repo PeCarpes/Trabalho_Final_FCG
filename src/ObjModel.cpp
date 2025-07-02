@@ -269,11 +269,6 @@ void ObjModel::BuildTriangles()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
-    //
-
-    std::cout << bbox_max.x << " " << bbox_max.y << " " << bbox_max.z << std::endl;
-    std::cout << bbox_min.x << " " << bbox_min.y << " " << bbox_min.z << std::endl;
-
 
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.

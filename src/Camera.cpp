@@ -11,16 +11,15 @@ Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch)
     updateCameraVectors();
 }
 
-glm::mat4 Camera::getViewMatrix() 
+glm::mat4 Camera::getViewMatrix() const 
 {
     return Matrix_Camera_View(this->position, this->forward_vector, this->up_vector);
-    
 }
 
-glm::mat4 Camera::getProjectionMatrix(float aspectRatio)
+glm::mat4 Camera::getProjectionMatrix() const
 {
-    float field_of_view = fov;
-    return Matrix_Perspective(field_of_view, aspectRatio, -0.1f, -100.0f);
+    float aspectRatio = Callbacks::getScreenRatio();
+    return Matrix_Perspective(fov, aspectRatio, -0.1f, -100.0f);
 }
 
 void Camera::lookAt(glm::vec4 target_position) {

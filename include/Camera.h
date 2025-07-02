@@ -2,7 +2,8 @@
 
 #include <glm/glm.hpp>
 
-#include "../include/Matrices.h"
+#include <Matrices.h>
+#include <Callbacks.h>
 #include <vector>
 
 const float YAW = -90.0f; // obs: Yaw = phi
@@ -31,8 +32,8 @@ public:
 
     Camera(glm::vec4 position = glm::vec4(0.0f, 0.0f, 3.0f, 1.0f), glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
-    glm::mat4 getViewMatrix();
-    glm::mat4 getProjectionMatrix(float aspectRatio);
+    glm::mat4 getViewMatrix() const;
+    glm::mat4 getProjectionMatrix() const;
     glm::vec4 getPosition() const;
     glm::vec4 getForwardVector() const;
     glm::vec4 getUpVector() const;
