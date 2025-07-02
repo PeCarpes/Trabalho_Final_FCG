@@ -182,24 +182,15 @@ void ObjModel::BuildTriangles()
 
         size_t last_index = indices.size() - 1;
 
-        std::cout << "AA" << std::endl;
         ObjModel *child = (ObjModel *)std::malloc(sizeof(ObjModel));
-        std::cout << "BB" << std::endl;
-
-        //std::cout << model->shapes[shape].name << std::endl;
         
-        //child->name = model->shapes[shape].name;
         child->first_index = first_index;                  // Primeiro índice
         child->num_indices = last_index - first_index + 1; // Número de indices
         child->rendering_mode = GL_TRIANGLES;              // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
         child->vertex_array_object_id = vertex_array_object_id;
         
-        std::cout << "CC" << std::endl;
         children.push_back(child);
 
-
-
-        //        g_VirtualScene[model->shapes[shape].name] = theobject;
     }
 
     GLuint VBO_model_coefficients_id;

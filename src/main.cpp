@@ -118,8 +118,7 @@ int main(void)
     Enemy enemy(enemy_obj, g_GpuProgramID, "enemy1", glm::vec4(10.0f, 0.0f, 10.0f, 1.0f), 1.0f);
     g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
-
-
+    /* =================== BUNNY OBJECT ==================== */
     ObjModel bunny_obj("../../data/bunny.obj");
     bunny_obj.ComputeNormals();
     bunny_obj.BuildTriangles();
@@ -129,6 +128,8 @@ int main(void)
 
     SceneObject bunny_sobj2(bunny_obj, g_GpuProgramID, "bunny2");
     g_VirtualScene.addObject(&bunny_sobj2);
+    /* ===================================================== */
+
 
     Camera cam(glm::vec4(0.0f, 0.0f, 3.0f, 1.0f));
     bool freecam = true; // Uma variável para controlar o modo

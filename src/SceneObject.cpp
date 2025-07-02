@@ -106,8 +106,6 @@ void SceneObject::draw() const
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     }
 
-    std::cout << "texture_id: " << texture_id << std::endl;
-
     GLuint texture_id_loc = glGetUniformLocation(GpuProgramID, "texture_id");
     glUniform1i(texture_id_loc, texture_id);
 
