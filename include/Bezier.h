@@ -3,11 +3,8 @@
 #include <glm/glm.hpp>
 
 /*      This class represents a cubic bezier curve
-
     Use the tick() method to advance in time with the curve.
-    Once current t 
 */
-
 class Bezier
 {
 
@@ -26,7 +23,10 @@ private:
     float current_t = 0.0f;
 
 public:
-    Bezier(const glm::vec4 &p0, const glm::vec4 &p1, const glm::vec4 &p2, const glm::vec4 &p3)
+    Bezier(const glm::vec4 &p0 = glm::vec4(0),
+           const glm::vec4 &p1 = glm::vec4(0), 
+           const glm::vec4 &p2 = glm::vec4(0), 
+           const glm::vec4 &p3 = glm::vec4(0))
         : p0(p0), p1(p1), p2(p2), p3(p3) {}
 
     void setP0(const glm::vec4 &p0);
