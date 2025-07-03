@@ -15,7 +15,7 @@ const float FOV = 45.0f;
 class Camera
 {
 public:
-    glm::vec4 position;
+    const glm::vec4* position;
     glm::vec4 forward_vector;
     glm::vec4 up_vector;
     glm::vec4 right_vector;
@@ -30,7 +30,7 @@ public:
     float mouse_sensitivity;
     float fov;
 
-    Camera(glm::vec4 position = glm::vec4(0.0f, 0.0f, 3.0f, 1.0f), glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+    Camera(const glm::vec4* track_position, glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;
@@ -41,7 +41,6 @@ public:
 
     void lookAt(glm::vec4 target_position);
 
-    void processKeyboard(float delta_time);
     void processMouseMovement(glm::vec2 offset, bool constrain_pitch = true);
 
 private:

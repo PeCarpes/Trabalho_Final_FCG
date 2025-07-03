@@ -21,10 +21,14 @@ class Player{
     public:
         void move(float deltaTime, Camera cam);
 
+        glm::vec4* getPositionPtr(void) { return &position; }
+
         glm::vec4 getPosition(void) const { return position; }
         glm::vec4 getForward(void) const { return forward; }
         void initializeWeapon(SceneObject* weapon);
+        void setModel(SceneObject* obj) { player_obj = obj; }
 
         Player(SceneObject* obj, glm::vec4 pos);
+
         
 };

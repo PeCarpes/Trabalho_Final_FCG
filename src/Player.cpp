@@ -24,18 +24,29 @@ void Player::updateForwardVector(const glm::vec4 &newForward)
 
 void Player::move(float deltaTime, Camera cam)
 {
-    position = cam.position; // Update position to camera position
     updateDirection();
+    forward = cam.getForwardVector();
+    glm::vec4 right = cam.getRightVector();
+
+    std::cout << "Player forward: " << forward.x << ", " << forward.y << ", " << forward.z << std::endl;
+    std::cout << "Player right: " << right.x << ", " << right.y << ", " << right.z << std::endl;
 
     glm::vec4 movement;
+    
+    movement += forward * -vel.z;
+    movement += right * vel.x;
+    
     movement.w = 0.0f; // No movement in the fourth dimension, please
     movement.y = 0.0f; // No vertical movement, that's handled by jumping
-
-    movement.z = forward.z * vel.z;
-    movement = movement / norm(movement);
-
-    if (Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
-        Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) == GLFW_REPEAT)
+    
+    // Avoid division by zero
+    if(length(movement) > 0.0f)
+        movement = movement / length(movement);
+        
+    position += movement * speed * deltaTime;
+    
+    // Check if player is running
+    if (Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE)
     {
         speed = 2.0f;
     }
@@ -47,22 +58,29 @@ void Player::move(float deltaTime, Camera cam)
     if (weapon_obj)
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
 
-    position += movement * speed * deltaTime;
+
 }
 
 void Player::updateDirection(void)
 {
 
-    bool move_forward = Callbacks::getKeyState(GLFW_KEY_W) != GLFW_RELEASE;
-    bool move_backward = Callbacks::getKeyState(GLFW_KEY_S) != GLFW_RELEASE;
-    bool move_left = Callbacks::getKeyState(GLFW_KEY_A) != GLFW_RELEASE;
-    bool move_right = Callbacks::getKeyState(GLFW_KEY_D) != GLFW_RELEASE;
+    bool move_forward = Callbacks::getKeyState(GLFW_KEY_W) == GLFW_PRESS ||
+                        Callbacks::getKeyState(GLFW_KEY_W) == GLFW_REPEAT;
+
+    bool move_backward = Callbacks::getKeyState(GLFW_KEY_S) == GLFW_PRESS ||
+                         Callbacks::getKeyState(GLFW_KEY_S) == GLFW_REPEAT;
+    
+    bool move_left = Callbacks::getKeyState(GLFW_KEY_A) == GLFW_PRESS ||
+                     Callbacks::getKeyState(GLFW_KEY_A) == GLFW_REPEAT;
+    
+    bool move_right = Callbacks::getKeyState(GLFW_KEY_D) == GLFW_PRESS ||
+                     Callbacks::getKeyState(GLFW_KEY_D) == GLFW_REPEAT;
 
     bool moving = move_forward || move_backward || move_left || move_right;
 
     vel.w = 0.0f;
 
-    if (move_forward && move_backward)
+    if ((move_forward && move_backward))
     {
         vel.z = 0.0f;
     }
@@ -74,8 +92,12 @@ void Player::updateDirection(void)
     {
         vel.z = 1.0f;
     }
+    else
+    {
+        vel.z = 0.0f; // No forward/backward movement
+    }
 
-    if (move_left && move_right)
+    if ((move_left && move_right))
     {
         vel.x = 0.0f;
     }
@@ -87,6 +109,12 @@ void Player::updateDirection(void)
     {
         vel.x = 1.0f;
     }
+    else
+    {
+        vel.x = 0.0f; // No left/right movement
+    }
+
+    std::cout << "Player velocity: " << vel.x << ", " << vel.y << ", " << vel.z << std::endl;
 
     // Don't normalize the vel vector
 

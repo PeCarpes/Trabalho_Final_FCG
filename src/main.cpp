@@ -40,7 +40,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(0.0f, 10.0f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -93,7 +93,7 @@ int main(void)
 
     Shader shader = Shader();
     shader.Use();
-    Camera cam = Camera();
+    Camera cam = Camera(g_Player.getPositionPtr());
 
     /* =================== ID COLLECTION =================== */
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
@@ -145,11 +145,16 @@ int main(void)
     cube_obj.BuildTriangles();
 
     SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
+    floor_sobj.setTexture("../../data/floor_texture.png");
     floor_sobj.setID(CUBE);
     g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
     /* =================== PLAYER == ======================= */
     g_Player.initializeWeapon(&weapon_sobj);
+    g_Player.setModel(&bunny_sobj);
+
+    /* ===================================================== */
+
 
     TextRendering_Init();
 
@@ -174,7 +179,6 @@ int main(void)
         lastFrame = currentFrame;
 
         cam.processMouseMovement(mouse_offset);
-        cam.processKeyboard(deltaTime);
 
         shader.Use();
 
@@ -205,10 +209,10 @@ int main(void)
         bunny_sobj2.setPosition(b.evaluate());
 
         enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-        // enemy.move(deltaTime, p_pos);
+        enemy.move(deltaTime, p_pos);
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-        floor_sobj.setScale(glm::vec3(100.0f, 0.01f, 100.0f));
+        floor_sobj.setScale(glm::vec3(10.0f, 0.01f, 10.0f));
 
         g_VirtualScene.drawScene();
 
@@ -232,7 +236,7 @@ void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, floa
     TextRendering_PrintString(window, "--- Camera Debug Info ---", x, y, 0.8f);
 
     // Imprime a Posição da Câmera
-    snprintf(buffer, 100, "Pos: (%.2f, %.2f, %.2f, %.1f)", cam.position.x, cam.position.y, cam.position.z, cam.position.w);
+    snprintf(buffer, 100, "Pos: (%.2f, %.2f, %.2f, %.1f)", cam.position->x, cam.position->y, cam.position->z, cam.position->w);
     TextRendering_PrintString(window, buffer, x, y - lineheight, 0.8f);
 
     // Imprime o Vetor "Para Frente" (Direção)

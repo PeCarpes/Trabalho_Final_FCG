@@ -25,6 +25,11 @@ uniform sampler2D TextureImage;
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
 
+void calculate_planar_UV(){
+    float U = texcoords.x;
+    float V = texcoords.y;
+}
+
 void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
@@ -76,6 +81,12 @@ void main()
         Ks = vec3(0.0, 0.0, 0.0);
         Ka = vec3(0.2, 0.0, 0.0);
         q = 1.0;
+    }
+    else if (object_id == CUBE)
+    {
+        Ks = vec3(0.0, 0.0, 0.0);
+        q = 1.0;
+        calculate_planar_UV();
     }
     else
     {

@@ -2,9 +2,9 @@
 #include "Callbacks.h"
 #include <cmath>
 
-Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch) 
+Camera::Camera(const glm::vec4* track_position = nullptr, glm::vec4 up, float yaw, float pitch) 
     : forward_vector(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f)), movement_speed(SPEED), mouse_sensitivity(SENSITIVITY), fov(FOV) {
-    this->position = position;
+    this->position = track_position;
     this->world_up = up;
     this->yaw = yaw;
     this->pitch = pitch;
@@ -13,7 +13,7 @@ Camera::Camera(glm::vec4 position, glm::vec4 up, float yaw, float pitch)
 
 glm::mat4 Camera::getViewMatrix() const 
 {
-    return Matrix_Camera_View(this->position, this->forward_vector, this->up_vector);
+    return Matrix_Camera_View(*position, this->forward_vector, this->up_vector);
 }
 
 glm::mat4 Camera::getProjectionMatrix() const
@@ -23,7 +23,7 @@ glm::mat4 Camera::getProjectionMatrix() const
 }
 
 void Camera::lookAt(glm::vec4 target_position) {
-    forward_vector = glm::normalize(target_position - position);
+    forward_vector = glm::normalize(target_position - (*position));
 
     // Mantém a câmera consistente ao alternar para o modo livre
     pitch = glm::degrees(asin(forward_vector.y));
@@ -33,7 +33,7 @@ void Camera::lookAt(glm::vec4 target_position) {
 }
 
 glm::vec4 Camera::getPosition() const {
-    return position;
+    return *position;
 }
 
 glm::vec4 Camera::getForwardVector() const {
@@ -47,29 +47,6 @@ glm::vec4 Camera::getUpVector() const{
 glm::vec4 Camera::getRightVector() const{
     return right_vector;
 }
-
-
-void Camera::processKeyboard(float delta_time) {
-    float velocity = movement_speed * delta_time;
-
-    int w_pressed = Callbacks::getKeyState(GLFW_KEY_W);
-    int s_pressed = Callbacks::getKeyState(GLFW_KEY_S);
-    int a_pressed = Callbacks::getKeyState(GLFW_KEY_A);
-    int d_pressed = Callbacks::getKeyState(GLFW_KEY_D);
-
-    glm::vec4 mov_vector = forward_vector;
-    mov_vector.y = 0.0f;
-    mov_vector = normalize(mov_vector);
-
-    if (w_pressed == GLFW_PRESS || w_pressed == GLFW_REPEAT)
-        position += mov_vector * velocity;
-    if (s_pressed == GLFW_PRESS || s_pressed == GLFW_REPEAT)
-        position -= mov_vector * velocity;
-    if (a_pressed == GLFW_PRESS || a_pressed == GLFW_REPEAT)
-        position -= right_vector * velocity;
-    if (d_pressed == GLFW_PRESS || d_pressed == GLFW_REPEAT)
-        position += right_vector * velocity;
-    }
 
 void Camera::processMouseMovement(glm::vec2 offset, bool constrain_pitch) {
     offset.x *= mouse_sensitivity;
