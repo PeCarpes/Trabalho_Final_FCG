@@ -32,19 +32,19 @@ void Player::move(float deltaTime, Camera cam)
     std::cout << "Player right: " << right.x << ", " << right.y << ", " << right.z << std::endl;
 
     glm::vec4 movement;
-    
+
     movement += forward * -vel.z;
     movement += right * vel.x;
-    
+
     movement.w = 0.0f; // No movement in the fourth dimension, please
     movement.y = 0.0f; // No vertical movement, that's handled by jumping
-    
+
     // Avoid division by zero
-    if(length(movement) > 0.0f)
+    if (length(movement) > 0.0f)
         movement = movement / length(movement);
-        
+
     position += movement * speed * deltaTime;
-    
+
     // Check if player is running
     if (Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE)
     {
@@ -57,8 +57,6 @@ void Player::move(float deltaTime, Camera cam)
 
     if (weapon_obj)
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
-
-
 }
 
 void Player::updateDirection(void)
@@ -69,50 +67,34 @@ void Player::updateDirection(void)
 
     bool move_backward = Callbacks::getKeyState(GLFW_KEY_S) == GLFW_PRESS ||
                          Callbacks::getKeyState(GLFW_KEY_S) == GLFW_REPEAT;
-    
+
     bool move_left = Callbacks::getKeyState(GLFW_KEY_A) == GLFW_PRESS ||
                      Callbacks::getKeyState(GLFW_KEY_A) == GLFW_REPEAT;
-    
+
     bool move_right = Callbacks::getKeyState(GLFW_KEY_D) == GLFW_PRESS ||
-                     Callbacks::getKeyState(GLFW_KEY_D) == GLFW_REPEAT;
+                      Callbacks::getKeyState(GLFW_KEY_D) == GLFW_REPEAT;
 
     bool moving = move_forward || move_backward || move_left || move_right;
 
     vel.w = 0.0f;
 
     if ((move_forward && move_backward))
-    {
         vel.z = 0.0f;
-    }
     else if (move_forward)
-    {
         vel.z = -1.0f;
-    }
     else if (move_backward)
-    {
         vel.z = 1.0f;
-    }
     else
-    {
         vel.z = 0.0f; // No forward/backward movement
-    }
 
     if ((move_left && move_right))
-    {
         vel.x = 0.0f;
-    }
     else if (move_left)
-    {
         vel.x = -1.0f;
-    }
     else if (move_right)
-    {
         vel.x = 1.0f;
-    }
     else
-    {
         vel.x = 0.0f; // No left/right movement
-    }
 
     std::cout << "Player velocity: " << vel.x << ", " << vel.y << ", " << vel.z << std::endl;
 

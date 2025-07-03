@@ -16,6 +16,7 @@
 #include <Bezier.h>
 #include <Enemy.h>
 #include <Shader.h>
+#include <Texture.h>
 
 #include <iostream>
 #include <fstream>
@@ -104,13 +105,19 @@ int main(void)
     #define ENEMY 2
     #define CUBE 3
 
+    Texture3D floor_texture;
+    floor_texture.LoadTextureImage("../../data/floor_texture.png");
+    Texture3D weapon_texture;
+    weapon_texture.LoadTextureImage("../../data/pistol_01_Albedo.png");
+
+
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/pistol_01.obj");
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
 
     SceneObject weapon_sobj(weapon_obj, "weapon", shader, cam, false);
-    weapon_sobj.setTexture("../../data/pistol_01_Albedo.png");
+    weapon_sobj.setTexture(weapon_texture);
     weapon_sobj.setID(WEAPON);
 
     g_VirtualScene.addObject(&weapon_sobj);
@@ -145,13 +152,25 @@ int main(void)
     cube_obj.BuildTriangles();
 
     SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
-    floor_sobj.setTexture("../../data/floor_texture.png");
+    floor_sobj.setTexture(floor_texture);
     floor_sobj.setID(CUBE);
-    g_VirtualScene.addObject(&floor_sobj);
+    //g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
     /* =================== PLAYER == ======================= */
     g_Player.initializeWeapon(&weapon_sobj);
     g_Player.setModel(&bunny_sobj);
+
+    /* ===================================================== */
+    for(int i = 0; i < 10; i++){
+        for(int j = 0; j < 10; j++){
+            SceneObject *obj = new SceneObject(cube_obj, "cube_" + std::to_string(i) + "_" + std::to_string(j), shader, cam);
+            obj->setTexture(floor_texture);
+            obj->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+            obj->setID(CUBE);
+            obj->setPosition(glm::vec3(2*j, 0.0f, 2*i));
+            g_VirtualScene.addObject(obj);
+        }
+    }
 
     /* ===================================================== */
 

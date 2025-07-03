@@ -63,6 +63,17 @@ private:
         texture_id = texture.getTextureID();
     }
 
+    void setTexture(GLuint textureID)
+    {
+        texture_id = textureID;
+    }
+
+    void setTexture(const Texture3D &tex)
+    {
+        texture = tex;
+        texture_id = texture.getTextureID();
+    }
+
     float height() const;
 
     std::string getName() const;
