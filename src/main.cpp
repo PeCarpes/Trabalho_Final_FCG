@@ -34,8 +34,6 @@ const int screen_height = 800;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
-GLuint g_DebugGpuProgramID = 0; // TEMP --------------
-GLuint g_DebugCubeVAO = 0;      // TEMP --------------
 GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
@@ -99,12 +97,12 @@ int main(void)
 
     /* =================== ID COLLECTION =================== */
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
+    // e em Shader.cpp caso ultrapasse 5 texturas (atualmente 5 texturas são suportadas).
 
-    #define WEAPON 1
+    #define WEAPON 0
+    #define BUNNY 1
     #define ENEMY 2
-    #define BUNNY 3
-    #define CUBE 4
-
+    #define CUBE 3
 
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/pistol_01.obj");
@@ -123,17 +121,22 @@ int main(void)
     enemy_obj.BuildTriangles();
 
     Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 0.0f, -10.0f), 1.0f);
+    enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
     /* =================== BUNNY OBJECT ==================== */
-    ObjModel bunny_obj("../../data/bunny.obj");
+    ObjModel bunny_obj("../../data/gun/Gun.obj");
     bunny_obj.ComputeNormals();
     bunny_obj.BuildTriangles();
 
     SceneObject bunny_sobj(bunny_obj, "bunny1", shader, cam);
+    bunny_sobj.setTexture("../../data/gun/Gun.png");
+    bunny_sobj.setID(BUNNY);
     g_VirtualScene.addObject(&bunny_sobj);
 
     SceneObject bunny_sobj2(bunny_obj, "bunny2", shader, cam);
+    bunny_sobj2.setTexture("../../data/gun/Gun.png");
+    bunny_sobj2.setID(BUNNY);
     g_VirtualScene.addObject(&bunny_sobj2);
     /* ===================================================== */
     /* =================== CUBE OBJECT ===================== */
@@ -142,6 +145,7 @@ int main(void)
     cube_obj.BuildTriangles();
 
     SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
+    floor_sobj.setID(CUBE);
     g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
 
@@ -197,7 +201,7 @@ int main(void)
         bunny_sobj2.setPosition(b.evaluate());
 
         enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-        enemy.move(deltaTime, p_pos);
+        // enemy.move(deltaTime, p_pos);
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         floor_sobj.setScale(glm::vec3(100.0f, 0.01f, 100.0f));
