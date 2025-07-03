@@ -1,14 +1,11 @@
 #include <../include/VirtualScene.h>
 #include <iostream>
 
-int VirtualScene::num_objects = 0;
+int VirtualScene::num_objects = 0; // talvez remover isso?
 
 void VirtualScene::addObject(SceneObject *object)
 {
     objects.insert({object->getName(), object});
-    num_objects++;
-
-    object->setID(num_objects);
 
 }
 

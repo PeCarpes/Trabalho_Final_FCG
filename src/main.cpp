@@ -34,8 +34,6 @@ const int screen_height = 800;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
-GLuint g_DebugGpuProgramID = 0; // TEMP --------------
-GLuint g_DebugCubeVAO = 0;      // TEMP --------------
 GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
@@ -77,34 +75,34 @@ int main(void)
     Callbacks::initializeCallbacks(window);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    
+
     fflush(stdout);
-    
+
     const GLubyte *vendor = glGetString(GL_VENDOR);
     const GLubyte *renderer = glGetString(GL_RENDERER);
     const GLubyte *glversion = glGetString(GL_VERSION);
     const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
-    
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-    
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    
+
     Shader shader = Shader();
     shader.Use();
     Camera cam = Camera();
 
     /* =================== ID COLLECTION =================== */
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
+    // e em Shader.cpp caso ultrapasse 5 texturas (atualmente 5 texturas são suportadas).
 
-    #define WEAPON 1
+    #define WEAPON 0
+    #define BUNNY 1
     #define ENEMY 2
-    #define BUNNY 3
-    #define CUBE 4
-
+    #define CUBE 3
 
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/pistol_01.obj");
@@ -123,17 +121,22 @@ int main(void)
     enemy_obj.BuildTriangles();
 
     Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 0.0f, -10.0f), 1.0f);
+    enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
     /* =================== BUNNY OBJECT ==================== */
-    ObjModel bunny_obj("../../data/bunny.obj");
+    ObjModel bunny_obj("../../data/gun/Gun.obj");
     bunny_obj.ComputeNormals();
     bunny_obj.BuildTriangles();
 
     SceneObject bunny_sobj(bunny_obj, "bunny1", shader, cam);
+    bunny_sobj.setTexture("../../data/gun/Gun.png");
+    bunny_sobj.setID(BUNNY);
     g_VirtualScene.addObject(&bunny_sobj);
 
     SceneObject bunny_sobj2(bunny_obj, "bunny2", shader, cam);
+    bunny_sobj2.setTexture("../../data/gun/Gun.png");
+    bunny_sobj2.setID(BUNNY);
     g_VirtualScene.addObject(&bunny_sobj2);
     /* ===================================================== */
     /* =================== CUBE OBJECT ===================== */
@@ -142,11 +145,14 @@ int main(void)
     cube_obj.BuildTriangles();
 
     SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
+    floor_sobj.setID(CUBE);
     g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
+    /* =================== PLAYER == ======================= */
+    g_Player.initializeWeapon(&weapon_sobj);
 
     TextRendering_Init();
-    
+
     glm::vec2 mouse_pos = glm::vec2(0, 0);
     glm::vec2 last_mouse_pos = glm::vec2(0, 0);
     glm::vec2 mouse_offset = glm::vec2(0, 0);
@@ -169,7 +175,7 @@ int main(void)
 
         cam.processMouseMovement(mouse_offset);
         cam.processKeyboard(deltaTime);
-    
+
         shader.Use();
 
         static float x = 0.0f;
@@ -179,25 +185,27 @@ int main(void)
         glm::vec4 p_pos = g_Player.getPosition();
 
         // settings for gun.obj if needed
-        //weapon_sobj.setScale(glm::vec3(1.2f, 1.2f, 1.2f));
-        //weapon_sobj.setPosition(glm::vec3(0.5f, -0.35, -1.2f));
-        //weapon_sobj.setRotationY(-90.0f);
+        // weapon_sobj.setScale(glm::vec3(1.2f, 1.2f, 1.2f));
+        // weapon_sobj.setPosition(glm::vec3(0.5f, -0.35, -1.2f));
+        // weapon_sobj.setRotationY(-90.0f);
 
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
-        weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
+        // weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
         weapon_sobj.setRotationY(90.0f);
-        
+
         Bezier b = Bezier(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f),
-                                    glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
-                                    glm::vec4( 5.0f, 5.0f, 0.0f, 1.0f),
-                                    glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f));
-        
+                          glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
+                          glm::vec4(5.0f, 5.0f, 0.0f, 1.0f),
+                          glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f));
+
+        weapon_sobj.bob(); // Aplica a curva de bobbing na arma
+
         b.tick(glfwGetTime() * 0.5f); // Avança no tempo da curva
 
         bunny_sobj2.setPosition(b.evaluate());
 
         enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-        enemy.move(deltaTime, p_pos);
+        // enemy.move(deltaTime, p_pos);
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         floor_sobj.setScale(glm::vec3(100.0f, 0.01f, 100.0f));
@@ -238,6 +246,9 @@ void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, floa
     // Imprime os Ângulos de Euler
     snprintf(buffer, 100, "Yaw: %.2f, Pitch: %.2f", cam.yaw, cam.pitch);
     TextRendering_PrintString(window, buffer, x, y - 4 * lineheight, 0.8f);
+
+    snprintf(buffer, 100, "FPS: %.2f", 1.0f / Callbacks::getDeltaTime());
+    TextRendering_PrintString(window, buffer, x, y - 5 * lineheight, 0.8f);
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o

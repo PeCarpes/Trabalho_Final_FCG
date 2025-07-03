@@ -10,6 +10,7 @@
 #include <Texture.h>
 #include <Shader.h>
 #include <Camera.h>
+#include <Bezier.h>
 
 #include <stack>
 
@@ -21,6 +22,7 @@ private:
     glm::vec3 scale;
     glm::vec4 upVector;
 
+    bool is_bobbing = false;
     bool useViewMatrix = true; // If false, uses the identity matrix
     GLuint GpuProgramID;
     std::string name;
@@ -30,10 +32,13 @@ private:
     GLuint object_id;
 
     Texture3D texture;
-    const Camera& cam;
+    const Camera &cam;
     Shader shader;
 
-public:
+    Bezier bobbing_curve;
+    float bobbing_cps = 1.0f; // Cycles per second for bobbing
+
+    public:
     void setPosition(const glm::vec3 &newPosition);
     void addPosition(const glm::vec3 &deltaPosition);
     void setRotationX(float degrees);
@@ -46,8 +51,11 @@ public:
     void setScaleZ(float factor);
     void setScale(const glm::vec3 &newScale);
     void setID(int newID);
-
+    
     void setUpVector(const glm::vec4 &newUp);
+    void setBobbingCurve(const Bezier &curve) { bobbing_curve = curve; }
+    void setBobbingCPS(float cps) { bobbing_cps = cps; is_bobbing = true; }
+    void bob(void);    
 
     void setTexture(const std::string &filename)
     {
@@ -62,5 +70,5 @@ public:
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera& cam, bool useViewMatrix = true);
+    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix = true);
 };

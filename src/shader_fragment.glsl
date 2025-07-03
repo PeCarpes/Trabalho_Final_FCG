@@ -13,17 +13,17 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+#define WEAPON 0
+#define BUNNY 1
+#define ENEMY 2
+#define CUBE 3
+
 uniform int object_id;
 
-uniform sampler2D TextureImage0;
+uniform sampler2D TextureImage;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
-
-#define WEAPON 1
-#define ENEMY 2
-#define BUNNY 3
-#define CUBE 4
 
 void main()
 {
@@ -52,20 +52,30 @@ void main()
     // Vetor que define o sentido da reflexão especular ideal
     vec4 r = -l + 2*n*(dot(n, l)); // PREENCHA AQUI o vetor de reflexão especular ideal
 
-    vec3 texture_color = texture(TextureImage0, texcoords).rgb;
+    vec3 texture_color;
 
     // Parâmetros que definem as propriedades espectrais da superfície
-    vec3 Kd; // Refletância difusa
-    vec3 Ks; // Refletância especular
-    vec3 Ka; // Refletância ambiente
-    float q; // Expoente especular para o modelo de iluminação de Phong
+    vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+    vec3 Ks;                                           // Refletância especular
+    vec3 Ka = Kd * 0.2;;                               // Refletância ambiente
+    float q;        // Expoente especular para o modelo de iluminação de Phong
     
     if (object_id == WEAPON)
     {
-        Kd = texture_color; 
+        Ks = vec3(0.5, 0.5, 0.5);
+        q = 64.0;
+    }
+    else if (object_id == BUNNY)
+    {
         Ks = vec3(0.8, 0.8, 0.8);
-        Ka = texture_color * 0.2;
         q = 32.0;
+    }
+    else if (object_id == ENEMY)
+    {
+        Kd = vec3(0.8, 0.0, 0.0);
+        Ks = vec3(0.0, 0.0, 0.0);
+        Ka = vec3(0.2, 0.0, 0.0);
+        q = 1.0;
     }
     else
     {

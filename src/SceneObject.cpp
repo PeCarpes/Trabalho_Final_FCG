@@ -14,12 +14,15 @@ SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader 
       cam(cam),
       shader(shader)
 {
+    bobbing_curve = Bezier();
+    bobbing_cps = 1.0f;
     GpuProgramID = shader.GetGpuProgramID();
 }
 
 void SceneObject::setID(int newID)
 {
     object_id = newID;
+    printf("Object ID set to %d for object %s\n", object_id, name.c_str());
 }
 
 void SceneObject::setPosition(const glm::vec3 &newPosition)
@@ -66,6 +69,11 @@ void SceneObject::setRotation(glm::vec3 newRotation)
 void SceneObject::addRotation(glm::vec3 deltaRotation)
 {
     rotation += glm::radians(deltaRotation);
+}
+
+void SceneObject::bob(void)
+{
+    setPosition(glm::vec3(bobbing_curve.evaluate(glfwGetTime() * bobbing_cps))); // Set position to the current evaluation of the curve
 }
 
 void SceneObject::setScaleX(float factor)
@@ -121,10 +129,17 @@ void SceneObject::draw() const
     // "OpenGL GLSL compiler agressively optimizes/removes unused uniforms"
     // Se ocorrer mensagem de erro  "var is not found in shader", é porque o shader não está usando a variável var.
 
-    shader.SetUniform("texture_id", (int) texture_id);
+    // shader.SetUniform("texture_id", (int) texture_id);
     shader.SetUniform("object_id", (int) object_id);
     shader.SetUniform("model", model);
     shader.SetUniform("projection", cam.getProjectionMatrix());
+
+    // prepara a textura ativa para carregar a textura do objeto
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // Diz ao shader para usar a textura da unidade 0
+    glUniform1i(glGetUniformLocation(this->GpuProgramID, "TextureImage"), 0);
 
     objModel.draw();
 }

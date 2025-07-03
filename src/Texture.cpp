@@ -42,6 +42,7 @@ void Texture3D::LoadTextureImage(const char* filename)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
     GLuint textureunit = num_loaded_textures;
+    printf("Texture unit: %d\n", textureunit);
     glActiveTexture(GL_TEXTURE0 + textureunit);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
