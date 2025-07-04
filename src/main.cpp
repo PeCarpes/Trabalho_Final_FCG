@@ -42,7 +42,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 2.0f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(5.0f, 2.0f, 5.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -129,7 +129,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(3.0f, 4.0f, -3.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(5.0f, 3.0f, 1.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);
@@ -161,23 +161,24 @@ int main(void)
     g_Player.setModel(&bunny_sobj);
 
     /* ======================= GROUND ===================== */
-    for (int i = -5; i < 5; i++)
+    for (int i = 0; i < 10; i++)
     {
-        for (int j = -5; j < 5; j++)
+        for (int j = 0; j < 10; j++)
         {
             SceneObject *obj = new SceneObject(cube_obj,
                                                "cube_" + std::to_string(i) + "_" + std::to_string(j),
                                                shader, cam, true, true);
             obj->setTexture(floor_texture);
-            obj->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+            obj->setScale(glm::vec3(0.5f, 1.0f, 0.5f));
             obj->setID(CUBE);
-            obj->setPosition(glm::vec3(2 * j, 0.0f, 2 * i));
+            obj->setPosition(glm::vec3(1 * j, 0.0f, 1 * i));
             g_VirtualScene.addObject(obj);
         }
     }
     /* ===================================================== */
 
     /* ======================= WALLS ===================== */
+
 
     TextRendering_Init();
 
@@ -203,12 +204,11 @@ int main(void)
         // weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
         weapon_sobj.setRotationY(90.0f);
 
+        
         Bezier b = Bezier(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f),
                           glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
                           glm::vec4(5.0f, 5.0f, 0.0f, 1.0f),
                           glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f));
-
-        weapon_sobj.bob(); // Aplica a curva de bobbing na arma
 
         b.tick(glfwGetTime() * 0.5f); // Avança no tempo da curva
 
