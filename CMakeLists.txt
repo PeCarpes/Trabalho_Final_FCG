@@ -24,6 +24,7 @@ set(SOURCES
   src/Bezier.cpp
   src/Enemy.cpp
   src/Shader.cpp
+  src/collisions.cpp
   )
 
 
