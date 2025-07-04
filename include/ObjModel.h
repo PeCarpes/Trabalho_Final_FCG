@@ -23,6 +23,8 @@ public:
     float width() const;
     float depth() const;
 
+    glm::vec3 getBboxMin() const;
+    glm::vec3 getBboxMax() const;
     std::string getName() const;
 
 private:

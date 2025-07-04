@@ -15,6 +15,7 @@ void Enemy::move(float deltaTime, const glm::vec4 &target)
     direction = direction / length(direction);
 
     glm::vec4 newPosition = getPosition() + direction * speed * deltaTime;
+    newPosition.y = getPosition().y; // Enemies don't move vertically
     setPosition(newPosition);
 
     // Corrige a rotação do inimigo para olhar na direção do movimento

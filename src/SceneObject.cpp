@@ -129,7 +129,10 @@ void SceneObject::draw() const
     // "OpenGL GLSL compiler agressively optimizes/removes unused uniforms"
     // Se ocorrer mensagem de erro  "var is not found in shader", é porque o shader não está usando a variável var.
 
-    // shader.SetUniform("texture_id", (int) texture_id);
+    glUseProgram(GpuProgramID);
+
+    shader.SetUniform("bbox_min", objModel.getBboxMin());
+    shader.SetUniform("bbox_max", objModel.getBboxMax());    
     shader.SetUniform("object_id", (int) object_id);
     shader.SetUniform("model", model);
     shader.SetUniform("projection", cam.getProjectionMatrix());

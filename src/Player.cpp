@@ -28,9 +28,6 @@ void Player::move(float deltaTime, Camera cam)
     forward = cam.getForwardVector();
     glm::vec4 right = cam.getRightVector();
 
-    std::cout << "Player forward: " << forward.x << ", " << forward.y << ", " << forward.z << std::endl;
-    std::cout << "Player right: " << right.x << ", " << right.y << ", " << right.z << std::endl;
-
     glm::vec4 movement;
 
     movement += forward * -vel.z;
@@ -95,8 +92,6 @@ void Player::updateDirection(void)
         vel.x = 1.0f;
     else
         vel.x = 0.0f; // No left/right movement
-
-    std::cout << "Player velocity: " << vel.x << ", " << vel.y << ", " << vel.z << std::endl;
 
     // Don't normalize the vel vector
 

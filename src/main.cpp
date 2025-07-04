@@ -41,7 +41,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 10.0f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(0.0f, 1.5f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -109,6 +109,8 @@ int main(void)
     floor_texture.LoadTextureImage("../../data/floor_texture.png");
     Texture3D weapon_texture;
     weapon_texture.LoadTextureImage("../../data/pistol_01_Albedo.png");
+    Texture3D wall_texture;
+    wall_texture.LoadTextureImage("../../data/wall_texture.png");
 
 
     /* =================== WEAPON OBJECT =================== */
@@ -127,7 +129,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 0.0f, -10.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.75f, -10.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     /* ===================================================== */
@@ -160,9 +162,9 @@ int main(void)
     g_Player.initializeWeapon(&weapon_sobj);
     g_Player.setModel(&bunny_sobj);
 
-    /* ===================================================== */
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
+    /* ======================= GROUND ===================== */
+    for(int i = -5; i < 5; i++){
+        for(int j = -5; j < 5; j++){
             SceneObject *obj = new SceneObject(cube_obj, "cube_" + std::to_string(i) + "_" + std::to_string(j), shader, cam);
             obj->setTexture(floor_texture);
             obj->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -171,8 +173,11 @@ int main(void)
             g_VirtualScene.addObject(obj);
         }
     }
-
     /* ===================================================== */
+
+    /* ======================= WALLS ===================== */
+
+
 
 
     TextRendering_Init();
@@ -232,6 +237,9 @@ int main(void)
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         floor_sobj.setScale(glm::vec3(10.0f, 0.01f, 10.0f));
+
+        GLint location = glGetUniformLocation(g_GpuProgramID, "bbox_min");
+        shader.Use();
 
         g_VirtualScene.drawScene();
 

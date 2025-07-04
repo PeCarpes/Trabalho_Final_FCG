@@ -4,6 +4,7 @@
 // Neste exemplo, este atributo foi gerado pelo rasterizador como a
 // interpolação da posição global e a normal de cada vértice, definidas em
 // "shader_vertex.glsl" e "main.cpp".
+in vec4 position_model;
 in vec4 position_world;
 in vec4 normal;
 in vec2 texcoords;
@@ -17,17 +18,32 @@ uniform mat4 projection;
 #define BUNNY 1
 #define ENEMY 2
 #define CUBE 3
+#define WALL 4
+
+uniform vec3 bbox_min;
+uniform vec3 bbox_max;
 
 uniform int object_id;
-
 uniform sampler2D TextureImage;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
 
+float U = 0.0;
+float V = 0.0;
+
 void calculate_planar_UV(){
-    float U = texcoords.x;
-    float V = texcoords.y;
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        U = (position_model.x - minx) / (maxx - minx);
+        V = (position_model.y - miny) / (maxy - miny);
 }
 
 void main()
@@ -60,19 +76,23 @@ void main()
     vec3 texture_color;
 
     // Parâmetros que definem as propriedades espectrais da superfície
-    vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
-    vec3 Ks;                                           // Refletância especular
-    vec3 Ka = Kd * 0.2;;                               // Refletância ambiente
-    float q;        // Expoente especular para o modelo de iluminação de Phong
+    vec3 Kd;   // Refletância difusa
+    vec3 Ks;   // Refletância especular
+    vec3 Ka;   // Refletância ambiente
+    float q;   // Expoente especular para o modelo de iluminação de Phong
     
     if (object_id == WEAPON)
     {
         Ks = vec3(0.5, 0.5, 0.5);
+        Ka = Ks * 0.0;
+        Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
         q = 64.0;
     }
     else if (object_id == BUNNY)
     {
         Ks = vec3(0.8, 0.8, 0.8);
+        Ka = Ks * 0.2;
+        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
         q = 32.0;
     }
     else if (object_id == ENEMY)
@@ -80,13 +100,28 @@ void main()
         Kd = vec3(0.8, 0.0, 0.0);
         Ks = vec3(0.0, 0.0, 0.0);
         Ka = vec3(0.2, 0.0, 0.0);
+        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
         q = 1.0;
     }
     else if (object_id == CUBE)
     {
+        // In order to apply a texture to the TOP of the cube,
+        // we need to calculate the UV coordinates based on the xz plane
+        vec3 diag = bbox_max - bbox_min;
+        vec3 local = (position_model.xyz - bbox_min) / diag;
+        vec2 uv = local.xz; 
+
         Ks = vec3(0.0, 0.0, 0.0);
+        Ka = Ks * 0.2;
+        Kd = texture(TextureImage, uv).rgb; // Refletância difusa
         q = 1.0;
-        calculate_planar_UV();
+    }
+    else if (object_id == WALL)
+    {
+        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+        Ks = vec3(0.0, 0.0, 0.0);
+        Ka = vec3(0.2, 0.2, 0.2);
+        q = 1.0;
     }
     else
     {
@@ -95,8 +130,6 @@ void main()
         Ka = vec3(1.0, 0.2, 0.04);
         q = 1.0;
     }
-
-    
 
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0, 1.0, 1.0); // PREENCH AQUI o espectro da fonte de luz
@@ -129,7 +162,7 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    
+
     color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.

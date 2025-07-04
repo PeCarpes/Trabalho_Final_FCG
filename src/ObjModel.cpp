@@ -18,6 +18,16 @@ float ObjModel::depth() const
     return bbox_max.z - bbox_min.z;
 }
 
+glm::vec3 ObjModel::getBboxMin() const
+{
+    return bbox_min;
+}
+
+glm::vec3 ObjModel::getBboxMax() const
+{
+    return bbox_max;
+}
+
 
 ObjModel::ObjModel(const char *filename, const char *basepath, bool triangulate)
 {
