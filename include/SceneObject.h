@@ -38,6 +38,8 @@ private:
     Bezier bobbing_curve;
     float bobbing_cps = 1.0f; // Cycles per second for bobbing
 
+    bool isCollidable = false;
+
     public:
     void setPosition(const glm::vec3 &newPosition);
     void addPosition(const glm::vec3 &deltaPosition);
@@ -83,5 +85,5 @@ private:
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix = true);
+    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix = true, bool collidable = false);
 };

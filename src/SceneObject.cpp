@@ -2,13 +2,14 @@
 
 #include <iostream>
 
-SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix)
+SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix, bool collidable)
     : objModel(model),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
       rotation(glm::vec3(0.0f, 0.0f, 0.0f)),
       scale(glm::vec3(1.0f, 1.0f, 1.0f)),
       useViewMatrix(useViewMatrix), // Use view matrix by default
+      isCollidable(collidable),
       name(name),
       texture_id(0),
       cam(cam),
