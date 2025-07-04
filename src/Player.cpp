@@ -38,7 +38,7 @@ void Player::updateForwardVector(const glm::vec4 &newForward)
     forward = normalize(forward);
 }
 
-void Player::move(float deltaTime, Camera cam)
+void Player::move(Camera cam)
 {
     updateDirection();
     forward = cam.getForwardVector();
@@ -51,6 +51,8 @@ void Player::move(float deltaTime, Camera cam)
 
     movement.w = 0.0f; // No movement in the fourth dimension, please
     movement.y = 0.0f; // No vertical movement, that's handled by jumping
+
+    float deltaTime = Callbacks::getDeltaTime();
 
     // Avoid division by zero
     if (length(movement) > 0.0f)

@@ -17,6 +17,7 @@
 #include <Enemy.h>
 #include <Shader.h>
 #include <Texture.h>
+#include <collisions.h>
 
 #include <iostream>
 #include <fstream>
@@ -100,10 +101,10 @@ int main(void)
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
     // e em Shader.cpp caso ultrapasse 5 texturas (atualmente 5 texturas são suportadas).
 
-    #define WEAPON 0
-    #define BUNNY 1
-    #define ENEMY 2
-    #define CUBE 3
+#define WEAPON 0
+#define BUNNY 1
+#define ENEMY 2
+#define CUBE 3
 
     Texture3D floor_texture;
     floor_texture.LoadTextureImage("../../data/floor_texture.png");
@@ -111,7 +112,6 @@ int main(void)
     weapon_texture.LoadTextureImage("../../data/pistol_01_Albedo.png");
     Texture3D wall_texture;
     wall_texture.LoadTextureImage("../../data/wall_texture.png");
-
 
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/pistol_01.obj");
@@ -129,7 +129,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.5f, -10.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.475f, -10.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);
@@ -155,23 +155,23 @@ int main(void)
     cube_obj.ComputeNormals();
     cube_obj.BuildTriangles();
 
-    SceneObject floor_sobj(cube_obj, "cube1", shader, cam);
-    floor_sobj.setTexture(floor_texture);
-    floor_sobj.setID(CUBE);
-    //g_VirtualScene.addObject(&floor_sobj);
     /* ===================================================== */
     /* =================== PLAYER == ======================= */
     g_Player.initializeWeapon(&weapon_sobj);
     g_Player.setModel(&bunny_sobj);
 
     /* ======================= GROUND ===================== */
-    for(int i = -5; i < 5; i++){
-        for(int j = -5; j < 5; j++){
-            SceneObject *obj = new SceneObject(cube_obj, "cube_" + std::to_string(i) + "_" + std::to_string(j), shader, cam);
+    for (int i = -5; i < 5; i++)
+    {
+        for (int j = -5; j < 5; j++)
+        {
+            SceneObject *obj = new SceneObject(cube_obj,
+                                               "cube_" + std::to_string(i) + "_" + std::to_string(j),
+                                               shader, cam, true, true);
             obj->setTexture(floor_texture);
             obj->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
             obj->setID(CUBE);
-            obj->setPosition(glm::vec3(2*j, 0.0f, 2*i));
+            obj->setPosition(glm::vec3(2 * j, 0.0f, 2 * i));
             g_VirtualScene.addObject(obj);
         }
     }
@@ -179,39 +179,19 @@ int main(void)
 
     /* ======================= WALLS ===================== */
 
-
-
-
     TextRendering_Init();
-
-    glm::vec2 mouse_pos = glm::vec2(0, 0);
-    glm::vec2 last_mouse_pos = glm::vec2(0, 0);
-    glm::vec2 mouse_offset = glm::vec2(0, 0);
-
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        last_mouse_pos = mouse_pos;
-        mouse_pos = Callbacks::getCursorPosition();
-        mouse_offset = mouse_pos - last_mouse_pos;
+        Callbacks::updateDeltaTime();
 
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        cam.processMouseMovement(mouse_offset);
-
+        cam.processMouseMovement();
         shader.Use();
 
-        static float x = 0.0f;
-        x += 0.1f * deltaTime;
-
-        g_Player.move(deltaTime, cam);
+        g_Player.move(cam);
         glm::vec4 p_pos = g_Player.getPosition();
 
         // settings for gun.obj if needed
@@ -234,16 +214,10 @@ int main(void)
 
         bunny_sobj2.setPosition(b.evaluate());
 
-        enemy.move(deltaTime, p_pos);
+        enemy.move(p_pos);
         g_Player.fly();
-        
 
-        floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-        floor_sobj.setScale(glm::vec3(10.0f, 0.01f, 10.0f));
-
-        GLint location = glGetUniformLocation(g_GpuProgramID, "bbox_min");
         shader.Use();
-
         g_VirtualScene.drawScene();
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);

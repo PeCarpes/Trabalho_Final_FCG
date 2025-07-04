@@ -11,8 +11,9 @@ class Callbacks
 {
 private:
 
-    static inline double current_time;
-    static inline double last_time;
+    static inline double current_time = 0.0f;
+    static inline double last_time = 0.0f;
+    static inline double delta_time = 0.0f;
 
     static inline glm::vec2 last_cursor_pos = glm::vec2(0.0f, 0.0f);
     static inline glm::vec2 cursor_pos = glm::vec2(0.0f, 0.0f);
@@ -32,6 +33,7 @@ public:
     static float getScreenRatio();
     static glm::vec2 getMouseOffset();
 
+    static void updateDeltaTime();
     static double getDeltaTime();
 
     static int getKeyState(int key);

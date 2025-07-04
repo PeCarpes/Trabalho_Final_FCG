@@ -41,7 +41,7 @@ public:
 
     void lookAt(glm::vec4 target_position);
 
-    void processMouseMovement(glm::vec2 offset, bool constrain_pitch = true);
+    void processMouseMovement(bool constrain_pitch = true);
 
 private:
     // Calcula os vetores de orientação a partir dos ângulos de Euler

@@ -19,7 +19,7 @@ class Player{
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
     public:
-        void move(float deltaTime, Camera cam);
+        void move(Camera cam);
 
         glm::vec4* getPositionPtr(void) { return &position; }
 

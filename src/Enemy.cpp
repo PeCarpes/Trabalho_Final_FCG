@@ -8,8 +8,10 @@ Enemy::Enemy(const ObjModel &model, const std::string &name, Shader shader, cons
     setSpeed(speed);
 }
 
-void Enemy::move(float deltaTime, const glm::vec4 &target)
+void Enemy::move(const glm::vec4 &target)
 {
+
+    float deltaTime = Callbacks::getDeltaTime();
 
     glm::vec4 direction = target - getPosition();
     direction = direction / length(direction);

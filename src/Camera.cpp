@@ -48,7 +48,10 @@ glm::vec4 Camera::getRightVector() const{
     return right_vector;
 }
 
-void Camera::processMouseMovement(glm::vec2 offset, bool constrain_pitch) {
+void Camera::processMouseMovement(bool constrain_pitch) {
+
+    glm::vec2 offset = Callbacks::getMouseOffset();
+
     offset.x *= mouse_sensitivity;
     offset.y *= mouse_sensitivity;
 

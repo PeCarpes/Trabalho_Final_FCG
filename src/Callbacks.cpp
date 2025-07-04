@@ -15,11 +15,16 @@ void Callbacks::cursor_position_callback(GLFWwindow *window, double xpos, double
     cursor_pos = glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
-double Callbacks::getDeltaTime()
+
+void Callbacks::updateDeltaTime()
 {
     current_time = glfwGetTime();
-    double delta_time = current_time - last_time;
+    delta_time = current_time - last_time;
     last_time = current_time;
+}
+
+double Callbacks::getDeltaTime()
+{
     return delta_time;
 }
 
