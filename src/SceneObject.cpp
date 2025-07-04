@@ -99,8 +99,7 @@ void SceneObject::setScale(const glm::vec3 &newScale)
 
 float SceneObject::height() const
 {
-    // Assuming the height is the difference between the max and min Y coordinates of the bounding box
-    return objModel.height();
+    return getBBoxMax().y - getBBoxMin().y;
 }
 
 void SceneObject::setHeight(float height)
@@ -118,10 +117,9 @@ glm::vec4 SceneObject::getBBoxMin() const
 {
     glm::vec4 bboxMin = glm::vec4(objModel.getBboxMin(), 1.0f);
 
-    bboxMin.x *= scale.x;
-    bboxMin.y *= scale.y;
-    bboxMin.z *= scale.z;
-    bboxMin = Matrix_Translate(position.x, position.y, position.z) * bboxMin;
+    bboxMin = Matrix_Translate(position.x, position.y, position.z) *
+            Matrix_Scale(scale.x, scale.y, scale.z) * 
+            bboxMin;
 
     return bboxMin;
 
@@ -129,14 +127,14 @@ glm::vec4 SceneObject::getBBoxMin() const
 
 glm::vec4 SceneObject::getBBoxMax() const
 {
-    glm::vec4 bboxMax = glm::vec4(objModel.getBboxMax(), 1.0f);
+   glm::vec4 bboxMax = glm::vec4(objModel.getBboxMax(), 1.0f);
 
-    bboxMax.x *= scale.x;
-    bboxMax.y *= scale.y;
-    bboxMax.z *= scale.z;
-    bboxMax = Matrix_Translate(position.x, position.y, position.z) * bboxMax;
+    bboxMax = Matrix_Translate(position.x, position.y, position.z) *
+            Matrix_Scale(scale.x, scale.y, scale.z) *
+            bboxMax;
 
     return bboxMax;
+
 }
 
 void SceneObject::draw() const

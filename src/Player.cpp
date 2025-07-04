@@ -19,13 +19,13 @@ void Player::fly(){
     if(Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_PRESS ||
        Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_REPEAT)
     {
-        position.y += 30.1f * Callbacks::getDeltaTime(); // Move up
+        position.y += 10.1f * Callbacks::getDeltaTime(); // Move up
     }
 
     if(Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
        Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_REPEAT)
     {
-        position.y -= 30.1f * Callbacks::getDeltaTime(); // Move down
+        position.y -= 10.1f * Callbacks::getDeltaTime(); // Move down
     }
 
 
@@ -42,6 +42,7 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects){
     glm::vec3 collision_direction(0.0f, 0.0f, 0.0f);
 
     glm::vec4 future_pos_x = glm::vec4(future_pos.x, current_pos.y, current_pos.z, 1.0f);
+                                            //this -1.0f avoids player from entering the ground
     glm::vec4 future_pos_y = glm::vec4(current_pos.x, future_pos.y - 1.0f, current_pos.z, 1.0f);
     glm::vec4 future_pos_z = glm::vec4(current_pos.x, current_pos.y, future_pos.z, 1.0f);
 

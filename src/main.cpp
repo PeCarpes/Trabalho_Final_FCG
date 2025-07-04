@@ -42,7 +42,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 13.0f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(0.0f, 2.0f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -109,12 +109,12 @@ int main(void)
     Texture3D floor_texture;
     floor_texture.LoadTextureImage("../../data/floor_texture.png");
     Texture3D weapon_texture;
-    weapon_texture.LoadTextureImage("../../data/pistol_01_Albedo.png");
+    weapon_texture.LoadTextureImage("../../data/Pistol_01_Albedo.png");
     Texture3D wall_texture;
     wall_texture.LoadTextureImage("../../data/wall_texture.png");
 
     /* =================== WEAPON OBJECT =================== */
-    ObjModel weapon_obj("../../data/pistol_01.obj");
+    ObjModel weapon_obj("../../data/Pistol_01.obj");
     weapon_obj.ComputeNormals();
     weapon_obj.BuildTriangles();
 
@@ -129,7 +129,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.475f, -10.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(3.0f, 4.0f, -3.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);
@@ -214,7 +214,7 @@ int main(void)
 
         bunny_sobj2.setPosition(b.evaluate());
 
-        enemy.move(p_pos);
+        enemy.move(g_VirtualScene.getObjects(), p_pos);
         g_Player.fly();
 
         shader.Use();
