@@ -129,7 +129,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.75f, -10.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.5f, -10.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);
@@ -235,6 +235,8 @@ int main(void)
         bunny_sobj2.setPosition(b.evaluate());
 
         enemy.move(deltaTime, p_pos);
+        g_Player.fly();
+        
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         floor_sobj.setScale(glm::vec3(10.0f, 0.01f, 10.0f));

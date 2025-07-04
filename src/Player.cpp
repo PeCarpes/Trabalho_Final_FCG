@@ -15,6 +15,22 @@ void Player::initializeWeapon(SceneObject *weapon)
     }
 }
 
+void Player::fly(){
+    if(Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_PRESS ||
+       Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_REPEAT)
+    {
+        position.y += 30.1f * Callbacks::getDeltaTime(); // Move up
+    }
+
+    if(Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
+       Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_REPEAT)
+    {
+        position.y -= 30.1f * Callbacks::getDeltaTime(); // Move down
+    }
+
+
+}
+
 void Player::updateForwardVector(const glm::vec4 &newForward)
 {
     forward = newForward;

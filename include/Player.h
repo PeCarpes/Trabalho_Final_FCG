@@ -27,8 +27,10 @@ class Player{
         glm::vec4 getForward(void) const { return forward; }
         void initializeWeapon(SceneObject* weapon);
         void setModel(SceneObject* obj) { player_obj = obj; }
+        void fly();
 
         Player(SceneObject* obj, glm::vec4 pos);
+
 
         
 };
