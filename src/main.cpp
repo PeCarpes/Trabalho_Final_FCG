@@ -42,7 +42,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 2.0f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(0.0f, 13.0f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -191,7 +191,7 @@ int main(void)
         cam.processMouseMovement();
         shader.Use();
 
-        g_Player.move(cam);
+        g_Player.move(cam, g_VirtualScene.getObjects());
         glm::vec4 p_pos = g_Player.getPosition();
 
         // settings for gun.obj if needed

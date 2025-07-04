@@ -31,6 +31,45 @@ void Player::fly(){
 
 }
 
+
+// Check for collisions between the player and objects in the scene
+// Returns the direction of the collision as a glm::vec3
+glm::vec3 Player::CheckCollisions(SobjectMap objects){
+    Player p = *this;
+    
+    glm::vec4 current_pos = p.getPosition();
+    glm::vec4 future_pos = p.getPosition() + p.getNextDisplacement();
+    glm::vec3 collision_direction(0.0f, 0.0f, 0.0f);
+
+    glm::vec4 future_pos_x = glm::vec4(future_pos.x, current_pos.y, current_pos.z, 1.0f);
+    glm::vec4 future_pos_y = glm::vec4(current_pos.x, future_pos.y - 1.0f, current_pos.z, 1.0f);
+    glm::vec4 future_pos_z = glm::vec4(current_pos.x, current_pos.y, future_pos.z, 1.0f);
+
+
+    for (const auto &pair : objects) {
+        SceneObject *obj = pair.second;
+        if (!obj->collidable()) continue; // Skip non-collidable objects
+
+        glm::vec4 obj_pos = obj->getPosition();
+        glm::vec4 bbox_min = obj->getBBoxMin();
+        glm::vec4 bbox_max = obj->getBBoxMax();
+
+        if (CheckCollisionPointPrism(future_pos_x, bbox_min, bbox_max)) {
+            collision_direction.x = 1.0f;
+        }
+        if (CheckCollisionPointPrism(future_pos_y, bbox_min, bbox_max)) {
+            collision_direction.y = 1.0f;
+        }
+        if (CheckCollisionPointPrism(future_pos_z, bbox_min, bbox_max)) {
+            collision_direction.z = 1.0f;
+        }
+
+    }
+
+    return collision_direction;
+}
+
+
 void Player::updateForwardVector(const glm::vec4 &newForward)
 {
     forward = newForward;
@@ -38,27 +77,30 @@ void Player::updateForwardVector(const glm::vec4 &newForward)
     forward = normalize(forward);
 }
 
-void Player::move(Camera cam)
+glm::vec4 Player::getNextDisplacement(void) const
+{
+    glm::vec4 next_displacement = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    next_displacement += forward * -vel.z;
+    next_displacement += right * vel.x; // Right vector is (1, 0, 0)
+    next_displacement.w = 0.0f;
+
+    next_displacement *= speed * (float) Callbacks::getDeltaTime();
+    next_displacement.y = vel.y * (float) Callbacks::getDeltaTime();
+    
+    return next_displacement;
+}
+
+void Player::move(Camera cam, SobjectMap objects)
 {
     updateDirection();
     forward = cam.getForwardVector();
-    glm::vec4 right = cam.getRightVector();
-
-    glm::vec4 movement;
-
-    movement += forward * -vel.z;
-    movement += right * vel.x;
-
-    movement.w = 0.0f; // No movement in the fourth dimension, please
-    movement.y = 0.0f; // No vertical movement, that's handled by jumping
-
-    float deltaTime = Callbacks::getDeltaTime();
-
-    // Avoid division by zero
-    if (length(movement) > 0.0f)
-        movement = movement / length(movement);
-
-    position += movement * speed * deltaTime;
+    right = cam.getRightVector();
+    
+    glm::vec3 collision_direction = CheckCollisions(objects);
+    vel.x *= (1.0f - collision_direction.x);
+    vel.y *= (1.0f - collision_direction.y);
+    vel.z *= (1.0f - collision_direction.z);
+    position += getNextDisplacement();
 
     // Check if player is running
     if (Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE)
@@ -92,6 +134,7 @@ void Player::updateDirection(void)
     bool moving = move_forward || move_backward || move_left || move_right;
 
     vel.w = 0.0f;
+    vel.y = -1.0f;
 
     if ((move_forward && move_backward))
         vel.z = 0.0f;

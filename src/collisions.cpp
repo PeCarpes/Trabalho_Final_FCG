@@ -15,3 +15,4 @@ bool CheckCollisionPointPrism(const glm::vec4 &point,
             point.y >= prism_min.y && point.y <= prism_max.y &&
             point.z >= prism_min.z && point.z <= prism_max.z);
 }
+

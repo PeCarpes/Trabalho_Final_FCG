@@ -59,8 +59,13 @@ private:
     void setBobbingCPS(float cps) { bobbing_cps = cps; is_bobbing = true; }
     void bob(void);    
 
+    glm::vec4 getBBoxMin() const;
+    glm::vec4 getBBoxMax() const;
+
     void setHeight(float height); // Changes ALL the dimensions of the object to match the height
-    
+  
+    bool collidable() const { return isCollidable; }
+
     void setTexture(const std::string &filename)
     {
         texture.LoadTextureImage(filename.c_str());

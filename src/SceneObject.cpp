@@ -114,6 +114,31 @@ void SceneObject::setHeight(float height)
     }
 }
 
+glm::vec4 SceneObject::getBBoxMin() const
+{
+    glm::vec4 bboxMin = glm::vec4(objModel.getBboxMin(), 1.0f);
+
+    bboxMin.x *= scale.x;
+    bboxMin.y *= scale.y;
+    bboxMin.z *= scale.z;
+    bboxMin = Matrix_Translate(position.x, position.y, position.z) * bboxMin;
+
+    return bboxMin;
+
+}
+
+glm::vec4 SceneObject::getBBoxMax() const
+{
+    glm::vec4 bboxMax = glm::vec4(objModel.getBboxMax(), 1.0f);
+
+    bboxMax.x *= scale.x;
+    bboxMax.y *= scale.y;
+    bboxMax.z *= scale.z;
+    bboxMax = Matrix_Translate(position.x, position.y, position.z) * bboxMax;
+
+    return bboxMax;
+}
+
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();
