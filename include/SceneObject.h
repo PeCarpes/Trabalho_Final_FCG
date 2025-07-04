@@ -57,12 +57,14 @@ private:
     void setBobbingCPS(float cps) { bobbing_cps = cps; is_bobbing = true; }
     void bob(void);    
 
+    void setHeight(float height); // Changes ALL the dimensions of the object to match the height
+    
     void setTexture(const std::string &filename)
     {
         texture.LoadTextureImage(filename.c_str());
         texture_id = texture.getTextureID();
     }
-
+    
     void setTexture(GLuint textureID)
     {
         texture_id = textureID;

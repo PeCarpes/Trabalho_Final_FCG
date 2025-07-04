@@ -102,6 +102,17 @@ float SceneObject::height() const
     return objModel.height();
 }
 
+void SceneObject::setHeight(float height)
+{
+    // Set all dimensions to match the height
+    float currentHeight = this->height();
+    if (currentHeight > 0.0f)
+    {
+        float scaleFactor = height / currentHeight;
+        scale *= scaleFactor;
+    }
+}
+
 void SceneObject::draw() const
 {
     glm::mat4 model = Matrix_Identity();

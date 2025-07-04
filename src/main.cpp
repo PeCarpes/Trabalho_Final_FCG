@@ -41,7 +41,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(0.0f, 1.5f, 0.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(0.0f, 2.0f, 0.0f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -132,6 +132,8 @@ int main(void)
     Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(10.0f, 1.75f, -10.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
+    enemy.setHeight(1.0f);
+
     /* ===================================================== */
     /* =================== BUNNY OBJECT ==================== */
     ObjModel bunny_obj("../../data/gun/Gun.obj");
@@ -232,7 +234,6 @@ int main(void)
 
         bunny_sobj2.setPosition(b.evaluate());
 
-        enemy.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
         enemy.move(deltaTime, p_pos);
 
         floor_sobj.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));

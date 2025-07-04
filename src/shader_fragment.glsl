@@ -98,10 +98,10 @@ void main()
     else if (object_id == ENEMY)
     {
         Kd = vec3(0.8, 0.0, 0.0);
-        Ks = vec3(0.0, 0.0, 0.0);
+        Ks = vec3(0.2, 0.0, 0.0);
         Ka = vec3(0.2, 0.0, 0.0);
         vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
-        q = 1.0;
+        q = 64.0;
     }
     else if (object_id == CUBE)
     {
