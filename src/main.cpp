@@ -44,7 +44,7 @@ GLint g_object_id_uniform;
 VirtualScene g_VirtualScene;
 Player g_Player(nullptr, glm::vec4(4.5f, 2.0f, 4.5f, 1.0f)); // Player object
 
-bool g_ShowInfoText = true;
+bool g_ShowInfoText = false;
 
 int main(void)
 {
@@ -97,6 +97,8 @@ int main(void)
     shader.Use();
     Camera cam = Camera(g_Player.getPositionPtr());
 
+    bool show_mouse_cursor = false;
+
     /* =================== ID COLLECTION =================== */
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
 
@@ -135,53 +137,45 @@ int main(void)
     enemy.setHeight(1.0f);
 
     /* ===================================================== */
-    /* =================== BUNNY OBJECT ==================== */
-    ObjModel bunny_obj("../../data/gun/Gun.obj");
-    bunny_obj.ComputeNormals();
-    bunny_obj.BuildTriangles();
-
-    SceneObject bunny_sobj(bunny_obj, "bunny1", shader, cam);
-    bunny_sobj.setTexture("../../data/gun/Gun.png");
-    bunny_sobj.setID(BUNNY);
-    g_VirtualScene.addObject(&bunny_sobj);
-
-    SceneObject bunny_sobj2(bunny_obj, "bunny2", shader, cam);
-    bunny_sobj2.setTexture("../../data/gun/Gun.png");
-    bunny_sobj2.setID(BUNNY);
-    g_VirtualScene.addObject(&bunny_sobj2);
-    /* ===================================================== */
     /* =================== CUBE OBJECT ===================== */
     ObjModel cube_obj("../../data/cube.obj");
     cube_obj.ComputeNormals();
     cube_obj.BuildTriangles();
 
     /* ===================================================== */
-    /* =================== PLAYER == ======================= */
+    /* ======================= PLAYER ====================== */
     g_Player.initializeWeapon(&weapon_sobj);
-    g_Player.setModel(&bunny_sobj);
     
     /* ======================= GROUND ====================== */
     SceneObject floor_sobj = SceneObject(cube_obj,
                                            "floor",                 
                                            shader, cam, true, true);
     floor_sobj.setTexture(floor_texture);
-    floor_sobj.setScale(glm::vec3(10.0f, 1.0f, 10.0f));
-    floor_sobj.setTextureScale(glm::vec2(10.0f, 10.0f));
+    floor_sobj.setScale(glm::vec3(5.0f, 1.0f, 5.0f));
+    floor_sobj.setTextureScale(glm::vec2(50.0f, 50.0f));
     floor_sobj.setID(CUBE);
-    floor_sobj.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    floor_sobj.setPosition(glm::vec3(4.5f, 0.0f, 4.5f));
     g_VirtualScene.addObject(&floor_sobj);
 
     /* ===================================================== */
+    /* ======================== WALLS ====================== */
+    for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                SceneObject *newPillar = new SceneObject(cube_obj,
+                                                "pillar_" + std::to_string(i) + "_" + std::to_string(j),
+                                                shader, cam, true, true);
+                newPillar->setTexture(wall_texture);
+                newPillar->setScale(glm::vec3(0.5f, 2.0f, 0.5f));
+                newPillar->setTextureScale(glm::vec2(5.0f, 5.0f));
+                newPillar->setID(WALL);
+                newPillar->setPosition(glm::vec3(2 + (5 * j), 1.5f, 2 + (5 * i)));
+                g_VirtualScene.addObject(newPillar);
+            }
+        }
 
-    /* ======================= WALLS ===================== */
-    SceneObject wall_sobj = SceneObject(cube_obj,
-                                               "wall1",
-                                               shader, cam, true, true);
-            wall_sobj.setTexture(wall_texture);
-            wall_sobj.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
-            wall_sobj.setID(WALL);
-            wall_sobj.setPosition(glm::vec3(4.5f, 2.0f, -1.0));
-            g_VirtualScene.addObject(&wall_sobj);
+    /* ======================================================= */
 
     TextRendering_Init();
 
@@ -192,6 +186,7 @@ int main(void)
 
         Callbacks::updateDeltaTime();
 
+        
         cam.processMouseMovement();
         shader.Use();
 
@@ -206,16 +201,6 @@ int main(void)
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
         // weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
         weapon_sobj.setRotationY(90.0f);
-
-        
-        Bezier b = Bezier(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f),
-                          glm::vec4(-5.0f, 0.0f, 0.0f, 1.0f),
-                          glm::vec4(5.0f, 5.0f, 0.0f, 1.0f),
-                          glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f));
-
-        b.tick(glfwGetTime() * 0.5f); // Avança no tempo da curva
-
-        bunny_sobj2.setPosition(b.evaluate());
 
         enemy.move(g_VirtualScene.getObjects(), p_pos);
         g_Player.fly();
