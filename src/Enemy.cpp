@@ -14,7 +14,7 @@ void Enemy::move(SobjectMap objects, const glm::vec4 &target)
 
     this->direction = target - getPosition();
     if (length(this->direction) > 0.0f)
-    this->direction = this->direction / length(this->direction);
+        this->direction = this->direction / length(this->direction);
     this->direction.y = -1.0f;
 
     glm::vec3 collision_direction = checkCollisions(objects);
@@ -31,18 +31,17 @@ void Enemy::move(SobjectMap objects, const glm::vec4 &target)
 
 glm::vec4 Enemy::getNextDisplacement(glm::vec4 direction) const
 {
-    glm::vec4 next_displacement = direction * speed * (float) Callbacks::getDeltaTime();
-    next_displacement.y = direction.y * (float) Callbacks::getDeltaTime(); // Enemies fall down
+    glm::vec4 next_displacement = direction * speed * (float)Callbacks::getDeltaTime();
+    next_displacement.y = direction.y * (float)Callbacks::getDeltaTime(); // Enemies fall down
     next_displacement.w = 0.0f;
-    
+
     return next_displacement;
 }
-
 
 glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
 {
     Enemy e = *this;
-    
+
     glm::vec4 displacement = e.getNextDisplacement(direction);
     glm::vec3 collision_direction(0.0f, 0.0f, 0.0f);
 
@@ -57,11 +56,11 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     glm::vec4 future_bbox_min_z = e.getBBoxMin() + displacement_z;
     glm::vec4 future_bbox_max_z = e.getBBoxMax() + displacement_z;
 
-    int i = 0;
-    for (const auto &pair : objects) {
+    for (const auto &pair : objects)
+    {
         SceneObject *obj = pair.second;
-        if (!obj->collidable()) continue; // Skip non-collidable objects
-
+        if (!obj->collidable())
+            continue; // Skip non-collidable objects
 
         glm::vec4 obj_bbox_min = obj->getBBoxMin();
         glm::vec4 obj_bbox_max = obj->getBBoxMax();
@@ -69,16 +68,18 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
         obj_bbox_min -= glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
         obj_bbox_max += glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
 
-        if (CheckCollisionPrisms(future_bbox_min_x, future_bbox_max_x, obj_bbox_min, obj_bbox_max)) {
+        if (CheckCollisionPrisms(future_bbox_min_x, future_bbox_max_x, obj_bbox_min, obj_bbox_max))
+        {
             collision_direction.x = 1.0f;
         }
-        if (CheckCollisionPrisms(future_bbox_min_y, future_bbox_max_y, obj_bbox_min, obj_bbox_max)) {
+        if (CheckCollisionPrisms(future_bbox_min_y, future_bbox_max_y, obj_bbox_min, obj_bbox_max))
+        {
             collision_direction.y = 1.0f;
         }
-        if (CheckCollisionPrisms(future_bbox_min_z, future_bbox_max_z, obj_bbox_min, obj_bbox_max)) {
+        if (CheckCollisionPrisms(future_bbox_min_z, future_bbox_max_z, obj_bbox_min, obj_bbox_max))
+        {
             collision_direction.z = 1.0f;
         }
-
     }
 
     return collision_direction;
