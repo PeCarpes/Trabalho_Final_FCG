@@ -90,14 +90,14 @@ void main()
     {
         Ks = vec3(0.5, 0.5, 0.5);
         Ka = Ks * 0.0;
-        Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+        Kd = texture(TextureImage, texcoords).rgb;   
         q = 64.0;
     }
     else if (object_id == BUNNY)
     {
         Ks = vec3(0.8, 0.8, 0.8);
         Ka = Ks * 0.2;
-        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+        vec3 Kd = texture(TextureImage, texcoords).rgb;   
         q = 32.0;
     }
     else if (object_id == ENEMY)
@@ -105,7 +105,7 @@ void main()
         Kd = vec3(0.8, 0.0, 0.0);
         Ks = vec3(0.2, 0.0, 0.0);
         Ka = vec3(0.2, 0.0, 0.0);
-        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+        vec3 Kd = texture(TextureImage, texcoords).rgb;  
         q = 64.0;
     }
     else if (object_id == CUBE)
@@ -123,16 +123,34 @@ void main()
     }
     else if (object_id == WALL)
     {
-        // In order to apply a texture to the SIDES of the cube,
-        // we need to calculate the UV coordinates based on the xy plane
-        diag = bbox_max - bbox_min;
-        local = (position_model.xyz - bbox_min) / diag;
-        uv = local.xy;
+        // Pega a normal da superfície e a torna positiva.
+        vec3 blend_weights = abs(n.xyz);
 
-        Ks = vec3(0.0, 0.0, 0.0);
-        Ka = Ks * 0.2;
-        Kd = texture(TextureImage, uv).rgb; // Refletância difusa
-        q = 1.0;
+        // "Suaviza" os pesos para evitar transições duras entre as faces.
+        // Um valor de 'power' maior torna a transição mais nítida.
+        float power = 2.0;
+        blend_weights = pow(blend_weights, vec3(power));
+        blend_weights = normalize(blend_weights);
+
+        // Calcula as três projeções de textura possíveis.
+        vec2 uv_top_down   = position_world.xz * u_texture_scale; // Projeção de cima (XZ)
+        vec2 uv_front_back = position_world.xy * u_texture_scale; // Projeção da frente (XY)
+        vec2 uv_left_right = position_world.zy * u_texture_scale; // Projeção do lado (ZY)
+
+        // Lê a cor da textura para cada uma das três projeções.
+        vec3 top_down_color   = texture(TextureImage, uv_top_down).rgb;
+        vec3 front_back_color = texture(TextureImage, uv_front_back).rgb;
+        vec3 left_right_color = texture(TextureImage, uv_left_right).rgb;
+
+        // Mistura as três cores de textura usando os pesos da normal.
+        vec3 triplanar_color = top_down_color * blend_weights.y +    // Projeção de cima (Y)
+                                front_back_color * blend_weights.z +  // Projeção da frente (Z)
+                                left_right_color * blend_weights.x;   // Projeção do lado (X)
+
+        Kd = triplanar_color;
+        Ks = vec3(0.6, 0.6, 0.6); 
+        Ka = Kd * 0.2;
+        q = 16.0;
     }
     else
     {
