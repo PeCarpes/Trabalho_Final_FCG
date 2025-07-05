@@ -6,7 +6,20 @@ int VirtualScene::num_objects = 0; // talvez remover isso?
 void VirtualScene::addObject(SceneObject *object)
 {
     objects.insert({object->getName(), object});
+}
 
+void VirtualScene::deleteMarkedObjects()
+{
+    for (const auto &pair : objects)
+    {
+        SceneObject *object = pair.second;
+        if (object->markedForDeletion())
+        {
+            objects.erase(object->getName()); // Remove the object from the map
+            delete object;                    // Delete the object
+        }
+
+    }
 }
 
 SceneObject* VirtualScene::operator[](const char* name) {

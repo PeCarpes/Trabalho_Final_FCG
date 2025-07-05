@@ -13,10 +13,11 @@ private:
     static inline SobjectMap objects;
     static int num_objects;
 
-public:
+    public:
     static void drawScene();
     void addObject(SceneObject *object);
+    void deleteMarkedObjects();
     const std::map<std::string, SceneObject *>& getObjects() const { return objects; }
-
+    
     SceneObject *operator[](const char *name);
 };
