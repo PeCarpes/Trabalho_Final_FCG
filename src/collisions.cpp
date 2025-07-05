@@ -16,3 +16,11 @@ bool CheckCollisionPointPrism(const glm::vec4 &point,
             point.z >= prism_min.z && point.z <= prism_max.z);
 }
 
+bool CheckCollisionPrismSphere(const glm::vec4 &prism_min, const glm::vec4 &prism_max,
+                               const glm::vec4 &sphere_center, float sphere_radius)
+{
+    glm::vec4 closest_point = glm::clamp(sphere_center, prism_min, prism_max);
+    float distance_squared = glm::length(closest_point - sphere_center);
+    distance_squared *= distance_squared;
+    return distance_squared <= (sphere_radius * sphere_radius);
+}
