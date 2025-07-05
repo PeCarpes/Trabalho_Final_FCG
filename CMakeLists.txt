@@ -25,6 +25,7 @@ set(SOURCES
   src/Enemy.cpp
   src/Shader.cpp
   src/collisions.cpp
+  src/Projectile.cpp
   )
 
 
