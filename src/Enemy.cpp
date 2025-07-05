@@ -34,10 +34,12 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
     if (canShoot() && target_in_sight)
     {
         std::string projectile_name = "enemy_projectile_" + std::to_string(num_projectiles);
-        glm::vec4 starting_pos = getPosition() + glm::vec4(0.0f, 0.5f, 0.0f, 0.0f);
+        glm::vec4 starting_pos = getPosition();
+        starting_pos.y = target.y;
+        glm::vec4 direction = target - starting_pos;
 
-        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, true, starting_pos, target);
-        new_proj->setHeight(0.01f);
+        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
+        new_proj->setHeight(0.05f);
         virtual_scene.addObject(new_proj);
         num_projectiles++;
         this->projectiles.push_back(new_proj);
