@@ -17,7 +17,7 @@
 #include <Enemy.h>
 #include <Shader.h>
 #include <Texture.h>
-#include <collisions.h>
+#include <Projectile.h>
 
 #include <iostream>
 #include <fstream>
@@ -126,6 +126,12 @@ int main(void)
 
     g_VirtualScene.addObject(&weapon_sobj);
     /* ===================================================== */
+    /* =================== PROJECTILE OBJECT =================== */
+    ObjModel projectile_obj("../../data/projectile.obj");
+    projectile_obj.ComputeNormals();
+    projectile_obj.BuildTriangles();
+
+    /* ===================================================== */
     /* =================== ENEMY OBJECT =================== */
     ObjModel enemy_obj("../../data/enemy.obj");
     enemy_obj.ComputeNormals();
@@ -145,7 +151,8 @@ int main(void)
     /* ===================================================== */
     /* ======================= PLAYER ====================== */
     g_Player.initializeWeapon(&weapon_sobj);
-    
+    g_Player.initializeProjectiles(&projectile_obj);
+
     /* ======================= GROUND ====================== */
     SceneObject floor_sobj = SceneObject(cube_obj,
                                            "floor",                 
@@ -186,26 +193,32 @@ int main(void)
 
         Callbacks::updateDeltaTime();
 
-        
         cam.processMouseMovement();
         shader.Use();
 
         g_Player.move(cam, g_VirtualScene.getObjects());
+        g_Player.fly();
+        g_Player.manage_shooting(g_VirtualScene, cam, shader);
         glm::vec4 p_pos = g_Player.getPosition();
 
-        // settings for gun.obj if needed
-        // weapon_sobj.setScale(glm::vec3(1.2f, 1.2f, 1.2f));
-        // weapon_sobj.setPosition(glm::vec3(0.5f, -0.35, -1.2f));
-        // weapon_sobj.setRotationY(-90.0f);
+        if(Callbacks::getKeyState(GLFW_KEY_P)){
+            for(const auto &pair : g_VirtualScene.getObjects())
+            {
+                const SceneObject &sobj = *pair.second;
+
+                std::cout << "Object: " << sobj.getName() << std::endl;
+            
+            }
+
+        }
 
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
-        // weapon_sobj.setPosition(glm::vec3(0.4f, -0.5, -1.0f));
         weapon_sobj.setRotationY(90.0f);
 
         enemy.move(g_VirtualScene.getObjects(), p_pos);
-        g_Player.fly();
-
+        
         shader.Use();
+        g_VirtualScene.deleteMarkedObjects();
         g_VirtualScene.drawScene();
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
