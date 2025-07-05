@@ -104,6 +104,7 @@ int main(void)
 #define BUNNY 1
 #define ENEMY 2
 #define CUBE 3
+#define WALL 4
 
     Texture3D floor_texture;
     floor_texture.LoadTextureImage("../../data/floor_texture.png");
@@ -159,25 +160,44 @@ int main(void)
     g_Player.initializeWeapon(&weapon_sobj);
     g_Player.setModel(&bunny_sobj);
 
-    /* ======================= GROUND ===================== */
+    /* ======================= GROUND =====================
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
             SceneObject *obj = new SceneObject(cube_obj,
-                                               "cube_" + std::to_string(i) + "_" + std::to_string(j),
+                                               "floor_" + std::to_string(i) + "_" + std::to_string(j),
                                                shader, cam, true, true);
             obj->setTexture(floor_texture);
-            obj->setScale(glm::vec3(0.5f, 1.0f, 0.5f));
+            obj->setScale(glm::vec3(0.5f, 0.5f, 0.5f));
             obj->setID(CUBE);
             obj->setPosition(glm::vec3(1 * j, 0.0f, 1 * i));
             g_VirtualScene.addObject(obj);
         }
     }
-    /* ===================================================== */
+    ===================================================== */
+
+    /* ==================== GROUND TEMP =================== */
+    SceneObject floor_sobj = SceneObject(cube_obj,
+                                           "floor",                 
+                                           shader, cam, true, true);
+    floor_sobj.setTexture(floor_texture);
+    floor_sobj.setScale(glm::vec3(10.0f, 0.1f, 10.0f));
+    floor_sobj.setID(CUBE);
+    floor_sobj.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    floor_sobj.setTextureScale(glm::vec2(10.0f, 10.0f)); // Ajusta a escala da textura
+    
+    g_VirtualScene.addObject(&floor_sobj);
 
     /* ======================= WALLS ===================== */
-
+    SceneObject wall_sobj = SceneObject(cube_obj,
+                                               "wall1",                 // _" + std::to_string(i) + "_" + std::to_string(j),
+                                               shader, cam, true, true);
+            wall_sobj.setTexture(wall_texture);
+            wall_sobj.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+            wall_sobj.setID(WALL);
+            wall_sobj.setPosition(glm::vec3(4.5f, 1.0f, -1.0));            // (glm::vec3(1 * j, 0.0f, 1 * i));
+            g_VirtualScene.addObject(&wall_sobj);
 
     TextRendering_Init();
 

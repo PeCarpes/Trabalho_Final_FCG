@@ -35,6 +35,7 @@ class Shader{
         void SetUniform(const char *name, const glm::vec4 &vector)const;
         void SetUniform(const char *name, float value)const;
         void SetUniform(const char *name, int value)const;
+        void SetUniform(const char *name, const glm::vec2 &vector)const;
 
         void ClearZBuffer() const { glClear(GL_DEPTH_BUFFER_BIT); }
 };

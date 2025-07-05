@@ -8,6 +8,7 @@ SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader 
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
       rotation(glm::vec3(0.0f, 0.0f, 0.0f)),
       scale(glm::vec3(1.0f, 1.0f, 1.0f)),
+      texture_scale(glm::vec2(1.0f, 1.0f)),
       useViewMatrix(useViewMatrix), // Use view matrix by default
       isCollidable(collidable),
       name(name),
@@ -97,6 +98,11 @@ void SceneObject::setScale(const glm::vec3 &newScale)
     scale = newScale;
 }
 
+void SceneObject::setTextureScale(const glm::vec2 &newScale)
+{
+    texture_scale = newScale;
+}
+
 float SceneObject::height() const
 {
     return getBBoxMax().y - getBBoxMin().y;
@@ -171,6 +177,7 @@ void SceneObject::draw() const
     shader.SetUniform("object_id", (int) object_id);
     shader.SetUniform("model", model);
     shader.SetUniform("projection", cam.getProjectionMatrix());
+    shader.SetUniform("u_texture_scale", texture_scale);
 
     // prepara a textura ativa para carregar a textura do objeto
     glActiveTexture(GL_TEXTURE0);

@@ -22,6 +22,7 @@ uniform mat4 projection;
 
 uniform vec3 bbox_min;
 uniform vec3 bbox_max;
+uniform vec2 u_texture_scale;
 
 uniform int object_id;
 uniform sampler2D TextureImage;
@@ -80,6 +81,10 @@ void main()
     vec3 Ks;   // Refletância especular
     vec3 Ka;   // Refletância ambiente
     float q;   // Expoente especular para o modelo de iluminação de Phong
+
+    vec3 diag;
+    vec3 local;
+    vec2 uv;
     
     if (object_id == WEAPON)
     {
@@ -107,9 +112,9 @@ void main()
     {
         // In order to apply a texture to the TOP of the cube,
         // we need to calculate the UV coordinates based on the xz plane
-        vec3 diag = bbox_max - bbox_min;
-        vec3 local = (position_model.xyz - bbox_min) / diag;
-        vec2 uv = local.xz; 
+        diag = bbox_max - bbox_min;
+        local = (position_model.xyz - bbox_min) / diag;
+        uv = local.xz * u_texture_scale; 
 
         Ks = vec3(0.0, 0.0, 0.0);
         Ka = Ks * 0.2;
@@ -118,9 +123,15 @@ void main()
     }
     else if (object_id == WALL)
     {
-        vec3 Kd = texture(TextureImage, texcoords).rgb;   // Refletância difusa
+        // In order to apply a texture to the SIDES of the cube,
+        // we need to calculate the UV coordinates based on the xy plane
+        diag = bbox_max - bbox_min;
+        local = (position_model.xyz - bbox_min) / diag;
+        uv = local.xy;
+
         Ks = vec3(0.0, 0.0, 0.0);
-        Ka = vec3(0.2, 0.2, 0.2);
+        Ka = Ks * 0.2;
+        Kd = texture(TextureImage, uv).rgb; // Refletância difusa
         q = 1.0;
     }
     else

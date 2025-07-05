@@ -14,6 +14,11 @@
 
 #include <stack>
 
+enum class MappingMode {
+    USE_UVS_FROM_MODEL, // Padrão
+    PLANAR_MAPPING      // Para chão, paredes, etc.
+};
+
 class SceneObject
 {
 private:
@@ -21,6 +26,7 @@ private:
     glm::vec3 rotation; // Stored in RADIANS
     glm::vec3 scale;
     glm::vec4 upVector;
+    glm::vec2 texture_scale;
 
     bool is_bobbing = false;
     bool useViewMatrix = true; // If false, uses the identity matrix
@@ -38,7 +44,8 @@ private:
     Bezier bobbing_curve;
     float bobbing_cps = 1.0f; // Cycles per second for bobbing
 
-    bool isCollidable = false;
+    bool isCollidable;
+    MappingMode mapping_mode;
 
     public:
     void setPosition(const glm::vec3 &newPosition);
@@ -53,6 +60,7 @@ private:
     void setScaleZ(float factor);
     void setScale(const glm::vec3 &newScale);
     void setID(int newID);
+    void setTextureScale(const glm::vec2 &newScale);
     
     void setUpVector(const glm::vec4 &newUp);
     void setBobbingCurve(const Bezier &curve) { bobbing_curve = curve; }
@@ -90,5 +98,10 @@ private:
 
     void draw() const;
 
-    SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix = true, bool collidable = false);
+    SceneObject(const ObjModel &model, 
+                const std::string &name, 
+                Shader shader, 
+                const Camera &cam, 
+                bool useViewMatrix = true, 
+                bool collidable = false);
 };

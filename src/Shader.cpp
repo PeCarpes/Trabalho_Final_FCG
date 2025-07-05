@@ -88,6 +88,19 @@ void Shader::SetUniform(const char *name, int value) const
     }
 }
 
+void Shader::SetUniform(const char *name, const glm::vec2 &vector) const
+{
+    GLint location = glGetUniformLocation(GpuProgramID, name);
+    if (location != -1)
+    {
+        glUniform2fv(location, 1, glm::value_ptr(vector));
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: Uniform \"%s\" not found in shader program.\n", name);
+    }
+}
+
 void Shader::LoadShader(const char *filename, GLuint shader_id)
 {
     // Lemos o arquivo de texto indicado pela variável "filename"
