@@ -47,6 +47,8 @@ private:
     bool isCollidable;
     MappingMode mapping_mode;
 
+    bool to_be_deleted = false; // Flag to mark for deletion
+
     public:
     void setPosition(const glm::vec3 &newPosition);
     void addPosition(const glm::vec3 &deltaPosition);
@@ -97,6 +99,9 @@ private:
     glm::vec4 getPosition() const;
 
     void draw() const;
+
+    bool markedForDeletion() const { return to_be_deleted; }
+    void markForDeletion() { to_be_deleted = true; }
 
     SceneObject(const ObjModel &model, 
                 const std::string &name, 
