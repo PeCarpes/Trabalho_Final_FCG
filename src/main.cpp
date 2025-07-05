@@ -42,7 +42,7 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 
 VirtualScene g_VirtualScene;
-Player g_Player(nullptr, glm::vec4(5.0f, 2.0f, 5.0f, 1.0f)); // Player object
+Player g_Player(nullptr, glm::vec4(4.5f, 2.0f, 4.5f, 1.0f)); // Player object
 
 bool g_ShowInfoText = true;
 
@@ -99,7 +99,6 @@ int main(void)
 
     /* =================== ID COLLECTION =================== */
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
-    // e em Shader.cpp caso ultrapasse 5 texturas (atualmente 5 texturas são suportadas).
 
 #define WEAPON 0
 #define BUNNY 1
@@ -129,7 +128,7 @@ int main(void)
     enemy_obj.ComputeNormals();
     enemy_obj.BuildTriangles();
 
-    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(5.0f, 3.0f, 1.0f), 1.0f);
+    Enemy enemy(enemy_obj, "enemy1", shader, cam, glm::vec3(4.5f, 3.0f, 0.0f), 1.0f);
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);

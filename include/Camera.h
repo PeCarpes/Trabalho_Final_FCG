@@ -6,7 +6,7 @@
 #include <Callbacks.h>
 #include <vector>
 
-const float YAW = -90.0f; // obs: Yaw = phi
+const float YAW = 0.0f; // obs: Yaw = phi
 const float PITCH = 0.0f; //  e pitch = tetha
 const float SPEED = 2.5f;
 const float SENSITIVITY = 0.25f;

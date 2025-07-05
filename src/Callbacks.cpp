@@ -1,4 +1,5 @@
 #include <Callbacks.h>
+#include <iostream>
 
 void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
@@ -60,6 +61,12 @@ void Callbacks::initializeCallbacks(GLFWwindow *window)
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Initialize the cursor position to the center of the window
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    cursor_pos = glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos));
+    last_cursor_pos = cursor_pos;
 }
 
 glm::vec2 Callbacks::getCursorPosition()

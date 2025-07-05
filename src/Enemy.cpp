@@ -52,7 +52,7 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     glm::vec4 future_pos_y = glm::vec4(0.0f, future_pos.y - 1.5f*height(), 0.0f, 1.0f);
     glm::vec4 future_pos_z = glm::vec4(0.0f, 0.0f, future_pos.z, 1.0f);
 
-    std::cout << height() << std::endl;
+    // std::cout << height() << std::endl;
 
     glm::vec4 future_bbox_min_x = e.getBBoxMin() + future_pos_x;
     glm::vec4 future_bbox_max_x = e.getBBoxMax() + future_pos_x;
@@ -82,7 +82,7 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
 
     }
 
-    std::cout << "Collision direction: " << collision_direction.x << ", " << collision_direction.y << ", " << collision_direction.z << std::endl;
+    // std::cout << "Collision direction: " << collision_direction.x << ", " << collision_direction.y << ", " << collision_direction.z << std::endl;
 
     return collision_direction;
 }

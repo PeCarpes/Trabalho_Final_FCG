@@ -1,9 +1,11 @@
 #include "Camera.h"
 #include "Callbacks.h"
 #include <cmath>
+#include <iostream>
+
 
 Camera::Camera(const glm::vec4* track_position = nullptr, glm::vec4 up, float yaw, float pitch) 
-    : forward_vector(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)), movement_speed(SPEED), mouse_sensitivity(SENSITIVITY), fov(FOV) {
+    : forward_vector(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)), movement_speed(SPEED), mouse_sensitivity(SENSITIVITY), fov(FOV) {
     this->position = track_position;
     this->world_up = up;
     this->yaw = yaw;
@@ -51,6 +53,11 @@ glm::vec4 Camera::getRightVector() const{
 void Camera::processMouseMovement(bool constrain_pitch) {
 
     glm::vec2 offset = Callbacks::getMouseOffset();
+
+    if (offset.x >= 100.0f || offset.y >= 100.0f) {
+        std::cout << "Mouse Offset: " << offset.x << ", " << offset.y << std::endl;
+    }
+    
 
     offset.x *= mouse_sensitivity;
     offset.y *= mouse_sensitivity;
