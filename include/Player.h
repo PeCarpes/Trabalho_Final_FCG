@@ -5,6 +5,7 @@
 #include <VirtualScene.h>
 #include <Camera.h>
 #include <collisions.h>
+#include <Projectile.h>
 
 class Player{
 
@@ -17,13 +18,24 @@ class Player{
         float speed = 1.0f;                                     // Speed of the player
         SceneObject* player_obj = nullptr;                      // SceneObject representing the player
         SceneObject* weapon_obj = nullptr;                      // SceneObject representing the weapon
+        
+        ObjModel* projectile_model = nullptr;                   // Model for the projectile
+        int num_projectiles = 0;                                // Used to name the projectiles uniquely
+        std::vector<Projectile*> projectiles;                   // List of projectiles fired by the player
+        float shooting_speed = 0.5f;                            // Time between shots in seconds
+        float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
+        bool can_shoot(void) const;                             // Check if the player can shoot based on cooldown
 
         glm::vec3 CheckCollisions(SobjectMap objects);
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
-    public:
+
+    
+        public:
+        void move_projectiles();
         void move(Camera cam, SobjectMap objects);
+        void manage_shooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader);
 
         glm::vec4* getPositionPtr(void) { return &position; }
 
@@ -32,6 +44,7 @@ class Player{
         glm::vec4 getVel(void) const { return vel; }
         glm::vec4 getNextDisplacement(void) const;
         void initializeWeapon(SceneObject* weapon);
+        void initializeProjectiles(ObjModel* model);
         void setModel(SceneObject* obj) { player_obj = obj; }
         void fly();
 

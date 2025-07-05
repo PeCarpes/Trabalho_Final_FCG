@@ -15,38 +15,41 @@ void Player::initializeWeapon(SceneObject *weapon)
     }
 }
 
-void Player::fly(){
-    if(Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_PRESS ||
-       Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_REPEAT)
+void Player::fly()
+{
+    if (Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_PRESS ||
+        Callbacks::getKeyState(GLFW_KEY_SPACE) == GLFW_REPEAT)
     {
         position.y += 10.1f * Callbacks::getDeltaTime(); // Move up
     }
 
-    if(Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
-       Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_REPEAT)
+    if (Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
+        Callbacks::getKeyState(GLFW_KEY_LEFT_CONTROL) == GLFW_REPEAT)
     {
         position.y -= 10.1f * Callbacks::getDeltaTime(); // Move down
     }
 }
 
-
 // Check for collisions between the player and objects in the scene
 // Returns the direction of the collision as a glm::vec3
-glm::vec3 Player::CheckCollisions(SobjectMap objects){
+glm::vec3 Player::CheckCollisions(SobjectMap objects)
+{
     Player p = *this;
-    
+
     glm::vec4 current_pos = p.getPosition();
     glm::vec4 future_pos = p.getPosition() + p.getNextDisplacement();
     glm::vec3 collision_direction(0.0f, 0.0f, 0.0f);
 
     glm::vec4 future_pos_x = glm::vec4(future_pos.x, current_pos.y, current_pos.z, 1.0f);
-                                            //this -1.0f avoids player from entering the ground
+    // this -1.0f avoids player from entering the ground
     glm::vec4 future_pos_y = glm::vec4(current_pos.x, future_pos.y - 1.0f, current_pos.z, 1.0f);
     glm::vec4 future_pos_z = glm::vec4(current_pos.x, current_pos.y, future_pos.z, 1.0f);
 
-    for (const auto &pair : objects) {
+    for (const auto &pair : objects)
+    {
         SceneObject *obj = pair.second;
-        if (!obj->collidable()) continue; // Skip non-collidable objects
+        if (!obj->collidable())
+            continue; // Skip non-collidable objects
 
         glm::vec4 bbox_min = obj->getBBoxMin();
         glm::vec4 bbox_max = obj->getBBoxMax();
@@ -54,21 +57,22 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects){
         bbox_min -= glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
         bbox_max += glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
 
-        if (CheckCollisionPointPrism(future_pos_x, bbox_min, bbox_max)) {
+        if (CheckCollisionPointPrism(future_pos_x, bbox_min, bbox_max))
+        {
             collision_direction.x = 1.0f;
         }
-        if (CheckCollisionPointPrism(future_pos_y, bbox_min, bbox_max)) {
+        if (CheckCollisionPointPrism(future_pos_y, bbox_min, bbox_max))
+        {
             collision_direction.y = 1.0f;
         }
-        if (CheckCollisionPointPrism(future_pos_z, bbox_min, bbox_max)) {
+        if (CheckCollisionPointPrism(future_pos_z, bbox_min, bbox_max))
+        {
             collision_direction.z = 1.0f;
         }
-
     }
 
     return collision_direction;
 }
-
 
 void Player::updateForwardVector(const glm::vec4 &newForward)
 {
@@ -84,10 +88,52 @@ glm::vec4 Player::getNextDisplacement(void) const
     next_displacement += right * vel.x; // Right vector is (1, 0, 0)
     next_displacement.w = 0.0f;
 
-    next_displacement *= speed * (float) Callbacks::getDeltaTime();
-    next_displacement.y = vel.y * (float) Callbacks::getDeltaTime();
-    
+    next_displacement *= speed * (float)Callbacks::getDeltaTime();
+    next_displacement.y = vel.y * (float)Callbacks::getDeltaTime();
+
     return next_displacement;
+}
+
+void Player::initializeProjectiles(ObjModel *model)
+{
+    this->projectile_model = model;
+    num_projectiles = 0;
+}
+
+bool Player::can_shoot(void) const
+{
+    return shooting_cooldown >= shooting_speed;
+}
+
+void Player::move_projectiles()
+{
+    for (Projectile *p : projectiles)
+    {
+        p->move();
+        p->checkCollisions();
+    }
+}
+
+void Player::manage_shooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader)
+{
+    if (Callbacks::isLeftMouseButtonPressed() && can_shoot())
+    {
+        std::string projectile_name = "projectile_" + std::to_string(num_projectiles);
+        glm::vec4 starting_pos = position + forward;
+
+        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
+        new_proj->setHeight(0.01f);
+        virtual_scene.addObject(new_proj);
+        num_projectiles++;
+
+        this->projectiles.push_back(new_proj);
+        this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
+    }
+    else if(!can_shoot()){
+        shooting_cooldown += Callbacks::getDeltaTime();
+    }
+
+    move_projectiles();
 }
 
 void Player::move(Camera cam, SobjectMap objects)
@@ -95,7 +141,7 @@ void Player::move(Camera cam, SobjectMap objects)
     updateDirection();
     forward = cam.getForwardVector();
     right = cam.getRightVector();
-    
+
     glm::vec3 collision_direction = CheckCollisions(objects);
     vel.x *= (1.0f - collision_direction.x);
     vel.y *= (1.0f - collision_direction.y);
