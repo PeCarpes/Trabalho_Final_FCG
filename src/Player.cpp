@@ -27,8 +27,6 @@ void Player::fly(){
     {
         position.y -= 10.1f * Callbacks::getDeltaTime(); // Move down
     }
-
-
 }
 
 
@@ -46,14 +44,15 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects){
     glm::vec4 future_pos_y = glm::vec4(current_pos.x, future_pos.y - 1.0f, current_pos.z, 1.0f);
     glm::vec4 future_pos_z = glm::vec4(current_pos.x, current_pos.y, future_pos.z, 1.0f);
 
-
     for (const auto &pair : objects) {
         SceneObject *obj = pair.second;
         if (!obj->collidable()) continue; // Skip non-collidable objects
 
-        glm::vec4 obj_pos = obj->getPosition();
         glm::vec4 bbox_min = obj->getBBoxMin();
         glm::vec4 bbox_max = obj->getBBoxMax();
+
+        bbox_min -= glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
+        bbox_max += glm::vec4(0.15f, 0.0f, 0.15f, 0.0f);
 
         if (CheckCollisionPointPrism(future_pos_x, bbox_min, bbox_max)) {
             collision_direction.x = 1.0f;
