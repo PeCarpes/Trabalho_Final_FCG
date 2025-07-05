@@ -58,13 +58,10 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     glm::vec4 future_bbox_max_z = e.getBBoxMax() + displacement_z;
 
     int i = 0;
-    std::cout << std::endl;
     for (const auto &pair : objects) {
         SceneObject *obj = pair.second;
         if (!obj->collidable()) continue; // Skip non-collidable objects
 
-        i++;
-        std::cout << "Checking collision with object: " << obj->getName() << std::endl;
 
         glm::vec4 obj_bbox_min = obj->getBBoxMin();
         glm::vec4 obj_bbox_max = obj->getBBoxMax();
@@ -83,8 +80,6 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
         }
 
     }
-
-    std::cout << "Collision direction: " << collision_direction.x << ", " << collision_direction.y << ", " << collision_direction.z << std::endl;
 
     return collision_direction;
 }
