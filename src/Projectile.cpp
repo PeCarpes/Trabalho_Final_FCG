@@ -41,4 +41,9 @@ void Projectile::move()
     glm::vec4 displacement = direction * speed * deltaTime;
     setPosition(getPosition() + displacement);
     checkCollisions();
+
+    // Corrige a rotação do projétil para olhar na direção do movimento
+    float rot = atan2(this->direction.x, this->direction.z);
+    setRotationY(glm::degrees(rot));
+
 }
