@@ -17,7 +17,7 @@ private:
     static void drawScene();
     void addObject(SceneObject *object);
     void deleteMarkedObjects();
-    const std::map<std::string, SceneObject *>& getObjects() const { return objects; }
-    
+    const SobjectMap& getObjects() const { return objects; }
+
     SceneObject *operator[](const char *name);
 };

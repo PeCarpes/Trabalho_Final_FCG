@@ -123,7 +123,7 @@ void Player::move_projectiles(SobjectMap objects)
     }
 }
 
-void Player::manage_shooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader, SobjectMap objects)
+void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader, SobjectMap objects)
 {
     if (Callbacks::isLeftMouseButtonPressed() && can_shoot())
     {

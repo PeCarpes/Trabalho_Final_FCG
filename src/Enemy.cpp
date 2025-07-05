@@ -8,8 +8,53 @@ Enemy::Enemy(const ObjModel &model, const std::string &name, Shader shader, cons
     setSpeed(speed);
 }
 
+bool Enemy::canShoot(void) const
+{
+    return shooting_cooldown >= shooting_speed;
+}
+
+void Enemy::setProjectileModel(ObjModel *model)
+{
+    this->projectile_model = model;
+}
+
+void Enemy::moveProjectiles(SobjectMap objects){
+    for (Projectile *p : projectiles)
+    {
+        p->move(objects);
+        p->checkCollisions(objects);
+    }
+}
+
+void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
+                           glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
+                           const Camera &cam, Shader shader, SobjectMap objects)
+{
+    bool target_in_sight = targetInSight(target_bbox_min, target_bbox_max, objects);
+    if (canShoot() && target_in_sight)
+    {
+        std::string projectile_name = "enemy_projectile_" + std::to_string(num_projectiles);
+        glm::vec4 starting_pos = getPosition() + glm::vec4(0.0f, 0.5f, 0.0f, 0.0f);
+
+        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, true, starting_pos, target);
+        new_proj->setHeight(0.01f);
+        virtual_scene.addObject(new_proj);
+        num_projectiles++;
+        this->projectiles.push_back(new_proj);
+        this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
+    }
+    else if(target_in_sight)
+    {
+        shooting_cooldown += Callbacks::getDeltaTime();
+    }
+
+    moveProjectiles(objects);
+
+}
+
 void Enemy::move(SobjectMap objects, const glm::vec4 &target)
 {
+
     float deltaTime = Callbacks::getDeltaTime();
 
     this->direction = target - getPosition();
@@ -59,6 +104,9 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     for (const auto &pair : objects)
     {
         SceneObject *obj = pair.second;
+        if (obj == nullptr)
+            continue;
+
         if (!obj->collidable())
             continue; // Skip non-collidable objects
 
@@ -83,4 +131,46 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     }
 
     return collision_direction;
+}
+
+bool Enemy::targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax, SobjectMap objects) const
+{
+    glm::vec4 direction = (bboxMin + bboxMax) / 2.0f - getPosition();
+    float path_length = length((bboxMin + bboxMax) / 2.0f - getPosition());
+
+    if (length(direction) > 0.0f)
+        direction = direction / length(direction);
+    else
+    {
+        return true;
+    }
+
+    const float epsilon = 0.1f; // Tolerance for direction comparison
+    glm::vec4 position = getPosition();
+
+    float traveled_distance = 0.0f;
+    glm::vec4 current_point = position;
+    while (traveled_distance < path_length)
+    {
+        for (const auto &pair : objects)
+        {
+            SceneObject *obj = pair.second;
+            if (obj == nullptr)
+                continue;
+
+            if (!obj->collidable())
+                continue; // Skip non-collidable objects
+
+            glm::vec4 obj_bbox_min = obj->getBBoxMin();
+            glm::vec4 obj_bbox_max = obj->getBBoxMax();
+
+            if (CheckCollisionPointPrism(current_point, obj_bbox_min, obj_bbox_max))
+            {
+                return false; // Collision detected with an object
+            }
+        }
+        traveled_distance += length(direction * epsilon); // Move a small step in the direction
+        current_point += direction * epsilon;
+    }
+    return true;
 }

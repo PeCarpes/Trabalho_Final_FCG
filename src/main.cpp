@@ -141,6 +141,7 @@ int main(void)
     enemy.setID(ENEMY);
     g_VirtualScene.addObject(&enemy);
     enemy.setHeight(1.0f);
+    enemy.setProjectileModel(&projectile_obj);
 
     /* ===================================================== */
     /* =================== CUBE OBJECT ===================== */
@@ -198,27 +199,16 @@ int main(void)
 
         g_Player.move(cam, g_VirtualScene.getObjects());
         g_Player.fly();
-        g_Player.manage_shooting(g_VirtualScene, cam, shader);
-        glm::vec4 p_pos = g_Player.getPosition();
-
-        if(Callbacks::getKeyState(GLFW_KEY_P)){
-            for(const auto &pair : g_VirtualScene.getObjects())
-            {
-                const SceneObject &sobj = *pair.second;
-
-                std::cout << "Object: " << sobj.getName() << std::endl;
-            
-            }
-
-        }
+        g_Player.manageShooting(g_VirtualScene, cam, shader, g_VirtualScene.getObjects());
 
         weapon_sobj.setScale(glm::vec3(0.03f, 0.03f, 0.03f));
-        weapon_sobj.setRotationY(90.0f);
-
-        enemy.move(g_VirtualScene.getObjects(), p_pos);
+        weapon_sobj.setRotationY(90.0f);        
         
+        enemy.move(g_VirtualScene.getObjects(), g_Player.getPosition());
+        enemy.manageShooting(g_Player.getPosition(), g_VirtualScene, 
+                             g_Player.getBBoxMin(), g_Player.getBBoxMax(), cam, shader, g_VirtualScene.getObjects());
+
         shader.Use();
-        g_VirtualScene.deleteMarkedObjects();
         g_VirtualScene.drawScene();
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);

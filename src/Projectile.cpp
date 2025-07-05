@@ -1,4 +1,5 @@
 #include <Projectile.h>
+#include <iostream>
 
 Projectile::Projectile(const ObjModel &model,
                const std::string &name,
@@ -15,7 +16,8 @@ Projectile::Projectile(const ObjModel &model,
     setPosition(position);
 }
 
-void Projectile::checkCollisions()
+
+void Projectile::checkCollisions(SobjectMap objects)
 {
     glm::vec4 pos = getPosition();
 
@@ -26,24 +28,30 @@ void Projectile::checkCollisions()
         {
             glm::vec4 bbox_min = object->getBBoxMin();
             glm::vec4 bbox_max = object->getBBoxMax();
-
+    
             if (CheckCollisionPrismSphere(bbox_min, bbox_max, pos, radius))
             {
                 this->markForDeletion();
+                return;
             }
         }
     }
 }
 
-void Projectile::move()
-{
-    float deltaTime = Callbacks::getDeltaTime();
-    glm::vec4 displacement = direction * speed * deltaTime;
-    setPosition(getPosition() + displacement);
-    checkCollisions();
+void Projectile::move(SobjectMap objects)
+{ 
 
-    // Corrige a rotação do projétil para olhar na direção do movimento
+    if(this->markedForDeletion())
+    {
+        setPosition(glm::vec4(0.0f, -10000.0f, 0.0f, 1.0f));
+        return; // Do not move if the projectile is marked for deletion
+    }
+
+    // Makes the projectile face the right way
     float rot = atan2(this->direction.x, this->direction.z);
     setRotationY(glm::degrees(rot));
-
+    float deltaTime = Callbacks::getDeltaTime();
+    
+    glm::vec4 displacement = direction * speed * deltaTime;
+    setPosition(getPosition() + displacement);
 }

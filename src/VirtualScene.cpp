@@ -10,6 +10,9 @@ void VirtualScene::addObject(SceneObject *object)
 
 void VirtualScene::deleteMarkedObjects()
 {
+
+    std::cerr << "deleteMarkedObjects() not working!" << std::endl;
+
     for (const auto &pair : objects)
     {
         SceneObject *object = pair.second;

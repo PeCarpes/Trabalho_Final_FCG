@@ -37,7 +37,7 @@ class Player{
         public:
         void move_projectiles(SobjectMap objects);
         void move(Camera cam, SobjectMap objects);
-        void manage_shooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, SobjectMap objects);
+        void manageShooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, SobjectMap objects);
         void initializeWeapon(SceneObject* weapon);
         void initializeProjectiles(ObjModel* model);
         void setModel(SceneObject* obj) { player_obj = obj; }

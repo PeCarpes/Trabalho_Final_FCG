@@ -13,8 +13,8 @@ public:
                bool is_hostile,
                glm::vec4 position,
                glm::vec4 direction);
-    void move();
-    void checkCollisions();
+    void move(SobjectMap objects);
+    void checkCollisions(SobjectMap objects);
 
 private:
     Shader shader;
@@ -24,5 +24,4 @@ private:
     const float speed = 1.0f;
     bool is_hostile;
     glm::vec4 direction;
-    SobjectMap objects;
 };
