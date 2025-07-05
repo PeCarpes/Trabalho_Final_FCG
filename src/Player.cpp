@@ -1,6 +1,15 @@
 #include <../include/Player.h>
 #include <iostream>
 
+glm::vec4 Player::getBBoxMax(void)
+{
+    return glm::vec4(position.x + width / 2.0f, position.y + height, position.z + depth / 2.0f, 1.0f);
+}
+
+glm::vec4 Player::getBBoxMin(void){
+    return glm::vec4(position.x - width / 2.0f, position.y, position.z - depth / 2.0f, 1.0f);
+}
+
 void Player::initializeWeapon(SceneObject *weapon)
 {
     weapon_obj = weapon;
@@ -105,16 +114,16 @@ bool Player::can_shoot(void) const
     return shooting_cooldown >= shooting_speed;
 }
 
-void Player::move_projectiles()
+void Player::move_projectiles(SobjectMap objects)
 {
     for (Projectile *p : projectiles)
     {
-        p->move();
-        p->checkCollisions();
+        p->move(objects);
+        p->checkCollisions(objects);
     }
 }
 
-void Player::manage_shooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader)
+void Player::manage_shooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader, SobjectMap objects)
 {
     if (Callbacks::isLeftMouseButtonPressed() && can_shoot())
     {
@@ -133,7 +142,7 @@ void Player::manage_shooting(VirtualScene &virtual_scene, const Camera &cam, Sha
         shooting_cooldown += Callbacks::getDeltaTime();
     }
 
-    move_projectiles();
+    move_projectiles(objects);
 }
 
 void Player::move(Camera cam, SobjectMap objects)
