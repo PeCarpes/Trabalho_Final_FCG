@@ -52,12 +52,7 @@ glm::vec4 Camera::getRightVector() const{
 
 void Camera::processMouseMovement(bool constrain_pitch) {
 
-    glm::vec2 offset = Callbacks::getMouseOffset();
-
-    if (offset.x >= 100.0f || offset.y >= 100.0f) {
-        std::cout << "Mouse Offset: " << offset.x << ", " << offset.y << std::endl;
-    }
-    
+    glm::vec2 offset = Callbacks::getMouseOffset();    
 
     offset.x *= mouse_sensitivity;
     offset.y *= mouse_sensitivity;
