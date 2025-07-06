@@ -126,6 +126,8 @@ int main(void)
     weapon_texture.LoadTextureImage("../../data/Pistol_01_Albedo.png");
     Texture3D wall_texture;
     wall_texture.LoadTextureImage("../../data/wall_texture.png");
+    Texture3D ceiling_texure;
+    ceiling_texure.LoadTextureImage("../../data/ceiling_texture.png");
 
     /* =================== WEAPON OBJECT =================== */
     ObjModel weapon_obj("../../data/Pistol_01.obj");
@@ -235,8 +237,12 @@ int main(void)
                     glm::vec3(0.5f, 2.0f, 2.0f), glm::vec2(5.0f, 5.0f), WALL, 
                     glm::vec3(18.0f, 1.5f, 14.5f), g_VirtualScene); 
 
-
     /* ======================================================= */
+
+    CreateObject(cube_obj, "ceiling", shader, cam, ceiling_texure, 
+                    glm::vec3(10.0f, 0.1f, 9.5f), glm::vec2(2.0f, 2.0f), WALL, 
+                    glm::vec3(8.5f, 3.0f, 8.0f), g_VirtualScene); 
+
 
     TextRendering_Init();
 
