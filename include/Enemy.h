@@ -26,7 +26,7 @@ private:
     float speed;
     ObjModel *projectile_model = nullptr; // Model for the projectile
     int num_projectiles = 0;              // Used to name the projectiles uniquely
-    float shooting_speed = 2.0f;          // Time between shots in seconds
+    float shooting_speed = 1.0f;          // Time between shots in seconds
     float shooting_cooldown = 0.0f;       // Cooldown timer for shooting
     glm::vec4 direction;                  // Direction vector for movement
 
