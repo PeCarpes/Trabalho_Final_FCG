@@ -13,6 +13,7 @@ class Callbacks
 {
 private:
 
+    static inline double time_modifier = 1.0f;
     static inline double current_time = 0.0f;
     static inline double last_time = 0.0f;
     static inline double delta_time = 0.0f;
@@ -35,8 +36,10 @@ public:
     static float getScreenRatio();
     static glm::vec2 getMouseOffset();
 
+    static void updateTimeModifier(double modifier);
     static void updateDeltaTime();
     static double getDeltaTime();
+    static double getTimeModifier();
 
     static int getKeyState(int key);
 };

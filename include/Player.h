@@ -34,14 +34,17 @@ class Player{
         const float depth = 0.5f;
 
         bool can_shoot(void) const;                             // Check if the player can shoot based on cooldown
+        bool is_walking = false;
+        
         glm::vec3 CheckCollisions(std::map<std::string, SceneObject*> objects);
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
         void checkIfRunning(void);
-        
-        
+
         public:
+
+        void updateTimeModifier(void);
 
         void setSoundMap(SoundMap* sound_map) { sounds = sound_map; }
 

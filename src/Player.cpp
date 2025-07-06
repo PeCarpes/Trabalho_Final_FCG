@@ -1,6 +1,24 @@
 #include <../include/Player.h>
 #include <iostream>
 
+void Player::updateTimeModifier(void)
+{
+    double modifier = Callbacks::getTimeModifier();
+    if(is_walking){
+        modifier += Callbacks::getDeltaTime();
+    }
+    else{
+        modifier -= Callbacks::getDeltaTime();
+    }
+
+    if(modifier > 1.0f) modifier = 1.0f;
+    else if(modifier < 0.1f) modifier = 0.1f;
+
+    Callbacks::updateTimeModifier(modifier);
+
+    std::cout << "Time modifier: " << modifier << std::endl;
+}
+
 glm::vec4 Player::getBBoxMax(void)
 {
     return glm::vec4(position.x + width / 2.0f, position.y + height, position.z + depth / 2.0f, 1.0f);
@@ -119,8 +137,8 @@ glm::vec4 Player::getNextDisplacement(void) const
     next_displacement += right * vel.x; // Right vector is (1, 0, 0)
     next_displacement.w = 0.0f;
 
-    next_displacement *= speed * (float)Callbacks::getDeltaTime();
-    next_displacement.y = vel.y * (float)Callbacks::getDeltaTime();
+    next_displacement *= speed * (float)Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
+    next_displacement.y = vel.y * (float)Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
 
     return next_displacement;
 }
@@ -171,7 +189,7 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
     }
     else if (!can_shoot())
     {
-        shooting_cooldown += Callbacks::getDeltaTime();
+        shooting_cooldown += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
     }
 
     move_projectiles(objects, projectiles);
@@ -204,7 +222,7 @@ void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
     position += getNextDisplacement();
 
     static float sound_timer = 0.0f;
-    sound_timer += Callbacks::getDeltaTime();
+    sound_timer += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
 
     if (weapon_obj)
     {
@@ -233,7 +251,7 @@ void Player::updateDirection(void)
     bool move_right = Callbacks::getKeyState(GLFW_KEY_D) == GLFW_PRESS ||
                       Callbacks::getKeyState(GLFW_KEY_D) == GLFW_REPEAT;
 
-    bool moving = move_forward || move_backward || move_left || move_right;
+    is_walking = move_forward || move_backward || move_left || move_right;
 
     vel.w = 0.0f;
     vel.y = -1.0f;
@@ -262,12 +280,12 @@ void Player::updateDirection(void)
 
     if (weapon_obj)
     {
-        if (running && moving)
+        if (running && is_walking)
         {
             weapon_obj->setBobbingCPS(2.0f); // 2.0 cycles per second when running
         }
 
-        else if (moving)
+        else if (is_walking)
         {
             weapon_obj->setBobbingCPS(1.0f);
         }

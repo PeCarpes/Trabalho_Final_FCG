@@ -55,7 +55,7 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
     }
     else if (target_in_sight)
     {
-        shooting_cooldown += Callbacks::getDeltaTime();
+        shooting_cooldown += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
     }
 
     moveProjectiles(objects, projectiles);
@@ -83,8 +83,8 @@ void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &
 
 glm::vec4 Enemy::getNextDisplacement(glm::vec4 direction) const
 {
-    glm::vec4 next_displacement = direction * speed * (float)Callbacks::getDeltaTime();
-    next_displacement.y = direction.y * (float)Callbacks::getDeltaTime(); // Enemies fall down
+    glm::vec4 next_displacement = direction * speed * (float)(Callbacks::getDeltaTime() * Callbacks::getTimeModifier());
+    next_displacement.y = direction.y * (float)(Callbacks::getDeltaTime() * Callbacks::getTimeModifier()); // Enemies fall down
     next_displacement.w = 0.0f;
 
     return next_displacement;

@@ -16,6 +16,15 @@ void Callbacks::cursor_position_callback(GLFWwindow *window, double xpos, double
     cursor_pos = glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
+void Callbacks::updateTimeModifier(double modifier)
+{
+    time_modifier = modifier;
+}
+
+double Callbacks::getTimeModifier()
+{
+    return time_modifier;
+}
 
 void Callbacks::updateDeltaTime()
 {

@@ -51,8 +51,8 @@ void Projectile::move(std::map<std::string, SceneObject *> objects)
     // Makes the projectile face the right way
     float rot = atan2(this->direction.x, this->direction.z);
     setRotationY(glm::degrees(rot));
-    float deltaTime = Callbacks::getDeltaTime();
-    
+    float deltaTime = Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
+
     glm::vec4 displacement = direction * speed * deltaTime;
     setPosition(getPosition() + displacement);
 }

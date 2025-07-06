@@ -135,6 +135,7 @@ void Game::movePlayer()
 {
     player.move(camera, objects);
     player.checkCollisionsWithProjectiles(projectiles);
+    player.updateTimeModifier();
 }
 
 /*============= GET FUNCTIONS ============*/
