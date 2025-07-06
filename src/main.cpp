@@ -31,6 +31,18 @@ void TextRendering_ShowModelViewProjection(GLFWwindow *window, glm::mat4 project
 void TextRendering_ShowProjection(GLFWwindow *window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow *window);
 
+// Função auxiliar para criar e adicionar uma parede ao VirtualScene.
+SceneObject* CreateObject(const ObjModel& cube_obj,
+                        const std::string& name,
+                        Shader& shader,
+                        Camera& cam,
+                        Texture3D& wall_texture,
+                        const glm::vec3& scale,
+                        const glm::vec2& texture_scale,
+                        int id,
+                        const glm::vec3& position,
+                        VirtualScene& scene);
+
 const int screen_width = 1200;
 const int screen_height = 800;
 
@@ -155,33 +167,74 @@ int main(void)
     g_Player.initializeProjectiles(&projectile_obj);
 
     /* ======================= GROUND ====================== */
-    SceneObject floor_sobj = SceneObject(cube_obj,
-                                           "floor",                 
-                                           shader, cam, true, true);
-    floor_sobj.setTexture(floor_texture);
-    floor_sobj.setScale(glm::vec3(5.0f, 1.0f, 5.0f));
-    floor_sobj.setTextureScale(glm::vec2(50.0f, 50.0f));
-    floor_sobj.setID(CUBE);
-    floor_sobj.setPosition(glm::vec3(4.5f, 0.0f, 4.5f));
-    g_VirtualScene.addObject(&floor_sobj);
+
+    CreateObject(cube_obj, "floor1", shader, cam, floor_texture, 
+                    glm::vec3(5.0f, 1.0f, 5.0f), glm::vec2(50.0f, 50.0f), CUBE, 
+                    glm::vec3(4.5f, 0.0f, 4.5f), g_VirtualScene); 
+
+    CreateObject(cube_obj, "floor2", shader, cam, floor_texture, 
+                    glm::vec3(5.0f, 1.0f, 3.0f), glm::vec2(50.0f, 50.0f), CUBE, 
+                    glm::vec3(4.5f, 0.0f, 12.5f), g_VirtualScene);
+
+    CreateObject(cube_obj, "floor3", shader, cam, floor_texture, 
+                    glm::vec3(4.0f, 1.0f, 2.0f), glm::vec2(50.0f, 50.0f), CUBE, 
+                    glm::vec3(13.5f, 0.0f, 14.5f), g_VirtualScene);
 
     /* ===================================================== */
     /* ======================== WALLS ====================== */
+    
+    // Create pillars in main hall
     for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 2; j++)
             {
-                SceneObject *newPillar = new SceneObject(cube_obj,
-                                                "pillar_" + std::to_string(i) + "_" + std::to_string(j),
-                                                shader, cam, true, true);
-                newPillar->setTexture(wall_texture);
-                newPillar->setScale(glm::vec3(0.5f, 2.0f, 0.5f));
-                newPillar->setTextureScale(glm::vec2(5.0f, 5.0f));
-                newPillar->setID(WALL);
-                newPillar->setPosition(glm::vec3(2 + (5 * j), 1.5f, 2 + (5 * i)));
-                g_VirtualScene.addObject(newPillar);
+                CreateObject(cube_obj, "pillar_" + std::to_string(i) + "_" + std::to_string(j),
+                    shader, cam, wall_texture, 
+                    glm::vec3(0.5f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(2 + (5 * j), 1.5f, 2 + (5 * i)), g_VirtualScene);
             }
         }
+
+
+    
+    // Create walls around the main hall
+    
+    CreateObject(cube_obj, "wall_1", shader, cam, wall_texture, 
+                    glm::vec3(5.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(4.5f, 1.5f, -1.0f), g_VirtualScene);   
+
+    CreateObject(cube_obj, "wall_2", shader, cam, wall_texture, 
+                    glm::vec3(0.5f, 2.0f, 8.0f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(-1.0f, 1.5f, 7.5f), g_VirtualScene);
+
+    CreateObject(cube_obj, "wall_3", shader, cam, wall_texture, 
+                    glm::vec3(4.0f, 2.0f, 6.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(13.5f, 1.5f, 6.0f), g_VirtualScene);
+
+    CreateObject(cube_obj, "wall_4", shader, cam, wall_texture,
+                    glm::vec3(2.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(1.5f, 1.5f, 10.0f), g_VirtualScene);
+
+    CreateObject(cube_obj, "wall_5", shader, cam, wall_texture,
+                    glm::vec3(2.0f, 2.0f, 2.0f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(7.5f, 1.5f, 11.5f), g_VirtualScene);
+    
+    CreateObject(cube_obj, "wall_6", shader, cam, wall_texture,
+                    glm::vec3(2.5f, 2.0f, 1.0f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(3.0f, 1.5f, 12.5f), g_VirtualScene);
+
+    CreateObject(cube_obj, "wall_7", shader, cam, wall_texture, 
+                    glm::vec3(5.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(4.5f, 1.5f, 16.0f), g_VirtualScene);  
+    
+    CreateObject(cube_obj, "wall_8", shader, cam, wall_texture, 
+                    glm::vec3(4.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(13.5f, 1.5f, 17.0f), g_VirtualScene);
+
+    CreateObject(cube_obj, "wall_9", shader, cam, wall_texture, 
+                    glm::vec3(0.5f, 2.0f, 2.0f), glm::vec2(5.0f, 5.0f), WALL, 
+                    glm::vec3(18.0f, 1.5f, 14.5f), g_VirtualScene); 
+
 
     /* ======================================================= */
 
@@ -351,4 +404,26 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow *window)
     float charwidth = TextRendering_CharWidth(window);
 
     TextRendering_PrintString(window, buffer, 1.0f - (numchars + 1) * charwidth, 1.0f - lineheight, 1.0f);
+}
+
+// Helper function to create and add an object to the scene
+SceneObject* CreateObject(const ObjModel& cube_obj,
+                        const std::string& name,
+                        Shader& shader,
+                        Camera& cam,
+                        Texture3D& object_texture,
+                        const glm::vec3& scale,
+                        const glm::vec2& texture_scale,
+                        int id,
+                        const glm::vec3& position,
+                        VirtualScene& scene)
+{
+    SceneObject* newObject = new SceneObject(cube_obj, name, shader, cam, true, true);
+    newObject->setTexture(object_texture);
+    newObject->setScale(scale);
+    newObject->setTextureScale(texture_scale);
+    newObject->setID(id);
+    newObject->setPosition(position);
+    scene.addObject(newObject);
+    return newObject;
 }

@@ -89,7 +89,7 @@ void main()
     if (object_id == WEAPON)
     {
         Ks = vec3(0.5, 0.5, 0.5);
-        Ka = Ks * 0.0;
+        Ka = Ks * 0.05;
         Kd = texture(TextureImage, texcoords).rgb;   
         q = 64.0;
     }
