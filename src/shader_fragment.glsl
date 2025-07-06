@@ -55,7 +55,7 @@ void main()
     if(object_id == PROJECTILE)
     {
         color = vec4(gouraud_vertex_color, 1.0);
-        color.rgb = pow(color.rgb, vec3(1.0/2.2));
+        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
     }
     else
     {

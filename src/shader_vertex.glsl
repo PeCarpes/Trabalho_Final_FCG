@@ -68,15 +68,18 @@ void main()
     {
         vec4 normal_world = normalize(inverse(transpose(model)) * normal_coefficients);
 
-        vec4 camera_position = inverse(view)[3];
+        vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
+        vec4 camera_position = inverse(view) * origin;
+
+        vec4 p = position_world;
         vec3 n = normal_world.xyz;
-        vec3 v = normalize(camera_position.xyz - position_world.xyz);
+        vec3 v = normalize(camera_position.xyz - p.xyz);
         vec3 l = normalize(vec3(1.0, 1.0, 0.5));
 
         // Modelo Blinn-Phong
         vec3 h = normalize(v + l);
 
-        // Pega a normal da superfície e a torna positiva.
+                // Pega a normal da superfície e a torna positiva.
         vec3 blend_weights = abs(n.xyz);
 
         // "Suaviza" os pesos para evitar transições duras entre as faces.
@@ -86,9 +89,9 @@ void main()
         blend_weights = normalize(blend_weights);
 
         // Calcula as três projeções de textura possíveis.
-        vec2 uv_top_down   = position_world.xz; // Projeção de cima (XZ)
-        vec2 uv_front_back = position_world.xy; // Projeção da frente (XY)
-        vec2 uv_left_right = position_world.zy; // Projeção do lado (ZY)
+        vec2 uv_top_down   = position_world.xz * vec2(10, 10); // Projeção de cima (XZ)
+        vec2 uv_front_back = position_world.xy * vec2(10, 10); // Projeção da frente (XY)
+        vec2 uv_left_right = position_world.zy * vec2(10, 10); // Projeção do lado (ZY)
 
         // Lê a cor da textura para cada uma das três projeções.
         vec3 top_down_color   = texture(TextureImage, uv_top_down).rgb;
@@ -102,12 +105,9 @@ void main()
 
         vec3 Kd = triplanar_color;
 
-        // Cor difusa da textura
-        // vec3 Kd = texture(TextureImage, texture_coefficients).rgb;
-
-        vec3 Ks = vec3(1.0, 1.0, 1.0); // Cor especular
-        vec3 Ka = vec3(0.1, 0.1, 0.1); // Cor ambiente
-        float q = 1.0f; // Exponente de brilho
+        vec3 Ks = vec3(0.5, 0.5, 0.5); // Cor especular
+        vec3 Ka = vec3(0.2, 0.2, 0.2); // Cor ambiente
+        float q = 32.0f; // Exponente de brilho
 
         vec3 I = vec3(1.0, 1.0, 1.0);
         vec3 Ia = vec3(0.2, 0.2, 0.2);

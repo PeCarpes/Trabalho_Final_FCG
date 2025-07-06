@@ -116,7 +116,23 @@ int main(void)
     /* =================== SCENE OBJECTS =================== */
 
     game.addSceneObject("weapon_sobj",     "weapon_obj",     "weapon_texture", WEAPON,     false, false);
+
+    // etapa 1
     game.addEnemy(glm::vec4(4.5f, 1.5f, 0.0f, 1.0f));
+    game.addEnemy(glm::vec4(1.5f, 1.5f, 4.5f, 1.0f));
+    game.addEnemy(glm::vec4(7.5f, 1.5f, 4.5f, 1.0f));
+    game.addEnemy(glm::vec4(3.5f, 1.5f, 8.5f, 1.0f));
+    game.addEnemy(glm::vec4(5.5f, 1.5f, 8.5f, 1.0f));
+
+    // etapa 2
+    game.addEnemy(glm::vec4(3.0f, 1.5f, 11.0f, 1.0f));
+    game.addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
+
+    // etapa 3
+    game.addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
+    game.addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
+    game.addEnemy(glm::vec4(16.0f, 1.5f, 14.0f, 1.0f));
+    game.addEnemy(glm::vec4(16.0f, 1.5f, 15.0f, 1.0f));
 
     /* =================== INITIALIZERS =================== */
 
