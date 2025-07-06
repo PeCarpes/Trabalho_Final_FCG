@@ -60,6 +60,8 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects)
         if (!obj->collidable())
             continue; // Skip non-collidable objects
 
+        std::cout << "Checking collision with: " << obj->getName() << std::endl;
+
         glm::vec4 bbox_min = obj->getBBoxMin();
         glm::vec4 bbox_max = obj->getBBoxMax();
 
@@ -130,7 +132,7 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         std::string projectile_name = "projectile_" + std::to_string(num_projectiles);
         glm::vec4 starting_pos = position + forward;
 
-        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
+        Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
         new_proj->setHeight(0.01f);
         virtual_scene.addObject(new_proj);
         num_projectiles++;
@@ -152,6 +154,7 @@ void Player::move(Camera cam, SobjectMap objects)
     right = cam.getRightVector();
 
     glm::vec3 collision_direction = CheckCollisions(objects);
+    std::cout << "Collision Direction: " << collision_direction.x << ", " << collision_direction.y << ", " << collision_direction.z << std::endl;
     vel.x *= (1.0f - collision_direction.x);
     vel.y *= (1.0f - collision_direction.y);
     vel.z *= (1.0f - collision_direction.z);

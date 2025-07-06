@@ -32,7 +32,7 @@ private:
     bool useViewMatrix = true; // If false, uses the identity matrix
     GLuint GpuProgramID;
     std::string name;
-    ObjModel objModel;
+    const ObjModel *objModel;
 
     GLuint texture_id;
     GLuint object_id;
@@ -103,7 +103,7 @@ private:
     bool markedForDeletion() const { return to_be_deleted; }
     void markForDeletion() { to_be_deleted = true; }
 
-    SceneObject(const ObjModel &model, 
+    SceneObject(const ObjModel *model, 
                 const std::string &name, 
                 Shader shader, 
                 const Camera &cam, 

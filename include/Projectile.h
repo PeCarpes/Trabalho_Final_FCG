@@ -6,7 +6,7 @@
 class Projectile : public SceneObject
 {
 public:
-    Projectile(const ObjModel &model,
+    Projectile(const ObjModel *model,
                const std::string &name,
                Shader shader,
                const Camera &cam,

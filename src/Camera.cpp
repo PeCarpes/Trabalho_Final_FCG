@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-Camera::Camera(const glm::vec4* track_position = nullptr, glm::vec4 up, float yaw, float pitch) 
+Camera::Camera(const glm::vec4* track_position, glm::vec4 up, float yaw, float pitch) 
     : forward_vector(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)), movement_speed(SPEED), mouse_sensitivity(SENSITIVITY), fov(FOV) {
     this->position = track_position;
     this->world_up = up;

@@ -1,8 +1,8 @@
 #include <Enemy.h>
 #include <iostream>
 
-Enemy::Enemy(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, glm::vec3 position, float speed)
-    : SceneObject(model, name, shader, cam, true)
+Enemy::Enemy(const ObjModel *model, const std::string &name, Shader shader, const Camera &cam, glm::vec3 position, float speed)
+    : SceneObject(model, name, shader, cam, true, false)
 {
     setPosition(position);
     setSpeed(speed);
@@ -38,7 +38,7 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         starting_pos.y = target.y;
         glm::vec4 direction = target - starting_pos;
 
-        Projectile *new_proj = new Projectile(*projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
+        Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
         new_proj->setHeight(0.05f);
         virtual_scene.addObject(new_proj);
         num_projectiles++;
@@ -56,8 +56,6 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
 
 void Enemy::move(SobjectMap objects, const glm::vec4 &target)
 {
-
-    float deltaTime = Callbacks::getDeltaTime();
 
     this->direction = target - getPosition();
     if (length(this->direction) > 0.0f)

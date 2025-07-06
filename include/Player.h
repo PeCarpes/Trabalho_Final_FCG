@@ -40,8 +40,12 @@ class Player{
         void manageShooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, SobjectMap objects);
         void initializeWeapon(SceneObject* weapon);
         void initializeProjectiles(ObjModel* model);
-        void setModel(SceneObject* obj) { player_obj = obj; }
         void fly();
+        
+        void setPosition(const glm::vec4& pos) { position = pos; }
+        void setModel(SceneObject* obj) { player_obj = obj; }
+
+
         glm::vec4* getPositionPtr(void) { return &position; }
         glm::vec4 getPosition(void) const { return position; }
         glm::vec4 getForward(void) const { return forward; }
@@ -51,7 +55,7 @@ class Player{
         glm::vec4 getBBoxMax(void);
 
         Player(SceneObject* obj, glm::vec4 pos);
-
+        Player() = default; // Default constructor for serialization purposes
 
 
         

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-SceneObject::SceneObject(const ObjModel &model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix, bool collidable)
+SceneObject::SceneObject(const ObjModel* model, const std::string &name, Shader shader, const Camera &cam, bool useViewMatrix, bool collidable)
     : objModel(model),
       position(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)),
       upVector(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)),
@@ -121,7 +121,7 @@ void SceneObject::setHeight(float height)
 
 glm::vec4 SceneObject::getBBoxMin() const
 {
-    glm::vec4 bboxMin = glm::vec4(objModel.getBboxMin(), 1.0f);
+    glm::vec4 bboxMin = glm::vec4(objModel->getBboxMin(), 1.0f);
 
     bboxMin = Matrix_Translate(position.x, position.y, position.z) *
             Matrix_Scale(scale.x, scale.y, scale.z) * 
@@ -133,7 +133,7 @@ glm::vec4 SceneObject::getBBoxMin() const
 
 glm::vec4 SceneObject::getBBoxMax() const
 {
-   glm::vec4 bboxMax = glm::vec4(objModel.getBboxMax(), 1.0f);
+   glm::vec4 bboxMax = glm::vec4(objModel->getBboxMax(), 1.0f);
 
     bboxMax = Matrix_Translate(position.x, position.y, position.z) *
             Matrix_Scale(scale.x, scale.y, scale.z) *
@@ -172,8 +172,8 @@ void SceneObject::draw() const
 
     glUseProgram(GpuProgramID);
 
-    shader.SetUniform("bbox_min", objModel.getBboxMin());
-    shader.SetUniform("bbox_max", objModel.getBboxMax());    
+    shader.SetUniform("bbox_min", objModel->getBboxMin());
+    shader.SetUniform("bbox_max", objModel->getBboxMax());    
     shader.SetUniform("object_id", (int) object_id);
     shader.SetUniform("model", model);
     shader.SetUniform("projection", cam.getProjectionMatrix());
@@ -186,5 +186,5 @@ void SceneObject::draw() const
     // Diz ao shader para usar a textura da unidade 0
     glUniform1i(glGetUniformLocation(this->GpuProgramID, "TextureImage"), 0);
 
-    objModel.draw();
+    objModel->draw();
 }

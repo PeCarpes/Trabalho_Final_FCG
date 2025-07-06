@@ -1,7 +1,7 @@
 #include <Projectile.h>
 #include <iostream>
 
-Projectile::Projectile(const ObjModel &model,
+Projectile::Projectile(const ObjModel *model,
                const std::string &name,
                Shader shader,
                const Camera &cam,

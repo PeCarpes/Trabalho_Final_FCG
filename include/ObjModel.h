@@ -17,6 +17,8 @@ public:
     void BuildTriangles();
     void draw() const;
 
+    void setName(const std::string& name) { this->name = name; }
+
     std::vector<ObjModel*> children = {};
     
     float height() const;
