@@ -98,65 +98,56 @@ int main(void)
 #define WALL 4
 #define PROJECTILE 5
 
-<<<<<<< Updated upstream
-    Texture3D floor_texture;
-    floor_texture.LoadTextureImage("../../data/floor_texture.png");
-    Texture3D weapon_texture;
-    weapon_texture.LoadTextureImage("../../data/Pistol_01_Albedo.png");
-    Texture3D wall_texture;
-    wall_texture.LoadTextureImage("../../data/wall_texture.png");
-    Texture3D ceiling_texure;
-    ceiling_texure.LoadTextureImage("../../data/ceiling_texture.png");
-=======
     Game game = Game();
     game.initializeShader();
->>>>>>> Stashed changes
 
     Callbacks::initializeCallbacks(window);
 
+    /* =================== TEXTURES =================== */
+
+    game.addTexture("ceiling_texture", "../../data/ceiling_texture.png");
     game.addTexture("floor_texture",  "../../data/floor_texture.png");
     game.addTexture("weapon_texture", "../../data/Pistol_01_Albedo.png");
     game.addTexture("wall_texture",   "../../data/wall_texture.png");
+
+    /* =================== OBJECT MODELS =================== */
 
     game.addObjModel("weapon_obj",     "../../data/Pistol_01.obj");
     game.addObjModel("projectile_obj", "../../data/projectile.obj");
     game.addObjModel("enemy_obj",      "../../data/enemy.obj");
     game.addObjModel("cube_obj",       "../../data/cube.obj");
 
+    /* =================== SCENE OBJECTS =================== */
+
     game.addSceneObject("weapon_sobj",     "weapon_obj",     "weapon_texture", WEAPON,     false, false);
-    game.addSceneObject("floor_sobj",      "cube_obj",       "floor_texture",  CUBE,       true,  true);
     game.addEnemy(glm::vec4(4.5f, 3.0f, 4.5f, 1.0f));
+
+    /* =================== INITIALIZERS =================== */
 
     game.initializePlayer("weapon_sobj", "projectile_obj");
     game.initializeCamera();
 
-    game.setObjectScale("floor_sobj", glm::vec3(5.0f, 1.0f, 5.0f));
-    game.setObjectTextureScale("floor_sobj", glm::vec2(50.0f, 50.0f));
-    game.setObjectPosition("floor_sobj", glm::vec4(4.5f, 0.0f, 4.5f, 1.0f));
+    /* =================== MODIFY OBJECTS =================== */
 
-<<<<<<< Updated upstream
-    /* ===================================================== */
-    /* ======================= PLAYER ====================== */
-    g_Player.initializeWeapon(&weapon_sobj);
-    g_Player.initializeProjectiles(&projectile_obj);
-
-    /* ======================= GROUND ====================== */
-
-    CreateObject(cube_obj, "floor1", shader, cam, floor_texture, 
-                    glm::vec3(5.0f, 1.0f, 5.0f), glm::vec2(50.0f, 50.0f), CUBE, 
-                    glm::vec3(4.5f, 0.0f, 4.5f), g_VirtualScene); 
-
-    CreateObject(cube_obj, "floor2", shader, cam, floor_texture, 
-                    glm::vec3(5.0f, 1.0f, 3.0f), glm::vec2(50.0f, 50.0f), CUBE, 
-                    glm::vec3(4.5f, 0.0f, 12.5f), g_VirtualScene);
-
-    CreateObject(cube_obj, "floor3", shader, cam, floor_texture, 
-                    glm::vec3(4.0f, 1.0f, 2.0f), glm::vec2(50.0f, 50.0f), CUBE, 
-                    glm::vec3(13.5f, 0.0f, 14.5f), g_VirtualScene);
-=======
     game.setObjectScale("weapon_sobj", glm::vec3(0.03f, 0.03f, 0.03f));
     game.setObjectRotation("weapon_sobj", glm::vec3(0.0f, 90.0f, 0.0f));
->>>>>>> Stashed changes
+
+    /* =================== CREATE LEVEL OBJECTS =================== */
+
+    game.addSceneObject("floor1", "cube_obj", "floor_texture", CUBE, true, true);
+    game.setObjectScale("floor1", glm::vec3(5.0f, 1.0f, 5.0f));
+    game.setObjectTextureScale("floor1", glm::vec2(50.0f, 50.0f));
+    game.setObjectPosition("floor1", glm::vec4(4.5f, 0.0f, 4.5f, 1.0f));
+    
+    game.addSceneObject("floor2", "cube_obj", "floor_texture", CUBE, true, true);
+    game.setObjectScale("floor2", glm::vec3(5.0f, 1.0f, 3.0f));
+    game.setObjectTextureScale("floor2", glm::vec2(50.0f, 50.0f));
+    game.setObjectPosition("floor2", glm::vec4(4.5f, 0.0f, 12.5f, 1.0f));
+
+    game.addSceneObject("floor3", "cube_obj", "floor_texture", CUBE, true, true);
+    game.setObjectScale("floor3", glm::vec3(4.0f, 1.0f, 2.0f));
+    game.setObjectTextureScale("floor3", glm::vec2(50.0f, 50.0f));
+    game.setObjectPosition("floor3", glm::vec4(13.5f, 0.0f, 14.5f, 1.0f));
 
     /* ===================================================== */
     /* ======================== WALLS ====================== */
@@ -166,67 +157,64 @@ int main(void)
         {
             for (int j = 0; j < 2; j++)
             {
-<<<<<<< Updated upstream
-                CreateObject(cube_obj, "pillar_" + std::to_string(i) + "_" + std::to_string(j),
-                    shader, cam, wall_texture, 
-                    glm::vec3(0.5f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(2 + (5 * j), 1.5f, 2 + (5 * i)), g_VirtualScene);
-=======
                 std::string name = "pillar_" + std::to_string(i) + "_" + std::to_string(j);
                 game.addSceneObject(name, "cube_obj", "wall_texture", WALL, true, true);
                 game.setObjectScale(name, glm::vec3(0.5f, 2.0f, 0.5f));
                 game.setObjectTextureScale(name, glm::vec2(5.0f, 5.0f));
                 game.setObjectPosition(name, glm::vec4(2 + (5 * j), 1.5f, 2 + (5 * i), 1.0f));
->>>>>>> Stashed changes
             }
         }
-
-
     
     // Create walls around the main hall
+    game.addSceneObject("wall_1", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_1", glm::vec3(5.0f, 2.0f, 0.5f));
+    game.setObjectTextureScale("wall_1", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_1", glm::vec4(4.5f, 1.5f, -1.0f, 1.0f));
+
+    game.addSceneObject("wall_2", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_2", glm::vec3(0.5f, 2.0f, 8.0f));
+    game.setObjectTextureScale("wall_2", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_2", glm::vec4(-1.0f, 1.5f, 7.5f, 1.0f));
+
+    game.addSceneObject("wall_3", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_3", glm::vec3(4.0f, 2.0f, 6.5f));
+    game.setObjectTextureScale("wall_3", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_3", glm::vec4(13.5f, 1.5f, 6.0f, 1.0f));
+
+    game.addSceneObject("wall_4", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_4", glm::vec3(2.0f, 2.0f, 0.5f));
+    game.setObjectTextureScale("wall_4", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_4", glm::vec4(1.5f, 1.5f, 10.0f, 1.0f));
+
+    game.addSceneObject("wall_5", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_5", glm::vec3(2.0f, 2.0f, 2.0f));
+    game.setObjectTextureScale("wall_5", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_5", glm::vec4(7.5f, 1.5f, 11.5f, 1.0f));
+
+    game.addSceneObject("wall_6", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_6", glm::vec3(2.5f, 2.0f, 1.0f));
+    game.setObjectTextureScale("wall_6", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_6", glm::vec4(3.0f, 1.5f, 12.5f, 1.0f));
+
+    game.addSceneObject("wall_7", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_7", glm::vec3(5.0f, 2.0f, 0.5f));
+    game.setObjectTextureScale("wall_7", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_7", glm::vec4(4.5f, 1.5f, 16.0f, 1.0f));
     
-    CreateObject(cube_obj, "wall_1", shader, cam, wall_texture, 
-                    glm::vec3(5.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(4.5f, 1.5f, -1.0f), g_VirtualScene);   
+    game.addSceneObject("wall_8", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_8", glm::vec3(4.0f, 2.0f, 0.5f));
+    game.setObjectTextureScale("wall_8", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_8", glm::vec4(13.5f, 1.5f, 17.0f, 1.0f));
 
-    CreateObject(cube_obj, "wall_2", shader, cam, wall_texture, 
-                    glm::vec3(0.5f, 2.0f, 8.0f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(-1.0f, 1.5f, 7.5f), g_VirtualScene);
+    game.addSceneObject("wall_9", "cube_obj", "wall_texture", WALL, true, true);
+    game.setObjectScale("wall_9", glm::vec3(0.5f, 2.0f, 2.0f));
+    game.setObjectTextureScale("wall_9", glm::vec2(5.0f, 5.0f));
+    game.setObjectPosition("wall_9", glm::vec4(18.0f, 1.5f, 14.5f, 1.0f));
 
-    CreateObject(cube_obj, "wall_3", shader, cam, wall_texture, 
-                    glm::vec3(4.0f, 2.0f, 6.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(13.5f, 1.5f, 6.0f), g_VirtualScene);
-
-    CreateObject(cube_obj, "wall_4", shader, cam, wall_texture,
-                    glm::vec3(2.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(1.5f, 1.5f, 10.0f), g_VirtualScene);
-
-    CreateObject(cube_obj, "wall_5", shader, cam, wall_texture,
-                    glm::vec3(2.0f, 2.0f, 2.0f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(7.5f, 1.5f, 11.5f), g_VirtualScene);
-    
-    CreateObject(cube_obj, "wall_6", shader, cam, wall_texture,
-                    glm::vec3(2.5f, 2.0f, 1.0f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(3.0f, 1.5f, 12.5f), g_VirtualScene);
-
-    CreateObject(cube_obj, "wall_7", shader, cam, wall_texture, 
-                    glm::vec3(5.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(4.5f, 1.5f, 16.0f), g_VirtualScene);  
-    
-    CreateObject(cube_obj, "wall_8", shader, cam, wall_texture, 
-                    glm::vec3(4.0f, 2.0f, 0.5f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(13.5f, 1.5f, 17.0f), g_VirtualScene);
-
-    CreateObject(cube_obj, "wall_9", shader, cam, wall_texture, 
-                    glm::vec3(0.5f, 2.0f, 2.0f), glm::vec2(5.0f, 5.0f), WALL, 
-                    glm::vec3(18.0f, 1.5f, 14.5f), g_VirtualScene); 
-
-    /* ======================================================= */
-
-    CreateObject(cube_obj, "ceiling", shader, cam, ceiling_texure, 
-                    glm::vec3(10.0f, 0.1f, 9.5f), glm::vec2(2.0f, 2.0f), WALL, 
-                    glm::vec3(8.5f, 3.0f, 8.0f), g_VirtualScene); 
-
+    game.addSceneObject("ceiling", "cube_obj", "ceiling_texture", WALL, true, true);
+    game.setObjectScale("ceiling", glm::vec3(10.0f, 0.1f, 9.5f));
+    game.setObjectTextureScale("ceiling", glm::vec2(2.0f, 2.0f));
+    game.setObjectPosition("ceiling", glm::vec4(8.5f, 3.0f, 8.0f, 1.0f));
 
     TextRendering_Init();
 
@@ -392,24 +380,3 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow *window)
     TextRendering_PrintString(window, buffer, 1.0f - (numchars + 1) * charwidth, 1.0f - lineheight, 1.0f);
 }
 
-// Helper function to create and add an object to the scene
-SceneObject* CreateObject(const ObjModel& cube_obj,
-                        const std::string& name,
-                        Shader& shader,
-                        Camera& cam,
-                        Texture3D& object_texture,
-                        const glm::vec3& scale,
-                        const glm::vec2& texture_scale,
-                        int id,
-                        const glm::vec3& position,
-                        VirtualScene& scene)
-{
-    SceneObject* newObject = new SceneObject(cube_obj, name, shader, cam, true, true);
-    newObject->setTexture(object_texture);
-    newObject->setScale(scale);
-    newObject->setTextureScale(texture_scale);
-    newObject->setID(id);
-    newObject->setPosition(position);
-    scene.addObject(newObject);
-    return newObject;
-}
