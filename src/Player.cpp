@@ -198,8 +198,19 @@ void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
     vel.z *= (1.0f - collision_direction.z);
     position += getNextDisplacement();
 
+    static float sound_timer = 0.0f;
+    sound_timer += Callbacks::getDeltaTime();
+
     if (weapon_obj)
+    {
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
+
+        if (sound_timer > 1/speed)
+        {
+            ma_sound_start((*sounds)["walking_sound"]);
+            sound_timer = 0.0f; // Reset the sound timer
+        }
+    }
 }
 
 void Player::updateDirection(void)

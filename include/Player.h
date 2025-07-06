@@ -6,6 +6,9 @@
 #include <Camera.h>
 #include <collisions.h>
 #include <Projectile.h>
+#include <miniaudio.h>
+
+typedef std::map<std::string, ma_sound *> SoundMap;
 
 class Player{
 
@@ -20,6 +23,8 @@ class Player{
         SceneObject* weapon_obj = nullptr;                      // SceneObject representing the weapon
         ObjModel* projectile_model = nullptr;                   // Model for the projectile
         Texture3D* projectile_texture = nullptr;                // Texture for the projectile
+        SoundMap* sounds = nullptr;
+
         int num_projectiles = 0;                                // Used to name the projectiles uniquely
         float shooting_speed = 0.5f;                            // Time between shots in seconds
         float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
@@ -37,7 +42,9 @@ class Player{
         
         
         public:
-        
+
+        void setSoundMap(SoundMap* sound_map) { sounds = sound_map; }
+
         void checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles);
         void setProjectileTexture(Texture3D* texture) { projectile_texture = texture; }
         void move_projectiles(std::map<std::string, SceneObject*> objects, std::map<std::string, Projectile *> &projectiles);

@@ -43,12 +43,12 @@ private:
 
     Bezier bobbing_curve;
     float bobbing_cps = 1.0f; // Cycles per second for bobbing
-
+    
     bool isCollidable;
     MappingMode mapping_mode;
-
+    
     bool to_be_deleted = false; // Flag to mark for deletion
-
+    
     public:
     void setPosition(const glm::vec3 &newPosition);
     void addPosition(const glm::vec3 &deltaPosition);
@@ -68,7 +68,7 @@ private:
     void setBobbingCurve(const Bezier &curve) { bobbing_curve = curve; }
     void setBobbingCPS(float cps) { bobbing_cps = cps; is_bobbing = true; }
     void bob(void);    
-
+    
     glm::vec4 getBBoxMin() const;
     glm::vec4 getBBoxMax() const;
 

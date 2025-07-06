@@ -40,6 +40,9 @@ void Game::initializePlayer(const std::string &weapon_model_name, const std::str
     player.initializeWeapon(objects[weapon_model_name]);
     player.initializeProjectiles(obj_models[projectile_objmodel_name]);
     player.setProjectileTexture(textures[projectile_texture_name]);
+
+    player.setSoundMap(&sounds);
+
 }
 
 /*============= ADD FUNCTIONS ============*/
