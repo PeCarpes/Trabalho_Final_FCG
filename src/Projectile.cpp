@@ -18,8 +18,7 @@ Projectile::Projectile(const ObjModel *model,
     setPosition(position);
 }
 
-
-void Projectile::checkCollisions(SobjectMap objects)
+void Projectile::checkCollisions(std::map<std::string, SceneObject *> objects)
 {
     glm::vec4 pos = getPosition();
 
@@ -40,7 +39,7 @@ void Projectile::checkCollisions(SobjectMap objects)
     }
 }
 
-void Projectile::move(SobjectMap objects)
+void Projectile::move(std::map<std::string, SceneObject *> objects)
 { 
 
     if(this->markedForDeletion())

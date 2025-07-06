@@ -5,19 +5,17 @@
 #include <stdexcept>
 #include <memory>
 
-typedef std::map<std::string, SceneObject *> SobjectMap;
-
 class VirtualScene
 {
 private:
-    static inline SobjectMap objects;
+    static inline std::map<std::string, SceneObject *> objects;
     static int num_objects;
 
     public:
     static void drawScene();
     void addObject(SceneObject *object);
     void deleteMarkedObjects();
-    const SobjectMap& getObjects() const { return objects; }
+    const std::map<std::string, SceneObject *>& getObjects() const { return objects; }
 
     SceneObject *operator[](const char *name);
 };

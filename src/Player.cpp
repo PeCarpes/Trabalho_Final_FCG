@@ -6,7 +6,8 @@ glm::vec4 Player::getBBoxMax(void)
     return glm::vec4(position.x + width / 2.0f, position.y + height, position.z + depth / 2.0f, 1.0f);
 }
 
-glm::vec4 Player::getBBoxMin(void){
+glm::vec4 Player::getBBoxMin(void)
+{
     return glm::vec4(position.x - width / 2.0f, position.y, position.z - depth / 2.0f, 1.0f);
 }
 
@@ -41,7 +42,7 @@ void Player::fly()
 
 // Check for collisions between the player and objects in the scene
 // Returns the direction of the collision as a glm::vec3
-glm::vec3 Player::CheckCollisions(SobjectMap objects)
+glm::vec3 Player::CheckCollisions(std::map<std::string, SceneObject*> objects)
 {
     Player p = *this;
 
@@ -59,7 +60,6 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects)
         SceneObject *obj = pair.second;
         if (!obj->collidable())
             continue; // Skip non-collidable objects
-
 
         glm::vec4 bbox_min = obj->getBBoxMin();
         glm::vec4 bbox_max = obj->getBBoxMax();
@@ -115,16 +115,19 @@ bool Player::can_shoot(void) const
     return shooting_cooldown >= shooting_speed;
 }
 
-void Player::move_projectiles(SobjectMap objects)
+void Player::move_projectiles(std::map<std::string, SceneObject *> objects,
+                              std::map<std::string, Projectile *> &projectiles)
 {
-    for (Projectile *p : projectiles)
+    for (auto &pair : projectiles)
     {
-        p->move(objects);
-        p->checkCollisions(objects);
+        pair.second->move(objects);
+        pair.second->checkCollisions(objects);
     }
 }
 
-void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader, SobjectMap objects)
+void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader,
+                            std::map<std::string, SceneObject *> objects,
+                            std::map<std::string, Projectile *> &projectiles)
 {
     if (Callbacks::isLeftMouseButtonPressed() && can_shoot())
     {
@@ -136,28 +139,32 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         virtual_scene.addObject(new_proj);
         num_projectiles++;
 
-        this->projectiles.push_back(new_proj);
-        this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
+        projectiles[projectile_name] = new_proj;
+        shooting_cooldown = 0.0f; // Reset cooldown after shooting
     }
-    else if(!can_shoot()){
+    else if (!can_shoot())
+    {
         shooting_cooldown += Callbacks::getDeltaTime();
     }
 
-    move_projectiles(objects);
+    move_projectiles(objects, projectiles);
 }
 
-void Player::checkIfRunning(void){
+void Player::checkIfRunning(void)
+{
     bool is_running = Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
 
-    if(is_running){
+    if (is_running)
+    {
         speed = 2.0f; // Running speed
-    } else {
+    }
+    else
+    {
         speed = 1.0f; // Walking speed
     }
-
 }
 
-void Player::move(Camera cam, SobjectMap objects)
+void Player::move(Camera cam, std::map<std::string, SceneObject*> objects)
 {
     updateDirection();
     checkIfRunning();
@@ -169,7 +176,6 @@ void Player::move(Camera cam, SobjectMap objects)
     vel.y *= (1.0f - collision_direction.y);
     vel.z *= (1.0f - collision_direction.z);
     position += getNextDisplacement();
-
 
     if (weapon_obj)
         weapon_obj->bob(); // Apply the bobbing effect to the weapon

@@ -9,14 +9,14 @@ class Enemy : public SceneObject
 public:
     Enemy(const ObjModel *model, const std::string &name, Shader shader, const Camera &cam, glm::vec3 position, float speed = 1.0f);
 
-    void move(SobjectMap objects, const glm::vec4 &target);
+    void move(std::map<std::string, SceneObject *> objects, const glm::vec4 &target);
     void setSpeed(float newSpeed) { speed = newSpeed; }
     void manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
                         glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
-                        const Camera &cam, Shader shader, SobjectMap objects);
+                        const Camera &cam, Shader shader, std::map<std::string, SceneObject *> objects);
 
     void setProjectileModel(ObjModel *model);
-    void moveProjectiles(SobjectMap objects);
+    void moveProjectiles(std::map<std::string, SceneObject *> objects);
 
 private:
     float speed;
@@ -29,7 +29,7 @@ private:
 
     bool canShoot(void) const; // Check if the enemy can shoot based on cooldown
     glm::vec4 getNextDisplacement(glm::vec4 direction) const;
-    glm::vec3 checkCollisions(const SobjectMap &objects) const;
-    bool targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax, SobjectMap objects) const;
-
+    glm::vec3 checkCollisions(const std::map<std::string, SceneObject *> &objects) const;
+    bool targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax,
+                       std::map<std::string, SceneObject *> objects) const;
 };

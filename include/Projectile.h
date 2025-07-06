@@ -14,12 +14,12 @@ public:
                bool is_hostile,
                glm::vec4 position,
                glm::vec4 direction);
-    void move(SobjectMap objects);
-    void checkCollisions(SobjectMap objects);
+    void move(std::map<std::string, SceneObject *> objects);
+    void checkCollisions(std::map<std::string, SceneObject *> objects);
 
 private:
     Shader shader;
-    SobjectMap virtual_scene;
+    std::map<std::string, SceneObject *> virtual_scene;
     const float radius = 0.1f;
 
     const float speed = 2.0f;

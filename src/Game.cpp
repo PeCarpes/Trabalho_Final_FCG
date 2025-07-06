@@ -224,5 +224,5 @@ void Game::manageEnemyShooting()
 
 void Game::managePlayerShooting()
 {
-    player.manageShooting(virtual_scene, camera, shader, objects);
+    player.manageShooting(virtual_scene, camera, shader, objects, projectiles);
 }

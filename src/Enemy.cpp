@@ -18,7 +18,8 @@ void Enemy::setProjectileModel(ObjModel *model)
     this->projectile_model = model;
 }
 
-void Enemy::moveProjectiles(SobjectMap objects){
+void Enemy::moveProjectiles(std::map<std::string, SceneObject *> objects)
+{
     for (Projectile *p : projectiles)
     {
         p->move(objects);
@@ -28,7 +29,7 @@ void Enemy::moveProjectiles(SobjectMap objects){
 
 void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
                            glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
-                           const Camera &cam, Shader shader, SobjectMap objects)
+                           const Camera &cam, Shader shader, std::map<std::string, SceneObject *> objects)
 {
     bool target_in_sight = targetInSight(target_bbox_min, target_bbox_max, objects);
     if (canShoot() && target_in_sight)
@@ -45,16 +46,15 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         this->projectiles.push_back(new_proj);
         this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
     }
-    else if(target_in_sight)
+    else if (target_in_sight)
     {
         shooting_cooldown += Callbacks::getDeltaTime();
     }
 
     moveProjectiles(objects);
-
 }
 
-void Enemy::move(SobjectMap objects, const glm::vec4 &target)
+void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &target)
 {
 
     this->direction = target - getPosition();
@@ -83,7 +83,7 @@ glm::vec4 Enemy::getNextDisplacement(glm::vec4 direction) const
     return next_displacement;
 }
 
-glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
+glm::vec3 Enemy::checkCollisions(const std::map<std::string, SceneObject *> &objects) const
 {
     Enemy e = *this;
 
@@ -133,7 +133,8 @@ glm::vec3 Enemy::checkCollisions(const SobjectMap &objects) const
     return collision_direction;
 }
 
-bool Enemy::targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax, SobjectMap objects) const
+bool Enemy::targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax,
+                          std::map<std::string, SceneObject *> objects) const
 {
     glm::vec4 direction = (bboxMin + bboxMax) / 2.0f - getPosition();
     float path_length = length((bboxMin + bboxMax) / 2.0f - getPosition());

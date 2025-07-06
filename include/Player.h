@@ -20,7 +20,6 @@ class Player{
         SceneObject* weapon_obj = nullptr;                      // SceneObject representing the weapon
         ObjModel* projectile_model = nullptr;                   // Model for the projectile
         int num_projectiles = 0;                                // Used to name the projectiles uniquely
-        std::vector<Projectile*> projectiles;                   // List of projectiles fired by the player
         float shooting_speed = 0.5f;                            // Time between shots in seconds
         float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
         
@@ -29,23 +28,24 @@ class Player{
         const float depth = 0.5f;
 
         bool can_shoot(void) const;                             // Check if the player can shoot based on cooldown
-        glm::vec3 CheckCollisions(SobjectMap objects);
+        glm::vec3 CheckCollisions(std::map<std::string, SceneObject*> objects);
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
         void checkIfRunning(void);
 
         public:
-        void move_projectiles(SobjectMap objects);
-        void move(Camera cam, SobjectMap objects);
-        void manageShooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, SobjectMap objects);
+        void move_projectiles(std::map<std::string, SceneObject*> objects, std::map<std::string, Projectile *> &projectiles);
+        void move(Camera cam, std::map<std::string, SceneObject*> objects);
+        void manageShooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, 
+                            std::map<std::string, SceneObject*> objects, 
+                            std::map<std::string, Projectile*> &projectiles);
         void initializeWeapon(SceneObject* weapon);
         void initializeProjectiles(ObjModel* model);
         void fly();
         
         void setPosition(const glm::vec4& pos) { position = pos; }
         void setModel(SceneObject* obj) { player_obj = obj; }
-
 
         glm::vec4* getPositionPtr(void) { return &position; }
         glm::vec4 getPosition(void) const { return position; }
