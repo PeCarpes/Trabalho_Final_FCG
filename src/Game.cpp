@@ -23,13 +23,15 @@ void Game::initializeShader()
     shader = Shader();
 }
 
-void Game::initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name)
+void Game::initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name,
+                            const std::string &projectile_texture_name)
 {
     player.setPosition(glm::vec4(4.5f, 2.0f, 4.5f, 1.0f));
     player.setModel(nullptr);
 
     player.initializeWeapon(objects[weapon_model_name]);
     player.initializeProjectiles(obj_models[projectile_objmodel_name]);
+    player.setProjectileTexture(textures[projectile_texture_name]);
 }
 
 /*============= ADD FUNCTIONS ============*/
@@ -57,7 +59,7 @@ void Game::addSceneObject(const std::string &name, const std::string &obj_model_
     SceneObject *scene_object = new SceneObject(model, name, shader, camera, use_view_matrix, collidable);
 
     if (texture_name != "")
-        scene_object->setTexture(*textures[texture_name]);
+    scene_object->setTexture(textures[texture_name]);
     scene_object->setID(object_id);
     virtual_scene.addObject(scene_object);
     objects[name] = scene_object;
@@ -193,7 +195,7 @@ void Game::updateCamera()
 
 void Game::updateCurrentGameState(GameState *currentGameState)
 {
-    if( *currentGameState == GameState::IN_MENU )
+    if (*currentGameState == GameState::IN_MENU)
     {
         if (Callbacks::getKeyState(GLFW_KEY_ENTER) == GLFW_PRESS)
         {

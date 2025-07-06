@@ -135,6 +135,7 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         glm::vec4 starting_pos = position + forward;
 
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
+        new_proj->setTexture(projectile_texture);
         new_proj->setHeight(0.05f);
         num_projectiles++;
         

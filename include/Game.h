@@ -16,18 +16,20 @@
 
 #include <map>
 
-enum class GameState {
+enum class GameState
+{
     IN_MENU,
     IN_GAME
 };
 
-typedef std::map<std::string, ObjModel*> ObjModelMap;
-typedef std::map<std::string, SceneObject*> SceneObjectMap;
-typedef std::map<std::string, Enemy*> EnemyMap;
-typedef std::map<std::string, Projectile*> ProjectileMap;
-typedef std::map<std::string, Texture3D*> TextureMap;
+typedef std::map<std::string, ObjModel *> ObjModelMap;
+typedef std::map<std::string, SceneObject *> SceneObjectMap;
+typedef std::map<std::string, Enemy *> EnemyMap;
+typedef std::map<std::string, Projectile *> ProjectileMap;
+typedef std::map<std::string, Texture3D *> TextureMap;
 
-class Game{
+class Game
+{
 
     int num_enemies;
 
@@ -44,16 +46,17 @@ class Game{
 
 public:
     Game();
-    
+
     void initializeShader();
     void initializeCamera();
-    void initializePlayer(const std::string& weapon_model_name, const std::string& projectile_objmodel_name);
+    void initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name,
+                          const std::string &projectile_texture_name);
 
     void addProjectile(Projectile *projectile);
-    void addEnemy(const glm::vec4& position);
-    void addSceneObject(const std::string& name, const std::string& obj_model_name = "", const std::string& texture_name = "", int object_id = -1, bool use_view_matrix = true, bool collidable = false);
-    void addTexture(const std::string& name, const std::string& file_path);
-    void addObjModel(const std::string& name, const std::string& file_path);
+    void addEnemy(const glm::vec4 &position);
+    void addSceneObject(const std::string &name, const std::string &obj_model_name = "", const std::string &texture_name = "", int object_id = -1, bool use_view_matrix = true, bool collidable = false);
+    void addTexture(const std::string &name, const std::string &file_path);
+    void addObjModel(const std::string &name, const std::string &file_path);
 
     void moveEnemies(void);
     void moveProjectiles(void);
@@ -63,10 +66,10 @@ public:
 
     void draw(void);
 
-    void setObjectScale(const std::string& name, const glm::vec3& scale);
-    void setObjectTextureScale(const std::string& name, const glm::vec2& scale);
-    void setObjectPosition(const std::string& name, const glm::vec4 & position);
-    void setObjectRotation(const std::string& name, const glm::vec3 & rotation);
+    void setObjectScale(const std::string &name, const glm::vec3 &scale);
+    void setObjectTextureScale(const std::string &name, const glm::vec2 &scale);
+    void setObjectPosition(const std::string &name, const glm::vec4 &position);
+    void setObjectRotation(const std::string &name, const glm::vec3 &rotation);
 
     void updateCamera();
     void updateCurrentGameState(GameState *currentGameState);
@@ -77,14 +80,13 @@ public:
 
     void deleteMarkedObjects(void);
 
-    const Texture3D& getTexture(const std::string& name);
-    const Shader& getShader(void);
+    const Texture3D &getTexture(const std::string &name);
+    const Shader &getShader(void);
 
-    Camera* getCamera(void) { return &camera; }
-    Player* getPlayer(void) { return &player; }
-    VirtualScene* getVirtualScene(void) { return &virtual_scene; }
-    SceneObjectMap* getObjects(void) { return &objects; }
-    EnemyMap* getEnemies(void) { return &enemies; }
-    ProjectileMap* getProjectiles(void) { return &projectiles; }
-
+    Camera *getCamera(void) { return &camera; }
+    Player *getPlayer(void) { return &player; }
+    VirtualScene *getVirtualScene(void) { return &virtual_scene; }
+    SceneObjectMap *getObjects(void) { return &objects; }
+    EnemyMap *getEnemies(void) { return &enemies; }
+    ProjectileMap *getProjectiles(void) { return &projectiles; }
 };

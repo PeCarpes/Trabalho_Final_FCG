@@ -37,7 +37,7 @@ private:
     GLuint texture_id;
     GLuint object_id;
 
-    Texture3D texture;
+    Texture3D* texture;
     const Camera &cam;
     Shader shader;
 
@@ -78,8 +78,8 @@ private:
 
     void setTexture(const std::string &filename)
     {
-        texture.LoadTextureImage(filename.c_str());
-        texture_id = texture.getTextureID();
+        texture->LoadTextureImage(filename.c_str());
+        texture_id = texture->getTextureID();
     }
     
     void setTexture(GLuint textureID)
@@ -87,10 +87,10 @@ private:
         texture_id = textureID;
     }
 
-    void setTexture(const Texture3D &tex)
+    void setTexture(Texture3D* tex)
     {
         texture = tex;
-        texture_id = texture.getTextureID();
+        texture_id = texture->getTextureID();
     }
 
     float height() const;

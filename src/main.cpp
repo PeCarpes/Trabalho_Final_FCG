@@ -105,6 +105,7 @@ int main(void)
 
     /* =================== TEXTURES =================== */
 
+    game.addTexture("projectile_texture", "../../data/projectile_texture.png");
     game.addTexture("ceiling_texture", "../../data/ceiling_texture.png");
     game.addTexture("floor_texture",  "../../data/floor_texture.png");
     game.addTexture("weapon_texture", "../../data/Pistol_01_Albedo.png");
@@ -124,7 +125,7 @@ int main(void)
 
     /* =================== INITIALIZERS =================== */
 
-    game.initializePlayer("weapon_sobj", "projectile_obj");
+    game.initializePlayer("weapon_sobj", "projectile_obj", "projectile_texture");
     game.initializeCamera();
 
     /* =================== MODIFY OBJECTS =================== */
