@@ -135,10 +135,10 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         glm::vec4 starting_pos = position + forward;
 
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
-        new_proj->setHeight(0.01f);
-        virtual_scene.addObject(new_proj);
+        new_proj->setHeight(0.05f);
         num_projectiles++;
-
+        
+        virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
         shooting_cooldown = 0.0f; // Reset cooldown after shooting
     }

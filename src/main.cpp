@@ -236,6 +236,8 @@ int main(void)
         game.manageEnemyShooting();
         game.managePlayerShooting();
 
+        game.deleteMarkedObjects();
+
         game.draw();
 
         glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);

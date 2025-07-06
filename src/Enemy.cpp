@@ -18,18 +18,23 @@ void Enemy::setProjectileModel(ObjModel *model)
     this->projectile_model = model;
 }
 
-void Enemy::moveProjectiles(std::map<std::string, SceneObject *> objects)
+void Enemy::moveProjectiles(std::map<std::string, SceneObject *> objects,
+                            std::map<std::string, Projectile *> &projectiles)
 {
-    for (Projectile *p : projectiles)
+    for (auto &pair : projectiles)
     {
-        p->move(objects);
-        p->checkCollisions(objects);
+        Projectile* projectile = pair.second;
+
+        projectile->move(objects);
+        projectile->checkCollisions(objects);
     }
 }
 
 void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
                            glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
-                           const Camera &cam, Shader shader, std::map<std::string, SceneObject *> objects)
+                           const Camera &cam, Shader shader,
+                           std::map<std::string, SceneObject *> objects,
+                           std::map<std::string, Projectile *> &projectiles)
 {
     bool target_in_sight = targetInSight(target_bbox_min, target_bbox_max, objects);
     if (canShoot() && target_in_sight)
@@ -38,12 +43,14 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         glm::vec4 starting_pos = getPosition();
         starting_pos.y = target.y;
         glm::vec4 direction = target - starting_pos;
-
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
+        
         new_proj->setHeight(0.05f);
-        virtual_scene.addObject(new_proj);
         num_projectiles++;
-        this->projectiles.push_back(new_proj);
+        
+        virtual_scene.addObject(new_proj);
+        projectiles[projectile_name] = new_proj;
+
         this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
     }
     else if (target_in_sight)
@@ -51,7 +58,7 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         shooting_cooldown += Callbacks::getDeltaTime();
     }
 
-    moveProjectiles(objects);
+    moveProjectiles(objects, projectiles);
 }
 
 void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &target)

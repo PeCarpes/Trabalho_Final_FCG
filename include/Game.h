@@ -69,6 +69,8 @@ public:
     void manageEnemyShooting(void);
     void managePlayerShooting(void);
 
+    void deleteMarkedObjects(void);
+
     const Texture3D& getTexture(const std::string& name);
     const Shader& getShader(void);
 

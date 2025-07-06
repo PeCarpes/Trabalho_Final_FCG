@@ -5,10 +5,10 @@
 
 /*============= CONSTRUCTOR ============*/
 
-Game::Game(){
+Game::Game()
+{
 
     num_enemies = 0;
-
 }
 
 /*============= INITIALIZE FUNCTIONS ============*/
@@ -23,7 +23,7 @@ void Game::initializeShader()
     shader = Shader();
 }
 
-void Game::initializePlayer(const std::string& weapon_model_name, const std::string& projectile_objmodel_name)
+void Game::initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name)
 {
     player.setPosition(glm::vec4(4.5f, 2.0f, 4.5f, 1.0f));
     player.setModel(nullptr);
@@ -55,8 +55,8 @@ void Game::addSceneObject(const std::string &name, const std::string &obj_model_
     }
 
     SceneObject *scene_object = new SceneObject(model, name, shader, camera, use_view_matrix, collidable);
-    
-    if(texture_name != "")
+
+    if (texture_name != "")
         scene_object->setTexture(*textures[texture_name]);
     scene_object->setID(object_id);
     virtual_scene.addObject(scene_object);
@@ -207,6 +207,46 @@ void Game::draw()
     virtual_scene.drawScene();
 }
 
+void Game::deleteMarkedObjects()
+{
+    virtual_scene.deleteMarkedObjects();
+    for (auto it = objects.begin(); it != objects.end();)
+    {
+        if (it->second->markedForDeletion())
+        {
+            it = objects.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    for (auto it = enemies.begin(); it != enemies.end();)
+    {
+        if (it->second->markedForDeletion())
+        {
+            it = enemies.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    for (auto it = projectiles.begin(); it != projectiles.end();)
+    {
+        if (it->second->markedForDeletion())
+        {
+            it = projectiles.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
 /*============= MANAGE SHOOTING ============*/
 
 void Game::manageEnemyShooting()
@@ -218,7 +258,9 @@ void Game::manageEnemyShooting()
         glm::vec4 target_bbox_min = player.getBBoxMin();
         glm::vec4 target_bbox_max = player.getBBoxMax();
 
-        enemy->manageShooting(target_position, virtual_scene, target_bbox_min, target_bbox_max, camera, shader, objects);
+        enemy->manageShooting(target_position, virtual_scene,
+                              target_bbox_min, target_bbox_max, camera, shader,
+                              objects, projectiles);
     }
 }
 
