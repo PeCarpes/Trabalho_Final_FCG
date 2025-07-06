@@ -22,7 +22,7 @@ private:
     SobjectMap virtual_scene;
     const float radius = 0.1f;
 
-    const float speed = 0.0f;
+    const float speed = 2.0f;
     bool is_hostile;
     glm::vec4 direction;
 };

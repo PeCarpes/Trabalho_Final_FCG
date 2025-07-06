@@ -60,7 +60,6 @@ glm::vec3 Player::CheckCollisions(SobjectMap objects)
         if (!obj->collidable())
             continue; // Skip non-collidable objects
 
-        std::cout << "Checking collision with: " << obj->getName() << std::endl;
 
         glm::vec4 bbox_min = obj->getBBoxMin();
         glm::vec4 bbox_max = obj->getBBoxMax();
@@ -166,7 +165,6 @@ void Player::move(Camera cam, SobjectMap objects)
     right = cam.getRightVector();
 
     glm::vec3 collision_direction = CheckCollisions(objects);
-    std::cout << "Collision Direction: " << collision_direction.x << ", " << collision_direction.y << ", " << collision_direction.z << std::endl;
     vel.x *= (1.0f - collision_direction.x);
     vel.y *= (1.0f - collision_direction.y);
     vel.z *= (1.0f - collision_direction.z);

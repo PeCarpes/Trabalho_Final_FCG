@@ -47,10 +47,6 @@ void Game::addObjModel(const std::string &name, const std::string &file_path)
 void Game::addSceneObject(const std::string &name, const std::string &obj_model_name, const std::string &texture_name,
                           int object_id, bool use_view_matrix, bool collidable)
 {
-
-
-    std::cout << name << std::endl;
-
     ObjModel *model = obj_models[obj_model_name];
 
     if (!model)
