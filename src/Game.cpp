@@ -191,11 +191,25 @@ void Game::updateCamera()
     camera.processMouseMovement();
 }
 
+void Game::updateCurrentGameState(GameState *currentGameState)
+{
+    if( *currentGameState == GameState::IN_MENU )
+    {
+        if (Callbacks::getKeyState(GLFW_KEY_ENTER) == GLFW_PRESS)
+        {
+            *currentGameState = GameState::IN_GAME;
+        }
+    }
+    else if (*currentGameState == GameState::IN_GAME)
+    {
+        // add any game-specific updates here
+    }
+}
+
 void Game::useShader()
 {
     shader.Use();
 }
-
 /*============= OTHER FUNCTIONS ============*/
 
 void Game::allowPlayerToFly()

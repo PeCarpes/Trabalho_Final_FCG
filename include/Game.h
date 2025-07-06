@@ -16,6 +16,11 @@
 
 #include <map>
 
+enum class GameState {
+    IN_MENU,
+    IN_GAME
+};
+
 typedef std::map<std::string, ObjModel*> ObjModelMap;
 typedef std::map<std::string, SceneObject*> SceneObjectMap;
 typedef std::map<std::string, Enemy*> EnemyMap;
@@ -64,6 +69,7 @@ public:
     void setObjectRotation(const std::string& name, const glm::vec3 & rotation);
 
     void updateCamera();
+    void updateCurrentGameState(GameState *currentGameState);
     void useShader();
 
     void manageEnemyShooting(void);

@@ -120,7 +120,7 @@ int main(void)
     /* =================== SCENE OBJECTS =================== */
 
     game.addSceneObject("weapon_sobj",     "weapon_obj",     "weapon_texture", WEAPON,     false, false);
-    game.addEnemy(glm::vec4(4.5f, 3.0f, 4.5f, 1.0f));
+    game.addEnemy(glm::vec4(4.5f, 1.5f, 0.0f, 1.0f));
 
     /* =================== INITIALIZERS =================== */
 
@@ -218,31 +218,48 @@ int main(void)
 
     TextRendering_Init();
 
+    GameState currentGameState = GameState::IN_MENU;
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         Callbacks::updateDeltaTime();
 
-        game.updateCamera();
-        game.useShader();
+        game.updateCurrentGameState(&currentGameState);
 
-        game.movePlayer();
-        game.allowPlayerToFly();
+        switch (currentGameState)
+        {
+            case GameState::IN_MENU:
+            {
+                TextRendering_PrintString(window, "SUFFICIENTLY WARM", -0.5f, 0.5f, 1.5f);
+                TextRendering_PrintString(window, "Aperte [Enter] para comecar", -0.7f, 0.0f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                break;
+            }
+        
+            case GameState::IN_GAME:
+            {    
+                game.updateCamera();
+                game.useShader();
 
-        game.moveEnemies();
+                game.movePlayer();
+                game.allowPlayerToFly();
+
+                game.moveEnemies();
 
         game.manageEnemyShooting();
         game.managePlayerShooting();
 
         game.deleteMarkedObjects();
 
-        game.draw();
+                game.draw();
 
-        glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
-        TextRendering_ShowModelViewProjection(window, game.getCamera()->getProjectionMatrix(), game.getCamera()->getViewMatrix(), Matrix_Identity(), p_model);
-        TextRendering_ShowCameraInfo(window, *game.getCamera(), -1.0f, -0.5f);
+                glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
+                TextRendering_ShowModelViewProjection(window, game.getCamera()->getProjectionMatrix(), game.getCamera()->getViewMatrix(), Matrix_Identity(), p_model);
+                TextRendering_ShowCameraInfo(window, *game.getCamera(), -1.0f, -0.5f);
+            }
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
