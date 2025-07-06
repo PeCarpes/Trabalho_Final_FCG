@@ -33,6 +33,7 @@ class Player{
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
+        void checkIfRunning(void);
 
         public:
         void move_projectiles(SobjectMap objects);

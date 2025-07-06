@@ -147,9 +147,21 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
     move_projectiles(objects);
 }
 
+void Player::checkIfRunning(void){
+    bool is_running = Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
+
+    if(is_running){
+        speed = 2.0f; // Running speed
+    } else {
+        speed = 1.0f; // Walking speed
+    }
+
+}
+
 void Player::move(Camera cam, SobjectMap objects)
 {
     updateDirection();
+    checkIfRunning();
     forward = cam.getForwardVector();
     right = cam.getRightVector();
 
@@ -160,15 +172,6 @@ void Player::move(Camera cam, SobjectMap objects)
     vel.z *= (1.0f - collision_direction.z);
     position += getNextDisplacement();
 
-    // Check if player is running
-    if (Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE)
-    {
-        speed = 2.0f;
-    }
-    else
-    {
-        speed = 1.0f;
-    }
 
     if (weapon_obj)
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
