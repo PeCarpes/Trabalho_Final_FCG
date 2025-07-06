@@ -15,8 +15,6 @@ void Player::updateTimeModifier(void)
     else if(modifier < 0.1f) modifier = 0.1f;
 
     Callbacks::updateTimeModifier(modifier);
-
-    std::cout << "Time modifier: " << modifier << std::endl;
 }
 
 glm::vec4 Player::getBBoxMax(void)
