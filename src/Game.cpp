@@ -95,7 +95,9 @@ void Game::moveEnemies()
 {
     for (auto &pair : enemies)
     {
-        pair.second->move(objects, player.getPosition());
+        Enemy *enemy = pair.second;
+        enemy->move(objects, player.getPosition());
+        enemy->checkCollisionsWithProjectiles(projectiles);
     }
 }
 

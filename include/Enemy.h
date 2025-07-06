@@ -20,6 +20,7 @@ public:
     void setProjectileModel(ObjModel *model);
     void moveProjectiles(std::map<std::string, SceneObject *> objects,
                          std::map<std::string, Projectile *> &projectiles);
+    void checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles);
 
 private:
     float speed;
@@ -34,4 +35,5 @@ private:
     glm::vec3 checkCollisions(const std::map<std::string, SceneObject *> &objects) const;
     bool targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax,
                        std::map<std::string, SceneObject *> objects) const;
+
 };

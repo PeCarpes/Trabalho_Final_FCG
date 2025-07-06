@@ -16,6 +16,7 @@ public:
                glm::vec4 direction);
     void move(std::map<std::string, SceneObject *> objects);
     void checkCollisions(std::map<std::string, SceneObject *> objects);
+    bool isHostile() const { return is_hostile; }
 
 private:
     Shader shader;

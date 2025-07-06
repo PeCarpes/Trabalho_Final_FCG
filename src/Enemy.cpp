@@ -23,7 +23,7 @@ void Enemy::moveProjectiles(std::map<std::string, SceneObject *> objects,
 {
     for (auto &pair : projectiles)
     {
-        Projectile* projectile = pair.second;
+        Projectile *projectile = pair.second;
 
         projectile->move(objects);
         projectile->checkCollisions(objects);
@@ -44,10 +44,10 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         starting_pos.y = target.y;
         glm::vec4 direction = target - starting_pos;
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
-        
+
         new_proj->setHeight(0.05f);
         num_projectiles++;
-        
+
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
 
@@ -88,6 +88,28 @@ glm::vec4 Enemy::getNextDisplacement(glm::vec4 direction) const
     next_displacement.w = 0.0f;
 
     return next_displacement;
+}
+
+void Enemy::checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles)
+{
+    for (const auto &pair : projectiles)
+    {
+        Projectile *proj = pair.second;
+        if (proj == nullptr)
+            continue;
+
+        if (proj->isHostile())
+            continue;
+
+        glm::vec4 proj_bbox_min = proj->getBBoxMin();
+        glm::vec4 proj_bbox_max = proj->getBBoxMax();
+
+        if (CheckCollisionPrisms(getBBoxMin(), getBBoxMax(), proj_bbox_min, proj_bbox_max))
+        {
+            this->markForDeletion();
+            proj->markForDeletion(); // Mark the projectile for deletion as well
+        }
+    }
 }
 
 glm::vec3 Enemy::checkCollisions(const std::map<std::string, SceneObject *> &objects) const
