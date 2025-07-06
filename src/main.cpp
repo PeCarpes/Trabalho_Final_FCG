@@ -96,6 +96,7 @@ int main(void)
 
     /* =================== SOUNDS =================== */
     game.addSound("walking_sound", "../../data/walking.wav");
+    game.addSound("shooting_sound", "../../data/shooting_sound.wav");
 
     /* =================== TEXTURES =================== */
 

@@ -163,6 +163,11 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
         shooting_cooldown = 0.0f; // Reset cooldown after shooting
+
+        ma_sound_set_volume((*sounds)["shooting_sound"], 0.5f);
+        ma_sound_start((*sounds)["shooting_sound"]);
+
+
     }
     else if (!can_shoot())
     {
@@ -205,7 +210,7 @@ void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
     {
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
 
-        if (sound_timer > 1/speed)
+        if (sound_timer > 1/speed && length(vel) > 0.0f)
         {
             ma_sound_start((*sounds)["walking_sound"]);
             sound_timer = 0.0f; // Reset the sound timer
