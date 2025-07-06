@@ -27,6 +27,7 @@ set(SOURCES
   src/collisions.cpp
   src/Projectile.cpp
   src/Game.cpp
+  src/miniaudio.c
   )
 
 

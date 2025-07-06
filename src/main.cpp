@@ -22,16 +22,6 @@ void TextRendering_ShowProjection(GLFWwindow *window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow *window);
 
 // Função auxiliar para criar e adicionar uma parede ao VirtualScene.
-SceneObject* CreateObject(const ObjModel& cube_obj,
-                        const std::string& name,
-                        Shader& shader,
-                        Camera& cam,
-                        Texture3D& wall_texture,
-                        const glm::vec3& scale,
-                        const glm::vec2& texture_scale,
-                        int id,
-                        const glm::vec3& position,
-                        VirtualScene& scene);
 
 const int screen_width = 1200;
 const int screen_height = 800;
@@ -100,8 +90,12 @@ int main(void)
 
     Game game = Game();
     game.initializeShader();
+    game.initializeSoundEngine();
 
     Callbacks::initializeCallbacks(window);
+
+    /* =================== SOUNDS =================== */
+    game.addSound("walking_sound", "../../data/walking.wav");
 
     /* =================== TEXTURES =================== */
 

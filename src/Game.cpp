@@ -13,6 +13,14 @@ Game::Game()
 
 /*============= INITIALIZE FUNCTIONS ============*/
 
+void Game::initializeSoundEngine()
+{
+    if (ma_engine_init(nullptr, &sound_engine) != MA_SUCCESS)
+    {
+        throw std::runtime_error("Failed to initialize sound engine");
+    }
+}
+
 void Game::initializeCamera()
 {
     camera = Camera(player.getPositionPtr());
@@ -35,6 +43,15 @@ void Game::initializePlayer(const std::string &weapon_model_name, const std::str
 }
 
 /*============= ADD FUNCTIONS ============*/
+
+void Game::addSound(const std::string &name, const std::string &file_path){
+    ma_sound *sound = new ma_sound();
+    if (ma_sound_init_from_file(&sound_engine, file_path.c_str(), 0, nullptr, nullptr, sound) != MA_SUCCESS)
+    {
+        throw std::runtime_error("Failed to load sound: " + file_path);
+    }
+    sounds[name] = sound;
+}
 
 void Game::addObjModel(const std::string &name, const std::string &file_path)
 {
