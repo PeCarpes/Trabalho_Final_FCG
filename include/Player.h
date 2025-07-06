@@ -34,8 +34,11 @@ class Player{
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
         void checkIfRunning(void);
-
+        
+        
         public:
+        
+        void checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles);
         void setProjectileTexture(Texture3D* texture) { projectile_texture = texture; }
         void move_projectiles(std::map<std::string, SceneObject*> objects, std::map<std::string, Projectile *> &projectiles);
         void move(Camera cam, std::map<std::string, SceneObject*> objects);

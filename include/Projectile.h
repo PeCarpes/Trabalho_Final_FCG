@@ -17,6 +17,7 @@ public:
     void move(std::map<std::string, SceneObject *> objects);
     void checkCollisions(std::map<std::string, SceneObject *> objects);
     bool isHostile() const { return is_hostile; }
+    float getRadius() const { return radius; }
 
 private:
     Shader shader;

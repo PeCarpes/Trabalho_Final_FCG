@@ -40,9 +40,30 @@ void Player::fly()
     }
 }
 
+void Player::checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles)
+{
+    for (const auto &pair : projectiles)
+    {
+        Projectile *proj = pair.second;
+        if (proj == nullptr)
+            continue;
+
+        if (!proj->isHostile())
+            continue;
+
+        if (CheckCollisionPrismSphere(getBBoxMin(), getBBoxMax(),
+                                      proj->getPosition(), proj->getRadius()))
+        {
+            // Collision detected, remove the projectile
+            proj->markForDeletion();
+            std::cout << "Player hit by a projectile!" << std::endl;
+        }
+    }
+}
+
 // Check for collisions between the player and objects in the scene
 // Returns the direction of the collision as a glm::vec3
-glm::vec3 Player::CheckCollisions(std::map<std::string, SceneObject*> objects)
+glm::vec3 Player::CheckCollisions(std::map<std::string, SceneObject *> objects)
 {
     Player p = *this;
 
@@ -138,7 +159,7 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         new_proj->setTexture(projectile_texture);
         new_proj->setHeight(0.05f);
         num_projectiles++;
-        
+
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
         shooting_cooldown = 0.0f; // Reset cooldown after shooting
@@ -165,13 +186,12 @@ void Player::checkIfRunning(void)
     }
 }
 
-void Player::move(Camera cam, std::map<std::string, SceneObject*> objects)
+void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
 {
     updateDirection();
     checkIfRunning();
     forward = cam.getForwardVector();
     right = cam.getRightVector();
-
     glm::vec3 collision_direction = CheckCollisions(objects);
     vel.x *= (1.0f - collision_direction.x);
     vel.y *= (1.0f - collision_direction.y);
@@ -226,7 +246,7 @@ void Player::updateDirection(void)
 
     if (weapon_obj)
     {
-        if (running)
+        if (running && moving)
         {
             weapon_obj->setBobbingCPS(2.0f); // 2.0 cycles per second when running
         }

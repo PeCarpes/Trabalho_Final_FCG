@@ -101,10 +101,8 @@ void Enemy::checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &
         if (proj->isHostile())
             continue;
 
-        glm::vec4 proj_bbox_min = proj->getBBoxMin();
-        glm::vec4 proj_bbox_max = proj->getBBoxMax();
-
-        if (CheckCollisionPrisms(getBBoxMin(), getBBoxMax(), proj_bbox_min, proj_bbox_max))
+        if (CheckCollisionPrismSphere(getBBoxMin(), getBBoxMax(),
+                                      proj->getPosition(), proj->getRadius()))
         {
             this->markForDeletion();
             proj->markForDeletion(); // Mark the projectile for deletion as well
