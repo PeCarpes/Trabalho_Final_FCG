@@ -75,7 +75,7 @@ void Game::addProjectile(Projectile *projectile)
 
 void Game::addEnemy(const glm::vec4 &position)
 {
-    const int enemy_id = 2;
+    const int enemy_id = 1;
 
     Enemy *enemy = new Enemy(obj_models["enemy_obj"], "enemy_" + std::to_string(num_enemies++),
                              shader, camera, position, 1.0f);

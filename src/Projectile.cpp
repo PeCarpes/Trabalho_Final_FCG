@@ -1,5 +1,6 @@
 #include <Projectile.h>
 #include <iostream>
+#define PROJECTILE 5
 
 Projectile::Projectile(const ObjModel *model,
                const std::string &name,
@@ -13,6 +14,7 @@ Projectile::Projectile(const ObjModel *model,
     this->is_hostile = is_hostile;
     this->direction = direction;
     this->direction = glm::normalize(this->direction); // Normalize the direction vector
+    this->setID(PROJECTILE);
     setPosition(position);
 }
 

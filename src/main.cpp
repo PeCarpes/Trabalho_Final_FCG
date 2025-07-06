@@ -92,11 +92,11 @@ int main(void)
     // Obs: Se atualizar aqui, também atualizar em shader_fragment.glsl
 
 #define WEAPON 0
-#define BUNNY 1
-#define ENEMY 2
-#define CUBE 3
-#define WALL 4
-#define PROJECTILE 5
+#define ENEMY 1
+#define CUBE 2
+#define WALL 3
+#define DEBUG 4
+#define PROJECTILE 5 // !! ATUALIZAR ID DENTRO DE Projectile.cpp CASO MUDAR AQUI !!
 
     Game game = Game();
     game.initializeShader();
