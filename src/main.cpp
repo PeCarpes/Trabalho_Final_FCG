@@ -260,7 +260,8 @@ int main(void)
 
                 if (game.getCameraMode() == CameraMode::FOLLOW_PROJECTILE)
                 {
-                    
+                    // esconde a arma do jogador
+                    game.setObjectPosition("weapon_sobj", glm::vec4(100.0f, 100.0f, 100.0f, 1.0f));
                 }
                 else
                 { 
