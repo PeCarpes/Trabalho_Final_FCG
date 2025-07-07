@@ -73,6 +73,7 @@ void Player::checkCollisionsWithProjectiles(std::map<std::string, Projectile *> 
             // Collision detected, remove the projectile
             proj->markForDeletion();
             std::cout << "Player hit by a projectile!" << std::endl;
+            was_hit = true; // Set the player as hit
         }
     }
 }

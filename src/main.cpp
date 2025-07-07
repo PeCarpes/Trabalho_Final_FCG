@@ -106,7 +106,7 @@ int main(void)
     game.addTexture("floor_texture",  "../../data/floor_texture.png");
     game.addTexture("weapon_texture", "../../data/Pistol_01_Albedo.png");
     game.addTexture("wall_texture",   "../../data/wall_texture.png");
-    game.addTexture("eye_D", "../../data/eye/Eye_D.jpg");
+    game.addTexture("eye_D", "../../data/eye/diffuse_q.png");
 
     /* =================== OBJECT MODELS =================== */
 
@@ -114,15 +114,16 @@ int main(void)
     game.addObjModel("projectile_obj", "../../data/projectile.obj");
     game.addObjModel("enemy_obj",      "../../data/enemy.obj");
     game.addObjModel("cube_obj",       "../../data/cube.obj");
-    game.addObjModel("eye_obj",        "../../data/eye/eyeball.obj");
+    game.addObjModel("eye_obj",        "../../data/eye/eye_p.obj");
 
     /* =================== SCENE OBJECTS =================== */
 
     game.addSceneObject("weapon_sobj",     "weapon_obj",     "weapon_texture", WEAPON,     false, false);
     game.addSceneObject("eye_sobj",        "eye_obj",        "eye_D",          EYE,       true, true);
 
-    game.setObjectScale("eye_sobj", glm::vec3(0.1f, 0.1f, 0.1f));
-    game.setObjectPosition("eye_sobj", glm::vec4(4.5f, 2.0f, 6.5f, 1.0f));
+    game.setObjectScale("eye_sobj", glm::vec3(0.8f, 0.8f, 0.8f));
+    game.setObjectRotation("eye_sobj", glm::vec3(-20.0f, 0.0f, 90.0f));
+    game.setObjectPosition("eye_sobj", glm::vec4(17.5f, 1.75f, 14.5f, 1.0f));
 
     /* =================== INITIALIZERS =================== */
 
@@ -232,9 +233,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         Callbacks::updateDeltaTime();
 
+        game.updateGameState();
         currentGameState = game.getGameState();
-        game.updateCameraMode();
-        game.checkAndSpawnWaves();
 
         switch (currentGameState)
         {
@@ -245,11 +245,31 @@ int main(void)
                 TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
                 break;
             }
+
+            case GameState::GAME_OVER:
+            {
+                TextRendering_PrintString(window, "GAME OVER", -0.5f, 0.5f, 1.5f);
+                TextRendering_PrintString(window, "Aperte [R] para reiniciar", -0.7f, 0.0f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                break;
+            }
+
+            case GameState::GAME_WON:
+            {
+                TextRendering_PrintString(window, "YOU WON!", -0.5f, 0.5f, 1.5f);
+                TextRendering_PrintString(window, "Aperte [R] para reiniciar", -0.7f, 0.0f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                break;
+            }
         
             case GameState::IN_GAME:
             {    
                 game.updateCamera();
                 game.useShader();
+                game.checkAndSpawnWaves();
+                game.updateCameraMode();
+                
+                
 
                 if (game.getCameraMode() == CameraMode::FOLLOW_PROJECTILE)
                 {
@@ -258,8 +278,8 @@ int main(void)
                 }
                 else
                 { 
-                    game.allowPlayerToFly();
                     game.movePlayer();
+                    game.manageGodMode();
                 }
 
                 game.moveEnemies();
@@ -275,6 +295,18 @@ int main(void)
                 glm::vec4 p_model(0.0f, 0.0f, 0.0f, 1.0f);
                 TextRendering_ShowModelViewProjection(window, game.getCamera()->getProjectionMatrix(), game.getCamera()->getViewMatrix(), Matrix_Identity(), p_model);
                 TextRendering_ShowCameraInfo(window, *game.getCamera(), -1.0f, -0.5f);
+                
+                 // --- Desenha a Mira ---
+                float crosshair_scale = 1.5f;
+                // Pega as dimensões de um caractere para ajudar a centralizar
+                float char_width = TextRendering_CharWidth(window) * crosshair_scale;
+                float char_height = TextRendering_LineHeight(window) * crosshair_scale;
+
+                // Calcula a posição para centralizar o caractere '+'
+                float crosshair_x = 0.0f - char_width / 2.0f;
+                float crosshair_y = 0.0f - char_height / 2.0f;
+
+                TextRendering_PrintString(window, "+", crosshair_x, crosshair_y, crosshair_scale);
             }
         }
 

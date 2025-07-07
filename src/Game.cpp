@@ -293,6 +293,21 @@ void Game::updateCameraMode(void)
     }
 }
 
+void Game::updateGameState(void)
+{
+    if (player.wasHit())
+    {
+        game_state = GameState::GAME_OVER;
+    }
+    else if (CheckCollisionPrisms(player.getBBoxMin(),
+                                  player.getBBoxMax(),
+                                  objects["eye_sobj"]->getBBoxMin(),
+                                  objects["eye_sobj"]->getBBoxMax()))
+    {
+        game_state = GameState::GAME_WON;
+    }
+}
+
 void Game::checkAndSpawnWaves() {
     glm::vec4 player_pos = player.getPosition() - glm::vec4(0.0f, 1.5f, 0.0f, 0.0f); // Adjust player position to match floor height
     
@@ -350,9 +365,11 @@ void Game::resetLevel()
     // Reset other state as needed
     // Example: Reset player position
     player.setPosition(starting_position);
+    player.resetHit(); // Reset hit state
 
     // Example: Reset camera mode
     camera_mode = CameraMode::FIRST_PERSON;
+    game_state = GameState::IN_GAME;
 }
 /*============= OTHER FUNCTIONS ============*/
 
@@ -404,6 +421,28 @@ void Game::deleteMarkedObjects()
         {
             ++it;
         }
+    }
+}
+
+void Game::enterGodMode()
+{
+    printf("Toggling God Mode\n");
+    if(!is_in_god_mode)
+    {
+        is_in_god_mode = true;
+    }
+    else
+    {
+        is_in_god_mode = false;
+    }
+}
+
+void Game::manageGodMode()
+{
+    if(is_in_god_mode)
+    {
+        player.resetHit(); // Reset hit state every frame
+        allowPlayerToFly();
     }
 }
 

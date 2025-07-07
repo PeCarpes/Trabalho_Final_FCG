@@ -12,7 +12,7 @@ void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int acti
         glfwSetWindowShouldClose(window, true);
     }
 
-    if (key == GLFW_KEY_K && action == GLFW_PRESS)
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
     {
         // Toggle camera mode
         if (game->getCameraMode() == CameraMode::FIRST_PERSON)
@@ -29,6 +29,12 @@ void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int acti
     {
         // Reset the level
         game->resetLevel();
+    }
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+    {
+        // Toggle God mode
+        game->enterGodMode();
     }
 
     if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)

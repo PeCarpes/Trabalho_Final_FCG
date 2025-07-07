@@ -37,6 +37,7 @@ class Player{
 
         bool can_shoot(void) const;                             // Check if the player can shoot based on cooldown
         bool is_walking = false;
+        bool was_hit = false;
         
         glm::vec3 CheckCollisions(std::map<std::string, SceneObject*> objects);
         void updateObject(void);
@@ -72,6 +73,9 @@ class Player{
         glm::vec4 getBBoxMin(void);
         glm::vec4 getBBoxMax(void);
         std::string getLast_projectile_name(void) const { return last_projectile_name; }
+
+        bool wasHit(void) const { return was_hit; }
+        void resetHit(void) { was_hit = false; }
 
         Player(SceneObject* obj, glm::vec4 pos);
         Player() = default; // Default constructor for serialization purposes

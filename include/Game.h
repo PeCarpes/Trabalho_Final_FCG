@@ -20,7 +20,9 @@
 enum class GameState
 {
     IN_MENU,
-    IN_GAME
+    IN_GAME,
+    GAME_OVER,
+    GAME_WON,
 };
 
 enum class CameraMode {
@@ -68,6 +70,7 @@ class Game
 
     bool is_asking_to_look_at_bullet = false;
     bool can_look_at_bullet = false;
+    bool is_in_god_mode = false;
 
 public:
     Game();
@@ -104,6 +107,7 @@ public:
 
     void updateCamera();
     void updateCameraMode(void);
+    void updateGameState(void);
     void checkAndSpawnWaves();
     void useShader();
     void resetLevel();
@@ -112,6 +116,9 @@ public:
     void managePlayerShooting(void);
 
     void deleteMarkedObjects(void);
+
+    void enterGodMode(void);
+    void manageGodMode(void);
 
     const Texture3D &getTexture(const std::string &name);
     const Shader &getShader(void);

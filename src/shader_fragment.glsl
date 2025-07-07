@@ -145,7 +145,7 @@ void main()
         }
         else if (object_id == EYE)
         {
-            l =  normalize(vec4(0.0, 1.0, 0.0, 0.0));
+            l =  normalize(vec4(-1.0, 1.0, -1.0, 0.0));
             Ks = vec3(0.8, 0.5, 0.8);
             Ka = Ks * 0.05;
             Kd = texture(TextureImage, texcoords).rgb;   
