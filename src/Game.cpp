@@ -141,9 +141,9 @@ void Game::movePlayer()
     player.checkCollisionsWithProjectiles(projectiles);
 
     static bool update = true;
-    if(Callbacks::getKeyState(GLFW_KEY_F) == GLFW_PRESS && Callbacks::getKeyState(GLFW_KEY_F) != GLFW_REPEAT)
+    if(Callbacks::getKeyState(GLFW_KEY_T) == GLFW_PRESS && Callbacks::getKeyState(GLFW_KEY_T) != GLFW_REPEAT)
     {
-        update = !update; // Toggle update on F key press
+        update = !update; // Toggle update on T key press
         std::cout << "Update toggled: " << (update ? "ON" : "OFF") << std::endl;
     }
 

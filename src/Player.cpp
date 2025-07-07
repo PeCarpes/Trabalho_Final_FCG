@@ -12,7 +12,7 @@ void Player::updateTimeModifier(void)
     }
 
     if(modifier > 1.0f) modifier = 1.0f;
-    else if(modifier < 0.1f) modifier = 0.1f;
+    else if(modifier < 0.05f) modifier = 0.05f;
 
     Callbacks::updateTimeModifier(modifier);
 }

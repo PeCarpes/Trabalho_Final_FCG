@@ -15,7 +15,7 @@ bool Enemy::canShoot(void) const
 
 void Enemy::setProjectileModel(ObjModel *model)
 {
-    this->projectile_model = model;\
+    this->projectile_model = model;
 }
 
 void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
@@ -57,16 +57,20 @@ void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &
 {
 
     this->direction = target - getPosition();
-    if (length(this->direction) > 0.0f)
-        this->direction = this->direction / length(this->direction);
-    this->direction.y = -1.0f;
 
-    glm::vec3 collision_direction = checkCollisions(objects);
-    this->direction.x *= (1.0f - collision_direction.x);
-    this->direction.y *= (1.0f - collision_direction.y);
-    this->direction.z *= (1.0f - collision_direction.z);
+    if(length(this->direction) > 2.0f){
 
-    setPosition(getPosition() + getNextDisplacement(this->direction));
+            if (length(this->direction) > 0.0f)
+            this->direction = this->direction / length(this->direction);
+        this->direction.y = -1.0f;
+
+        glm::vec3 collision_direction = checkCollisions(objects);
+        this->direction.x *= (1.0f - collision_direction.x);
+        this->direction.y *= (1.0f - collision_direction.y);
+        this->direction.z *= (1.0f - collision_direction.z);
+        
+        setPosition(getPosition() + getNextDisplacement(this->direction));
+    }
 
     // Corrige a rotação do inimigo para olhar na direção do movimento
     float rot = atan2(this->direction.x, this->direction.z);

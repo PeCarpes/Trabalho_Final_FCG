@@ -242,7 +242,7 @@ int main(void)
             {
                 TextRendering_PrintString(window, "SUFFICIENTLY WARM", -0.5f, 0.5f, 1.5f);
                 TextRendering_PrintString(window, "Aperte [Enter] para comecar", -0.7f, 0.0f, 1.0f);
-                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.7f, -0.1f, 1.0f);
                 break;
             }
 
@@ -337,12 +337,25 @@ void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, floa
     snprintf(buffer, 100, "Up:  (%.2f, %.2f, %.2f, %.1f)", cam.up_vector.x, cam.up_vector.y, cam.up_vector.z, cam.up_vector.w);
     TextRendering_PrintString(window, buffer, x, y - 3 * lineheight, 0.8f);
 
-    // Imprime os Ângulos de Euler
+    // Imprime os Ângulos de Euler%
     snprintf(buffer, 100, "Yaw: %.2f, Pitch: %.2f", cam.yaw, cam.pitch);
     TextRendering_PrintString(window, buffer, x, y - 4 * lineheight, 0.8f);
 
     snprintf(buffer, 100, "FPS: %.2f", 1.0f / Callbacks::getDeltaTime());
     TextRendering_PrintString(window, buffer, x, y - 5 * lineheight, 0.8f);
+
+    snprintf(buffer, 100, "Press F to toggle God Mode");
+    TextRendering_PrintString(window, buffer, x, y - 6 * lineheight, 0.8f);
+
+    snprintf(buffer, 100, "Press Q to follow projectile.");
+    TextRendering_PrintString(window, buffer, x, y - 7 * lineheight, 0.8f);
+
+    snprintf(buffer, 100, "Press R to Reset.");
+    TextRendering_PrintString(window, buffer, x, y - 8 * lineheight, 0.8f);
+
+    snprintf(buffer, 100, "Press T to toggle speed control");
+    TextRendering_PrintString(window, buffer, x, y - 9 * lineheight, 0.8f);
+
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
