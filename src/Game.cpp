@@ -309,6 +309,46 @@ void Game::updateCameraMode(void)
     }
 }
 
+void Game::checkAndSpawnWaves() {
+    // Check collision with floor1
+    glm::vec4 player_pos = player.getPosition() - glm::vec4(0.0f, 1.5f, 0.0f, 0.0f); // Adjust player position to match floor height
+
+    
+    if (!wave1_spawned && CheckCollisionPointPrism(player_pos, objects["floor1"]->getBBoxMin(), 
+                                                               objects["floor1"]->getBBoxMax())) {
+        // Spawn wave 1 enemies
+        addEnemy(glm::vec4(4.5f, 1.5f, 0.0f, 1.0f));
+        addEnemy(glm::vec4(1.5f, 1.5f, 4.5f, 1.0f));
+        addEnemy(glm::vec4(7.5f, 1.5f, 4.5f, 1.0f));
+        addEnemy(glm::vec4(3.5f, 1.5f, 8.5f, 1.0f));
+        addEnemy(glm::vec4(5.5f, 1.5f, 8.5f, 1.0f));
+        wave1_spawned = true;
+        printf("Wave 1 spawned!\n");
+    }
+
+    // Check collision with floor2
+    if (!wave2_spawned && CheckCollisionPointPrism(player_pos, objects["floor2"]->getBBoxMin(), 
+                                                               objects["floor2"]->getBBoxMax())) {
+        // Spawn wave 2 enemies
+        addEnemy(glm::vec4(3.0f, 1.5f, 11.0f, 1.0f));
+        addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
+        wave2_spawned = true;
+        printf("Wave 2 spawned!\n");
+    }
+
+    // Check collision with floor3
+    if (!wave3_spawned && CheckCollisionPointPrism(player_pos, objects["floor3"]->getBBoxMin(), 
+                                                               objects["floor3"]->getBBoxMax())) {
+        // Spawn wave 3 enemies
+        addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
+        addEnemy(glm::vec4(11.5f, 1.5f, 15.5f, 1.0f));
+        addEnemy(glm::vec4(16.0f, 1.5f, 14.0f, 1.0f));
+        addEnemy(glm::vec4(16.0f, 1.5f, 15.0f, 1.0f));
+        wave3_spawned = true;
+        printf("Wave 3 spawned!\n");
+    }
+}
+
 void Game::useShader()
 {
     shader.Use();

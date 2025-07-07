@@ -58,6 +58,10 @@ class Game
     float projectile_orbit_pitch = 20.0f;
     float projectile_orbit_radius = 1.5f;
 
+    bool wave1_spawned = false;
+    bool wave2_spawned = false;
+    bool wave3_spawned = false;
+
     CameraMode camera_mode = CameraMode::FIRST_PERSON;
 
     bool is_asking_to_look_at_bullet = false;
@@ -99,6 +103,7 @@ public:
     void updateCamera();
     void updateCurrentGameState(GameState *currentGameState);
     void updateCameraMode(void);
+    void checkAndSpawnWaves();
     void useShader();
 
     void manageEnemyShooting(void);
