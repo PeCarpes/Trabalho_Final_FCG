@@ -31,14 +31,15 @@ class Player{
         float shooting_speed = 0.5f;                            // Time between shots in seconds
         float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
         
-        const float width = 0.5f;
+        const float width = 0.35f;
         const float height = 1.0f;
         const float depth = 0.5f;
 
         bool can_shoot(void) const;                             // Check if the player can shoot based on cooldown
         bool is_walking = false;
         bool was_hit = false;
-        
+        bool is_running = false;
+
         glm::vec3 CheckCollisions(std::map<std::string, SceneObject*> objects);
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);

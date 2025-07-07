@@ -193,7 +193,7 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
 
 void Player::checkIfRunning(void)
 {
-    bool is_running = Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
+    is_running = Callbacks::getKeyState(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
 
     if (is_running)
     {
@@ -224,7 +224,8 @@ void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
     {
         weapon_obj->bob(); // Apply the bobbing effect to the weapon
 
-        if (sound_timer > 1/speed && length(vel) > 0.0f)
+        if (sound_timer > (is_running ? (2/speed) : (1/speed)) 
+            && length(vel) > 0.0f)
         {
             ma_sound_start((*sounds)["walking_sound"]);
             sound_timer = 0.0f; // Reset the sound timer

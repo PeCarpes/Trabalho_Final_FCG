@@ -24,7 +24,7 @@ SceneObject::SceneObject(const ObjModel* model, const std::string &name, Shader 
 void SceneObject::setID(int newID)
 {
     object_id = newID;
-    printf("Object ID set to %d for object %s\n", object_id, name.c_str());
+    //printf("Object ID set to %d for object %s\n", object_id, name.c_str());
 }
 
 void SceneObject::setPosition(const glm::vec3 &newPosition)

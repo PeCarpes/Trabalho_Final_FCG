@@ -24,6 +24,7 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
                            std::map<std::string, SceneObject *> objects,
                            std::map<std::string, Projectile *> &projectiles,
                            std::map<std::string, Texture3D*> textures,
+                           std::map<std::string, ma_sound *> sounds,
                            int *num_projectiles)
 {
     bool target_in_sight = targetInSight(target_bbox_min, target_bbox_max, objects);
@@ -40,6 +41,9 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
 
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
+
+        ma_sound_set_volume(sounds["shooting_sound"], 0.5f/length(direction));
+        ma_sound_start(sounds["shooting_sound"]);
 
         this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
     }

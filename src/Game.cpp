@@ -139,7 +139,17 @@ void Game::movePlayer()
 {
     player.move(camera, objects);
     player.checkCollisionsWithProjectiles(projectiles);
-    player.updateTimeModifier();
+
+    static bool update = true;
+    if(Callbacks::getKeyState(GLFW_KEY_F) == GLFW_PRESS && Callbacks::getKeyState(GLFW_KEY_F) != GLFW_REPEAT)
+    {
+        update = !update; // Toggle update on F key press
+        std::cout << "Update toggled: " << (update ? "ON" : "OFF") << std::endl;
+    }
+
+    if(update){
+        player.updateTimeModifier();
+    }
 }
 
 /*============= GET FUNCTIONS ============*/
@@ -460,7 +470,7 @@ void Game::manageEnemyShooting()
         enemy->manageShooting(target_position, virtual_scene,
                               target_bbox_min, target_bbox_max, camera, shader,
                               objects, projectiles, textures,
-                              &num_projectiles);
+                              sounds, &num_projectiles);
     }
 }
 

@@ -3,6 +3,7 @@
 #include <VirtualScene.h>
 #include <collisions.h>
 #include <Projectile.h>
+#include <miniaudio.h>
 
 class Enemy : public SceneObject
 {
@@ -17,6 +18,7 @@ public:
                         std::map<std::string, SceneObject *> objects,
                         std::map<std::string, Projectile *> &projectiles,
                         std::map<std::string, Texture3D*> textures,
+                        std::map<std::string, ma_sound *> sounds,
                         int *num_projectiles);
 
     void setProjectileModel(ObjModel *model);

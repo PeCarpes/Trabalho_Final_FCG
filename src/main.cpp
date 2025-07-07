@@ -250,15 +250,15 @@ int main(void)
             {
                 TextRendering_PrintString(window, "GAME OVER", -0.5f, 0.5f, 1.5f);
                 TextRendering_PrintString(window, "Aperte [R] para reiniciar", -0.7f, 0.0f, 1.0f);
-                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.7f, -0.1f, 1.0f);
                 break;
             }
 
             case GameState::GAME_WON:
             {
-                TextRendering_PrintString(window, "YOU WON!", -0.5f, 0.5f, 1.5f);
+                TextRendering_PrintString(window, "YOU WIN!", -0.5f, 0.5f, 1.5f);
                 TextRendering_PrintString(window, "Aperte [R] para reiniciar", -0.7f, 0.0f, 1.0f);
-                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.6f, -0.2f, 1.0f);
+                TextRendering_PrintString(window, "Aperte [Esc] para sair", -0.7f, -0.1f, 1.0f);
                 break;
             }
         
