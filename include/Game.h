@@ -54,6 +54,10 @@ class Game
     ProjectileMap projectiles;
     SoundMap sounds;
 
+    float projectile_orbit_yaw = 0.0f;
+    float projectile_orbit_pitch = 20.0f;
+    float projectile_orbit_radius = 1.5f;
+
     CameraMode camera_mode = CameraMode::FIRST_PERSON;
 
     bool is_asking_to_look_at_bullet = false;

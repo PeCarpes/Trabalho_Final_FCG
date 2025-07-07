@@ -234,17 +234,32 @@ void Game::updateCamera()
         {
             Projectile* projectile = it->second;
             glm::vec4 projectilePos = projectile->getPosition();
-            glm::vec4 projectileDir = projectile->getDirection();
-            glm::vec4 worldUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
-            glm::vec4 cameraPos = projectilePos - (projectileDir * 0.5f) + (worldUp * 0.05f);
+            // --- Orbit logic ---
+            glm::vec2 mouseOffset = Callbacks::getMouseOffset();
+            float sensitivity = 0.25f;
+            projectile_orbit_yaw   += mouseOffset.x * sensitivity;
+            projectile_orbit_pitch -= mouseOffset.y * sensitivity;
 
-            camera.position = cameraPos;
+            // Clamp pitch to avoid flipping
+            if (projectile_orbit_pitch > 89.0f) projectile_orbit_pitch = 89.0f;
+            if (projectile_orbit_pitch < -89.0f) projectile_orbit_pitch = -89.0f;
+
+            // Convert spherical coordinates to Cartesian
+            float yawRad = glm::radians(projectile_orbit_yaw);
+            float pitchRad = glm::radians(projectile_orbit_pitch);
+
+            glm::vec4 offset;
+            offset.x = -1.0f*(projectile_orbit_radius * cos(pitchRad) * cos(yawRad));
+            offset.y = -1.0f*(projectile_orbit_radius * sin(pitchRad));
+            offset.z = -1.0f*(projectile_orbit_radius * cos(pitchRad) * sin(yawRad));
+            offset.w = 0.0f;
+
+            camera.position = projectilePos + offset;
             camera.lookAt(projectilePos);
         }
         else
         {
-            printf("Projectile %s not found in the scene.\n", lastProjectileName.c_str());
             camera_mode = CameraMode::FIRST_PERSON;
             camera.position = player.getPosition();
             camera.processMouseMovement();
