@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
-
+class Game; // Forward declaration to avoid circular dependency
 
 typedef std::unordered_map<int, int> KeyStateMap;
 

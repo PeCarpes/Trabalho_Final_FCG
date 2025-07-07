@@ -232,6 +232,8 @@ int main(void)
 
     GameState currentGameState = GameState::IN_MENU;
 
+    glfwSetWindowUserPointer(window, &game);
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -239,6 +241,7 @@ int main(void)
         Callbacks::updateDeltaTime();
 
         game.updateCurrentGameState(&currentGameState);
+        game.updateCameraMode();
 
         switch (currentGameState)
         {
@@ -254,10 +257,17 @@ int main(void)
             {    
                 game.updateCamera();
                 game.useShader();
-                
-                game.allowPlayerToFly();
-                
-                game.movePlayer();
+
+                if (game.getCameraMode() == CameraMode::FOLLOW_PROJECTILE)
+                {
+                    
+                }
+                else
+                { 
+                    game.allowPlayerToFly();
+                    game.movePlayer();
+                }
+
                 game.moveEnemies();
                 game.moveProjectiles();
 
@@ -290,7 +300,7 @@ void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, floa
     TextRendering_PrintString(window, "--- Camera Debug Info ---", x, y, 0.8f);
 
     // Imprime a Posição da Câmera
-    snprintf(buffer, 100, "Pos: (%.2f, %.2f, %.2f, %.1f)", cam.position->x, cam.position->y, cam.position->z, cam.position->w);
+    snprintf(buffer, 100, "Pos: (%.2f, %.2f, %.2f, %.1f)", cam.position.x, cam.position.y, cam.position.z, cam.position.w);
     TextRendering_PrintString(window, buffer, x, y - lineheight, 0.8f);
 
     // Imprime o Vetor "Para Frente" (Direção)

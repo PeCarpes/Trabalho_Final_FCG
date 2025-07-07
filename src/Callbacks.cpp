@@ -1,12 +1,28 @@
 #include <Callbacks.h>
+#include <Game.h>
 #include <iostream>
 
 void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+    Game* game = static_cast<Game*>(glfwGetWindowUserPointer(window));
+
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
 
         glfwSetWindowShouldClose(window, true);
+    }
+
+    if (key == GLFW_KEY_K && action == GLFW_PRESS)
+    {
+        // Toggle camera mode
+        if (game->getCameraMode() == CameraMode::FIRST_PERSON)
+        {
+            game->setBoolAskCamera(true);
+        }
+        else if (game->getCameraMode() == CameraMode::FOLLOW_PROJECTILE)
+        {
+            game->setBoolAskCamera(false);
+        }
     }
 
     key_states[key] = action;

@@ -23,6 +23,11 @@ enum class GameState
     IN_GAME
 };
 
+enum class CameraMode {
+    FIRST_PERSON,
+    FOLLOW_PROJECTILE
+};
+
 typedef std::map<std::string, ObjModel *> ObjModelMap;
 typedef std::map<std::string, SceneObject *> SceneObjectMap;
 typedef std::map<std::string, Enemy *> EnemyMap;
@@ -48,6 +53,11 @@ class Game
     EnemyMap enemies;
     ProjectileMap projectiles;
     SoundMap sounds;
+
+    CameraMode camera_mode = CameraMode::FIRST_PERSON;
+
+    bool is_asking_to_look_at_bullet = false;
+    bool can_look_at_bullet = false;
 
 public:
     Game();
@@ -79,8 +89,12 @@ public:
     void setObjectPosition(const std::string &name, const glm::vec4 &position);
     void setObjectRotation(const std::string &name, const glm::vec3 &rotation);
 
+    void setBoolAskCamera(bool ask) { is_asking_to_look_at_bullet = ask; }
+    void setCanLookAtBullet(bool can_look) { can_look_at_bullet = can_look; }
+
     void updateCamera();
     void updateCurrentGameState(GameState *currentGameState);
+    void updateCameraMode(void);
     void useShader();
 
     void manageEnemyShooting(void);
@@ -92,9 +106,11 @@ public:
     const Shader &getShader(void);
 
     Camera *getCamera(void) { return &camera; }
+    CameraMode getCameraMode(void) const { return camera_mode; }
     Player *getPlayer(void) { return &player; }
     VirtualScene *getVirtualScene(void) { return &virtual_scene; }
     SceneObjectMap *getObjects(void) { return &objects; }
     EnemyMap *getEnemies(void) { return &enemies; }
     ProjectileMap *getProjectiles(void) { return &projectiles; }
+    
 };

@@ -152,6 +152,11 @@ bool Player::can_shoot(void) const
     return shooting_cooldown >= shooting_speed;
 }
 
+void Player::updateShootingCooldown(void)
+{
+    shooting_cooldown += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
+}
+
 
 void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader,
                             std::map<std::string, SceneObject *> objects,
@@ -159,12 +164,14 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
 {
     if (Callbacks::isLeftMouseButtonPressed() && can_shoot())
     {
-        std::string projectile_name = "projectile_" + std::to_string(num_projectiles);
+        std::string projectile_name = "player_projectile_" + std::to_string(num_projectiles);
         glm::vec4 starting_pos = position + forward;
+        last_projectile_name = projectile_name;
 
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, false, starting_pos, forward);
         new_proj->setTexture(projectile_texture);
-        new_proj->setHeight(0.05f);
+        new_proj->setHeight(0.05f);        
+        
         num_projectiles++;
 
         virtual_scene.addObject(new_proj);

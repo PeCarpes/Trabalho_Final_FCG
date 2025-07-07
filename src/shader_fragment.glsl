@@ -98,6 +98,7 @@ void main()
         
         if (object_id == WEAPON)
         {
+            l =  normalize(vec4(0.0, 1.0, 0.0, 0.0));
             Ks = vec3(0.5, 0.5, 0.5);
             Ka = Ks * 0.05;
             Kd = texture(TextureImage, texcoords).rgb;   

@@ -25,6 +25,8 @@ class Player{
         Texture3D* projectile_texture = nullptr;                // Texture for the projectile
         SoundMap* sounds = nullptr;
 
+        std::string last_projectile_name;
+
         int num_projectiles = 0;                                // Used to name the projectiles uniquely
         float shooting_speed = 0.5f;                            // Time between shots in seconds
         float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
@@ -45,6 +47,7 @@ class Player{
         public:
 
         void updateTimeModifier(void);
+        void updateShootingCooldown(void);
 
         void setSoundMap(SoundMap* sound_map) { sounds = sound_map; }
 
@@ -68,6 +71,7 @@ class Player{
         glm::vec4 getNextDisplacement(void) const;
         glm::vec4 getBBoxMin(void);
         glm::vec4 getBBoxMax(void);
+        std::string getLast_projectile_name(void) const { return last_projectile_name; }
 
         Player(SceneObject* obj, glm::vec4 pos);
         Player() = default; // Default constructor for serialization purposes

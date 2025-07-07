@@ -27,7 +27,7 @@ void Game::initializeSoundEngine()
 
 void Game::initializeCamera()
 {
-    camera = Camera(player.getPositionPtr());
+    camera = Camera(player.getPosition());
 }
 
 void Game::initializeShader()
@@ -82,8 +82,7 @@ void Game::addSceneObject(const std::string &name, const std::string &obj_model_
 
     SceneObject *scene_object = new SceneObject(model, name, shader, camera, use_view_matrix, collidable);
 
-    if (texture_name != "")
-        scene_object->setTexture(textures[texture_name]);
+    if (texture_name != "") scene_object->setTexture(textures[texture_name]);
     scene_object->setID(object_id);
     virtual_scene.addObject(scene_object);
     objects[name] = scene_object;
@@ -216,7 +215,43 @@ void Game::setObjectRotation(const std::string &name, const glm::vec3 &rotation)
 
 void Game::updateCamera()
 {
+    if(camera_mode == CameraMode::FIRST_PERSON)
+    {
+    camera.position = player.getPosition();
     camera.processMouseMovement();
+    }
+    else
+    {
+        // Get the last projectile's name from the player
+        std::string lastProjectileName = player.getLast_projectile_name();
+
+       // Find the projectile in the projectiles map
+        auto it = projectiles.find(lastProjectileName);
+
+        // If found, get its position
+        if (it != projectiles.end())
+        {
+            Projectile* projectile = it->second;
+            glm::vec4 projectilePos = projectile->getPosition();
+            glm::vec4 projectileDir = projectile->getDirection();
+            glm::vec4 worldUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
+            glm::vec4 cameraPos = projectilePos - (projectileDir * 0.5f) + (worldUp * 0.01f);
+
+            camera.position = cameraPos;
+            camera.lookAt(projectilePos);
+        }
+        else
+        {
+            printf("Projectile %s not found in the scene.\n", lastProjectileName.c_str());
+            camera_mode = CameraMode::FIRST_PERSON;
+            camera.position = player.getPosition();
+            camera.processMouseMovement();
+            return;
+
+        }
+
+    }
 }
 
 void Game::updateCurrentGameState(GameState *currentGameState)
@@ -231,6 +266,30 @@ void Game::updateCurrentGameState(GameState *currentGameState)
     else if (*currentGameState == GameState::IN_GAME)
     {
         // add any game-specific updates here
+    }
+}
+
+
+void Game::updateCameraMode(void)
+{
+    // Check if any player projectile exists
+    can_look_at_bullet = false;
+    for (const auto& pair : projectiles)
+    {
+        if (pair.first.rfind(player.getLast_projectile_name(), 0) == 0)
+        {
+            can_look_at_bullet = true;
+            break;
+        }
+    }
+
+    if (is_asking_to_look_at_bullet && can_look_at_bullet)
+    {
+        camera_mode = CameraMode::FOLLOW_PROJECTILE;
+    }
+    else
+    {
+        camera_mode = CameraMode::FIRST_PERSON;
     }
 }
 
@@ -311,5 +370,11 @@ void Game::manageEnemyShooting()
 
 void Game::managePlayerShooting()
 {
+    if(camera_mode == CameraMode::FOLLOW_PROJECTILE)
+    {
+        // If the camera is in FOLLOW_PROJECTILE mode, do not allow shooting
+        player.updateShootingCooldown();
+        return;
+    }
     player.manageShooting(virtual_scene, camera, shader, objects, projectiles);
 }

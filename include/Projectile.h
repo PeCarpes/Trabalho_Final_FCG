@@ -19,6 +19,8 @@ public:
     bool isHostile() const { return is_hostile; }
     float getRadius() const { return radius; }
 
+    glm::vec4 getDirection() const { return direction; }
+
 private:
     Shader shader;
     std::map<std::string, SceneObject *> virtual_scene;

@@ -15,7 +15,7 @@ const float FOV = 45.0f;
 class Camera
 {
 public:
-    const glm::vec4* position;
+    glm::vec4 position;
     glm::vec4 forward_vector;
     glm::vec4 up_vector;
     glm::vec4 right_vector;
@@ -32,7 +32,7 @@ public:
 
 
     Camera() = default; // Construtor padrão para serialização
-    Camera(const glm::vec4* track_position, glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+    Camera(const glm::vec4 track_position, glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;
