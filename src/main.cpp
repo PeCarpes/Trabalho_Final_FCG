@@ -23,8 +23,8 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow *window);
 
 // Função auxiliar para criar e adicionar uma parede ao VirtualScene.
 
-const int screen_width = 1200;
-const int screen_height = 800;
+const int screen_width = 1920;
+const int screen_height = 1080;
 
 bool g_ShowInfoText = false;
 
@@ -47,7 +47,7 @@ int main(void)
 
     fflush(stdout);
 
-    GLFWwindow *window = glfwCreateWindow(screen_width, screen_height, "INF01047 - Seu Cartao - Seu Nome", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(screen_width, screen_height, "Sufficiently Warm", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -133,7 +133,7 @@ int main(void)
     /* =================== MODIFY OBJECTS =================== */
 
     game.setObjectScale("weapon_sobj", glm::vec3(0.06f, 0.06f, 0.06f));
-    game.setObjectRotation("weapon_sobj", glm::vec3(0.0f, 90.0f, 0.0f));
+    game.setObjectRotation("weapon_sobj", glm::vec3(0.0f, 95.0f, 0.0f));
 
     /* =================== CREATE LEVEL OBJECTS =================== */
 
@@ -167,8 +167,7 @@ int main(void)
                 game.setObjectPosition(name, glm::vec4(2 + (5 * j), 1.5f, 2 + (5 * i), 1.0f));
             }
         }
-    
-    // Create walls around the main hall
+        // Create walls around the main hall
     game.addSceneObject("wall_1", "cube_obj", "wall_texture", WALL, true, true);
     game.setObjectScale("wall_1", glm::vec3(5.0f, 2.0f, 0.5f));
     game.setObjectTextureScale("wall_1", glm::vec2(5.0f, 5.0f));

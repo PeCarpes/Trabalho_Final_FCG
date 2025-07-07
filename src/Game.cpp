@@ -334,7 +334,7 @@ void Game::checkAndSpawnWaves() {
 
     if (!wave2_spawned && CheckCollisionPointPrism(player_pos, objects["floor2"]->getBBoxMin(), 
                                                                objects["floor2"]->getBBoxMax())) {
-        addEnemy(glm::vec4(3.0f, 1.5f, 11.0f, 1.0f));
+        addEnemy(glm::vec4(1.0f, 1.5f, 11.0f, 1.0f));
         addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
         wave2_spawned = true;
     }
