@@ -18,35 +18,25 @@ void Enemy::setProjectileModel(ObjModel *model)
     this->projectile_model = model;
 }
 
-void Enemy::moveProjectiles(std::map<std::string, SceneObject *> objects,
-                            std::map<std::string, Projectile *> &projectiles)
-{
-    for (auto &pair : projectiles)
-    {
-        Projectile *projectile = pair.second;
-
-        projectile->move(objects);
-        projectile->checkCollisions(objects);
-    }
-}
-
 void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
                            glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
                            const Camera &cam, Shader shader,
                            std::map<std::string, SceneObject *> objects,
-                           std::map<std::string, Projectile *> &projectiles)
+                           std::map<std::string, Projectile *> &projectiles,
+                           std::map<std::string, Texture3D*> textures,
+                           int *num_projectiles)
 {
     bool target_in_sight = targetInSight(target_bbox_min, target_bbox_max, objects);
     if (canShoot() && target_in_sight)
     {
-        std::string projectile_name = "enemy_projectile_" + std::to_string(num_projectiles);
+        std::string projectile_name = "enemy_projectile_" + std::to_string(*num_projectiles);
         glm::vec4 starting_pos = getPosition();
         starting_pos.y = target.y;
         glm::vec4 direction = target - starting_pos;
         Projectile *new_proj = new Projectile(projectile_model, projectile_name, shader, cam, true, starting_pos, direction);
-
+        new_proj->setTexture(textures["projectile_texture"]);
         new_proj->setHeight(0.05f);
-        num_projectiles++;
+        (*num_projectiles)++;
 
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
@@ -57,8 +47,6 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
     {
         shooting_cooldown += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
     }
-
-    moveProjectiles(objects, projectiles);
 }
 
 void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &target)

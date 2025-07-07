@@ -15,17 +15,16 @@ public:
                         glm::vec4 target_bbox_min, glm::vec4 target_bbox_max,
                         const Camera &cam, Shader shader,
                         std::map<std::string, SceneObject *> objects,
-                        std::map<std::string, Projectile *> &projectiles);
+                        std::map<std::string, Projectile *> &projectiles,
+                        std::map<std::string, Texture3D*> textures,
+                        int *num_projectiles);
 
     void setProjectileModel(ObjModel *model);
-    void moveProjectiles(std::map<std::string, SceneObject *> objects,
-                         std::map<std::string, Projectile *> &projectiles);
     void checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles);
 
 private:
     float speed;
     ObjModel *projectile_model = nullptr; // Model for the projectile
-    int num_projectiles = 0;              // Used to name the projectiles uniquely
     float shooting_speed = 1.0f;          // Time between shots in seconds
     float shooting_cooldown = 0.0f;       // Cooldown timer for shooting
     glm::vec4 direction;                  // Direction vector for movement

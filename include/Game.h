@@ -33,7 +33,8 @@ typedef std::map<std::string, ma_sound *> SoundMap;
 class Game
 {
 
-    int num_enemies;
+    int num_enemies = 0;
+    int num_projectiles = 0;
 
     VirtualScene virtual_scene;
     Player player;
@@ -53,6 +54,7 @@ public:
 
     void initializeShader();
     void initializeCamera();
+    void initializeEnemies();
     void initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name,
                           const std::string &projectile_texture_name);
     void initializeSoundEngine();

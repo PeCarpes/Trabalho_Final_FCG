@@ -152,15 +152,6 @@ bool Player::can_shoot(void) const
     return shooting_cooldown >= shooting_speed;
 }
 
-void Player::move_projectiles(std::map<std::string, SceneObject *> objects,
-                              std::map<std::string, Projectile *> &projectiles)
-{
-    for (auto &pair : projectiles)
-    {
-        pair.second->move(objects);
-        pair.second->checkCollisions(objects);
-    }
-}
 
 void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shader shader,
                             std::map<std::string, SceneObject *> objects,
@@ -190,7 +181,6 @@ void Player::manageShooting(VirtualScene &virtual_scene, const Camera &cam, Shad
         shooting_cooldown += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
     }
 
-    move_projectiles(objects, projectiles);
 }
 
 void Player::checkIfRunning(void)

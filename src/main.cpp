@@ -254,16 +254,17 @@ int main(void)
             {    
                 game.updateCamera();
                 game.useShader();
-
-                game.movePlayer();
+                
                 game.allowPlayerToFly();
-
+                
+                game.movePlayer();
                 game.moveEnemies();
+                game.moveProjectiles();
 
-        game.manageEnemyShooting();
-        game.managePlayerShooting();
+                game.manageEnemyShooting();
+                game.managePlayerShooting();
 
-        game.deleteMarkedObjects();
+                game.deleteMarkedObjects();
 
                 game.draw();
 

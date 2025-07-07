@@ -13,6 +13,10 @@ Game::Game()
 
 /*============= INITIALIZE FUNCTIONS ============*/
 
+void Game::initializeEnemies()
+{
+}
+
 void Game::initializeSoundEngine()
 {
     if (ma_engine_init(nullptr, &sound_engine) != MA_SUCCESS)
@@ -42,12 +46,12 @@ void Game::initializePlayer(const std::string &weapon_model_name, const std::str
     player.setProjectileTexture(textures[projectile_texture_name]);
 
     player.setSoundMap(&sounds);
-
 }
 
 /*============= ADD FUNCTIONS ============*/
 
-void Game::addSound(const std::string &name, const std::string &file_path){
+void Game::addSound(const std::string &name, const std::string &file_path)
+{
     ma_sound *sound = new ma_sound();
     if (ma_sound_init_from_file(&sound_engine, file_path.c_str(), 0, nullptr, nullptr, sound) != MA_SUCCESS)
     {
@@ -79,7 +83,7 @@ void Game::addSceneObject(const std::string &name, const std::string &obj_model_
     SceneObject *scene_object = new SceneObject(model, name, shader, camera, use_view_matrix, collidable);
 
     if (texture_name != "")
-    scene_object->setTexture(textures[texture_name]);
+        scene_object->setTexture(textures[texture_name]);
     scene_object->setID(object_id);
     virtual_scene.addObject(scene_object);
     objects[name] = scene_object;
@@ -300,7 +304,8 @@ void Game::manageEnemyShooting()
 
         enemy->manageShooting(target_position, virtual_scene,
                               target_bbox_min, target_bbox_max, camera, shader,
-                              objects, projectiles);
+                              objects, projectiles, textures,
+                              &num_projectiles);
     }
 }
 

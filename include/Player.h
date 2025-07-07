@@ -50,7 +50,6 @@ class Player{
 
         void checkCollisionsWithProjectiles(std::map<std::string, Projectile *> &projectiles);
         void setProjectileTexture(Texture3D* texture) { projectile_texture = texture; }
-        void move_projectiles(std::map<std::string, SceneObject*> objects, std::map<std::string, Projectile *> &projectiles);
         void move(Camera cam, std::map<std::string, SceneObject*> objects);
         void manageShooting(VirtualScene& virtual_scene, const Camera& cam, Shader shader, 
                             std::map<std::string, SceneObject*> objects, 
