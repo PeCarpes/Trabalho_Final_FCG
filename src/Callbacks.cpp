@@ -25,6 +25,21 @@ void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int acti
         }
     }
 
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+        // Reset the level
+        game->resetLevel();
+    }
+
+    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+    {
+        // Start the game
+        if (game->getGameState() == GameState::IN_MENU)
+        {
+            game->setGameState(GameState::IN_GAME);
+        }
+    }
+
     key_states[key] = action;
 }
 void Callbacks::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)

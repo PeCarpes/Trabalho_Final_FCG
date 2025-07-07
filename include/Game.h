@@ -37,6 +37,7 @@ typedef std::map<std::string, ma_sound *> SoundMap;
 
 class Game
 {
+    const glm::vec4 starting_position = glm::vec4(4.5f, 2.0f, 4.5f, 1.0f); // Starting position of the player
 
     int num_enemies = 0;
     int num_projectiles = 0;
@@ -62,6 +63,7 @@ class Game
     bool wave2_spawned = false;
     bool wave3_spawned = false;
 
+    GameState game_state = GameState::IN_MENU;
     CameraMode camera_mode = CameraMode::FIRST_PERSON;
 
     bool is_asking_to_look_at_bullet = false;
@@ -83,7 +85,6 @@ public:
     void addTexture(const std::string &name, const std::string &file_path);
     void addObjModel(const std::string &name, const std::string &file_path);
     void addSound(const std::string &name, const std::string &file_path);
-
     void moveEnemies(void);
     void moveProjectiles(void);
     void movePlayer(void);
@@ -99,12 +100,13 @@ public:
 
     void setBoolAskCamera(bool ask) { is_asking_to_look_at_bullet = ask; }
     void setCanLookAtBullet(bool can_look) { can_look_at_bullet = can_look; }
+    void setGameState(GameState state) { game_state = state; }
 
     void updateCamera();
-    void updateCurrentGameState(GameState *currentGameState);
     void updateCameraMode(void);
     void checkAndSpawnWaves();
     void useShader();
+    void resetLevel();
 
     void manageEnemyShooting(void);
     void managePlayerShooting(void);
@@ -121,5 +123,6 @@ public:
     SceneObjectMap *getObjects(void) { return &objects; }
     EnemyMap *getEnemies(void) { return &enemies; }
     ProjectileMap *getProjectiles(void) { return &projectiles; }
+    GameState getGameState(void) const { return game_state; }
     
 };

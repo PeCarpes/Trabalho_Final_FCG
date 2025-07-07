@@ -196,7 +196,7 @@ void Player::checkIfRunning(void)
 
     if (is_running)
     {
-        speed = 2.0f; // Running speed
+        speed = 4.0f; // Running speed
     }
     else
     {

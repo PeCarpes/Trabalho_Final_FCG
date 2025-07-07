@@ -38,7 +38,7 @@ void Game::initializeShader()
 void Game::initializePlayer(const std::string &weapon_model_name, const std::string &projectile_objmodel_name,
                             const std::string &projectile_texture_name)
 {
-    player.setPosition(glm::vec4(4.5f, 2.0f, 4.5f, 1.0f));
+    player.setPosition(starting_position);
     player.setModel(nullptr);
 
     player.initializeWeapon(objects[weapon_model_name]);
@@ -270,22 +270,6 @@ void Game::updateCamera()
     }
 }
 
-void Game::updateCurrentGameState(GameState *currentGameState)
-{
-    if (*currentGameState == GameState::IN_MENU)
-    {
-        if (Callbacks::getKeyState(GLFW_KEY_ENTER) == GLFW_PRESS)
-        {
-            *currentGameState = GameState::IN_GAME;
-        }
-    }
-    else if (*currentGameState == GameState::IN_GAME)
-    {
-        // add any game-specific updates here
-    }
-}
-
-
 void Game::updateCameraMode(void)
 {
     // Check if any player projectile exists
@@ -310,9 +294,7 @@ void Game::updateCameraMode(void)
 }
 
 void Game::checkAndSpawnWaves() {
-    // Check collision with floor1
     glm::vec4 player_pos = player.getPosition() - glm::vec4(0.0f, 1.5f, 0.0f, 0.0f); // Adjust player position to match floor height
-
     
     if (!wave1_spawned && CheckCollisionPointPrism(player_pos, objects["floor1"]->getBBoxMin(), 
                                                                objects["floor1"]->getBBoxMax())) {
@@ -323,35 +305,54 @@ void Game::checkAndSpawnWaves() {
         addEnemy(glm::vec4(3.5f, 1.5f, 8.5f, 1.0f));
         addEnemy(glm::vec4(5.5f, 1.5f, 8.5f, 1.0f));
         wave1_spawned = true;
-        printf("Wave 1 spawned!\n");
     }
 
-    // Check collision with floor2
     if (!wave2_spawned && CheckCollisionPointPrism(player_pos, objects["floor2"]->getBBoxMin(), 
                                                                objects["floor2"]->getBBoxMax())) {
-        // Spawn wave 2 enemies
         addEnemy(glm::vec4(3.0f, 1.5f, 11.0f, 1.0f));
         addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
         wave2_spawned = true;
-        printf("Wave 2 spawned!\n");
     }
 
-    // Check collision with floor3
     if (!wave3_spawned && CheckCollisionPointPrism(player_pos, objects["floor3"]->getBBoxMin(), 
                                                                objects["floor3"]->getBBoxMax())) {
-        // Spawn wave 3 enemies
         addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
         addEnemy(glm::vec4(11.5f, 1.5f, 15.5f, 1.0f));
         addEnemy(glm::vec4(16.0f, 1.5f, 14.0f, 1.0f));
         addEnemy(glm::vec4(16.0f, 1.5f, 15.0f, 1.0f));
         wave3_spawned = true;
-        printf("Wave 3 spawned!\n");
     }
 }
 
 void Game::useShader()
 {
     shader.Use();
+}
+
+void Game::resetLevel()
+{
+    // Delete all enemies
+    for (auto& pair : enemies) {
+        // mark enemy for deletion
+        pair.second->markForDeletion();
+    }
+
+    // Optionally delete all projectiles
+    for (auto& pair : projectiles) {
+        pair.second->markForDeletion();
+    }
+
+    // Reset wave triggers
+    wave1_spawned = false;
+    wave2_spawned = false;
+    wave3_spawned = false;
+
+    // Reset other state as needed
+    // Example: Reset player position
+    player.setPosition(starting_position);
+
+    // Example: Reset camera mode
+    camera_mode = CameraMode::FIRST_PERSON;
 }
 /*============= OTHER FUNCTIONS ============*/
 

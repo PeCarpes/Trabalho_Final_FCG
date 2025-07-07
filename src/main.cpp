@@ -87,6 +87,7 @@ int main(void)
 #define WALL 3
 #define DEBUG 4
 #define PROJECTILE 5 // !! ATUALIZAR ID DENTRO DE Projectile.cpp CASO MUDAR AQUI !!
+#define EYE 6
 
     Game game = Game();
     game.initializeShader();
@@ -105,6 +106,7 @@ int main(void)
     game.addTexture("floor_texture",  "../../data/floor_texture.png");
     game.addTexture("weapon_texture", "../../data/Pistol_01_Albedo.png");
     game.addTexture("wall_texture",   "../../data/wall_texture.png");
+    game.addTexture("eye_D", "../../data/eye/Eye_D.jpg");
 
     /* =================== OBJECT MODELS =================== */
 
@@ -112,27 +114,15 @@ int main(void)
     game.addObjModel("projectile_obj", "../../data/projectile.obj");
     game.addObjModel("enemy_obj",      "../../data/enemy.obj");
     game.addObjModel("cube_obj",       "../../data/cube.obj");
+    game.addObjModel("eye_obj",        "../../data/eye/eyeball.obj");
 
     /* =================== SCENE OBJECTS =================== */
 
     game.addSceneObject("weapon_sobj",     "weapon_obj",     "weapon_texture", WEAPON,     false, false);
+    game.addSceneObject("eye_sobj",        "eye_obj",        "eye_D",          EYE,       true, true);
 
-    // etapa 1
-    // game.addEnemy(glm::vec4(4.5f, 1.5f, 0.0f, 1.0f));
-    // game.addEnemy(glm::vec4(1.5f, 1.5f, 4.5f, 1.0f));
-    // game.addEnemy(glm::vec4(7.5f, 1.5f, 4.5f, 1.0f));
-    // game.addEnemy(glm::vec4(3.5f, 1.5f, 8.5f, 1.0f));
-    // game.addEnemy(glm::vec4(5.5f, 1.5f, 8.5f, 1.0f));
-
-    // // etapa 2
-    // game.addEnemy(glm::vec4(3.0f, 1.5f, 11.0f, 1.0f));
-    // game.addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
-
-    // // etapa 3
-    // game.addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
-    // game.addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
-    // game.addEnemy(glm::vec4(16.0f, 1.5f, 14.0f, 1.0f));
-    // game.addEnemy(glm::vec4(16.0f, 1.5f, 15.0f, 1.0f));
+    game.setObjectScale("eye_sobj", glm::vec3(0.1f, 0.1f, 0.1f));
+    game.setObjectPosition("eye_sobj", glm::vec4(4.5f, 2.0f, 6.5f, 1.0f));
 
     /* =================== INITIALIZERS =================== */
 
@@ -228,6 +218,8 @@ int main(void)
     game.setObjectTextureScale("ceiling", glm::vec2(2.0f, 2.0f));
     game.setObjectPosition("ceiling", glm::vec4(8.5f, 3.0f, 8.0f, 1.0f));
 
+
+
     TextRendering_Init();
 
     GameState currentGameState = GameState::IN_MENU;
@@ -240,7 +232,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         Callbacks::updateDeltaTime();
 
-        game.updateCurrentGameState(&currentGameState);
+        currentGameState = game.getGameState();
         game.updateCameraMode();
         game.checkAndSpawnWaves();
 

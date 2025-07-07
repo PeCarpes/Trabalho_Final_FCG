@@ -21,6 +21,7 @@ uniform mat4 projection;
 #define WALL 3
 #define DEBUG 4
 #define PROJECTILE 5 // !! ATUALIZAR ID DENTRO DE Projectile.cpp CASO MUDAR AQUI !!
+#define EYE 6
 
 uniform vec3 bbox_min;
 uniform vec3 bbox_max;
@@ -34,20 +35,6 @@ out vec4 color;
 
 float U = 0.0;
 float V = 0.0;
-
-void calculate_planar_UV(){
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
-
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
-
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
-
-        U = (position_model.x - minx) / (maxx - minx);
-        V = (position_model.y - miny) / (maxy - miny);
-}
 
 void main()
 {
@@ -156,13 +143,13 @@ void main()
             Ka = Kd * 0.2;
             q = 16.0;
         }
-        else if (object_id == DEBUG)
+        else if (object_id == EYE)
         {
-            // Debug object, just to test the shader
-            Kd = vec3(0.5, 0.5, 0.5);
-            Ks = vec3(0.8, 0.8, 0.8);
-            Ka = vec3(0.1, 0.1, 0.1);
-            q = 1.0;
+            l =  normalize(vec4(0.0, 1.0, 0.0, 0.0));
+            Ks = vec3(0.8, 0.5, 0.8);
+            Ka = Ks * 0.05;
+            Kd = texture(TextureImage, texcoords).rgb;   
+            q = 128.0;
         }
 
         else
