@@ -10,7 +10,7 @@ const float YAW = 0.0f; // obs: Yaw = phi
 const float PITCH = 0.0f; //  e pitch = tetha
 const float SPEED = 2.5f;
 const float SENSITIVITY = 0.25f;
-const float FOV = 45.0f;
+const float FOV = 80.0f;
 
 class Camera
 {

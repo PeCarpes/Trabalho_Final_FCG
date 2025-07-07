@@ -21,7 +21,7 @@ glm::mat4 Camera::getViewMatrix() const
 glm::mat4 Camera::getProjectionMatrix() const
 {
     float aspectRatio = Callbacks::getScreenRatio();
-    return Matrix_Perspective(fov, aspectRatio, -0.1f, -100.0f);
+    return Matrix_Perspective(glm::radians(fov), aspectRatio, -0.1f, -100.0f);
 }
 
 void Camera::lookAt(glm::vec4 target_position) {

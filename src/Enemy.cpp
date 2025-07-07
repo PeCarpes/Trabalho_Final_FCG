@@ -15,7 +15,7 @@ bool Enemy::canShoot(void) const
 
 void Enemy::setProjectileModel(ObjModel *model)
 {
-    this->projectile_model = model;
+    this->projectile_model = model;\
 }
 
 void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
