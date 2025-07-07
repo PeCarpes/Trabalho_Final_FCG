@@ -131,6 +131,7 @@ void Game::moveProjectiles()
     for (auto &pair : projectiles)
     {
         pair.second->move(objects);
+        pair.second->checkCollisions(objects);
     }
 }
 
@@ -236,7 +237,7 @@ void Game::updateCamera()
             glm::vec4 projectileDir = projectile->getDirection();
             glm::vec4 worldUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
-            glm::vec4 cameraPos = projectilePos - (projectileDir * 0.5f) + (worldUp * 0.01f);
+            glm::vec4 cameraPos = projectilePos - (projectileDir * 0.5f) + (worldUp * 0.05f);
 
             camera.position = cameraPos;
             camera.lookAt(projectilePos);
