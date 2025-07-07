@@ -32,10 +32,10 @@ void Player::initializeWeapon(SceneObject *weapon)
     weapon_obj = weapon;
     if (weapon_obj)
     {
-        Bezier weapon_bob_curve = Bezier(glm::vec4(0.400f, -0.600f, -0.900f, 1.0f),
-                                         glm::vec4(0.400f, -0.566f, -0.933f, 1.0f),
-                                         glm::vec4(0.400f, -0.566f, -0.966f, 1.0f),
-                                         glm::vec4(0.400f, -0.600f, -1.000f, 1.0f));
+        Bezier weapon_bob_curve = Bezier(glm::vec4(0.400f, -1.0f, -0.900f, 1.0f),
+                                         glm::vec4(0.400f, -0.966f, -0.933f, 1.0f),
+                                         glm::vec4(0.400f, -0.966f, -0.966f, 1.0f),
+                                         glm::vec4(0.400f, -1.000f, -1.000f, 1.0f));
         weapon_obj->setBobbingCurve(weapon_bob_curve);
         weapon_obj->setBobbingCPS(2.0f); // 2.0 cycles per second
     }

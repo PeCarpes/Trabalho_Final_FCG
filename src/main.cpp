@@ -132,7 +132,7 @@ int main(void)
 
     /* =================== MODIFY OBJECTS =================== */
 
-    game.setObjectScale("weapon_sobj", glm::vec3(0.03f, 0.03f, 0.03f));
+    game.setObjectScale("weapon_sobj", glm::vec3(0.06f, 0.06f, 0.06f));
     game.setObjectRotation("weapon_sobj", glm::vec3(0.0f, 90.0f, 0.0f));
 
     /* =================== CREATE LEVEL OBJECTS =================== */
