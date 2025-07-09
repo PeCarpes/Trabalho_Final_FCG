@@ -212,8 +212,6 @@ void Player::move(Camera cam, std::map<std::string, SceneObject *> objects)
     if(CheckCollisions(objects)) position.z = current_position.z;
     else current_position.z = position.z;
 
-    std::cout << "Player position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
-
     static float sound_timer = 0.0f;
     sound_timer += Callbacks::getDeltaTime() * Callbacks::getTimeModifier();
 
