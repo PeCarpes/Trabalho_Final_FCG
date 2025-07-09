@@ -82,7 +82,8 @@ void Game::addSceneObject(const std::string &name, const std::string &obj_model_
 
     SceneObject *scene_object = new SceneObject(model, name, shader, camera, use_view_matrix, collidable);
 
-    if (texture_name != "") scene_object->setTexture(textures[texture_name]);
+    if (texture_name != "")
+        scene_object->setTexture(textures[texture_name]);
     scene_object->setID(object_id);
     virtual_scene.addObject(scene_object);
     objects[name] = scene_object;
@@ -216,43 +217,45 @@ void Game::setObjectRotation(const std::string &name, const glm::vec3 &rotation)
 
 void Game::updateCamera()
 {
-    if(camera_mode == CameraMode::FIRST_PERSON)
+    if (camera_mode == CameraMode::FIRST_PERSON)
     {
-    camera.position = player.getPosition();
-    camera.processMouseMovement();
+        camera.position = player.getPosition();
+        camera.processMouseMovement();
     }
     else
     {
         // Get the last projectile's name from the player
         std::string lastProjectileName = player.getLast_projectile_name();
 
-       // Find the projectile in the projectiles map
+        // Find the projectile in the projectiles map
         auto it = projectiles.find(lastProjectileName);
 
         // If found, get its position
         if (it != projectiles.end())
         {
-            Projectile* projectile = it->second;
+            Projectile *projectile = it->second;
             glm::vec4 projectilePos = projectile->getPosition();
 
             // --- Orbit logic ---
             glm::vec2 mouseOffset = Callbacks::getMouseOffset();
             float sensitivity = 0.25f;
-            projectile_orbit_yaw   += mouseOffset.x * sensitivity;
+            projectile_orbit_yaw += mouseOffset.x * sensitivity;
             projectile_orbit_pitch -= mouseOffset.y * sensitivity;
 
             // Clamp pitch to avoid flipping
-            if (projectile_orbit_pitch > 89.0f) projectile_orbit_pitch = 89.0f;
-            if (projectile_orbit_pitch < -89.0f) projectile_orbit_pitch = -89.0f;
+            if (projectile_orbit_pitch > 89.0f)
+                projectile_orbit_pitch = 89.0f;
+            if (projectile_orbit_pitch < -89.0f)
+                projectile_orbit_pitch = -89.0f;
 
             // Convert spherical coordinates to Cartesian
             float yawRad = glm::radians(projectile_orbit_yaw);
             float pitchRad = glm::radians(projectile_orbit_pitch);
 
             glm::vec4 offset;
-            offset.x = -1.0f*(projectile_orbit_radius * cos(pitchRad) * cos(yawRad));
-            offset.y = -1.0f*(projectile_orbit_radius * sin(pitchRad));
-            offset.z = -1.0f*(projectile_orbit_radius * cos(pitchRad) * sin(yawRad));
+            offset.x = -1.0f * (projectile_orbit_radius * cos(pitchRad) * cos(yawRad));
+            offset.y = -1.0f * (projectile_orbit_radius * sin(pitchRad));
+            offset.z = -1.0f * (projectile_orbit_radius * cos(pitchRad) * sin(yawRad));
             offset.w = 0.0f;
 
             camera.position = projectilePos + offset;
@@ -264,9 +267,7 @@ void Game::updateCamera()
             camera.position = player.getPosition();
             camera.processMouseMovement();
             return;
-
         }
-
     }
 }
 
@@ -274,7 +275,7 @@ void Game::updateCameraMode(void)
 {
     // Check if any player projectile exists
     can_look_at_bullet = false;
-    for (const auto& pair : projectiles)
+    for (const auto &pair : projectiles)
     {
         if (pair.first.rfind(player.getLast_projectile_name(), 0) == 0)
         {
@@ -299,20 +300,26 @@ void Game::updateGameState(void)
     {
         game_state = GameState::GAME_OVER;
     }
-    else if (CheckCollisionPrisms(player.getBBoxMin(),
-                                  player.getBBoxMax(),
-                                  objects["eye_sobj"]->getBBoxMin(),
-                                  objects["eye_sobj"]->getBBoxMax()))
+    else
     {
-        game_state = GameState::GAME_WON;
+        const glm::vec4 epsilon = glm::vec4(0.15f, 0.15f, 0.15f, 0.0f);
+        if (CheckCollisionPrisms(player.getBBoxMin() - epsilon,
+                                 player.getBBoxMax() + epsilon,
+                                 objects["eye_sobj"]->getBBoxMin(),
+                                 objects["eye_sobj"]->getBBoxMax()))
+        {
+            game_state = GameState::GAME_WON;
+        }
     }
 }
 
-void Game::checkAndSpawnWaves() {
+void Game::checkAndSpawnWaves()
+{
     glm::vec4 player_pos = player.getPosition() - glm::vec4(0.0f, 1.5f, 0.0f, 0.0f); // Adjust player position to match floor height
-    
-    if (!wave1_spawned && CheckCollisionPointPrism(player_pos, objects["floor1"]->getBBoxMin(), 
-                                                               objects["floor1"]->getBBoxMax())) {
+
+    if (!wave1_spawned && CheckCollisionPointPrism(player_pos, objects["floor1"]->getBBoxMin(),
+                                                   objects["floor1"]->getBBoxMax()))
+    {
         // Spawn wave 1 enemies
         addEnemy(glm::vec4(4.5f, 1.5f, 0.0f, 1.0f));
         addEnemy(glm::vec4(1.5f, 1.5f, 4.5f, 1.0f));
@@ -322,15 +329,17 @@ void Game::checkAndSpawnWaves() {
         wave1_spawned = true;
     }
 
-    if (!wave2_spawned && CheckCollisionPointPrism(player_pos, objects["floor2"]->getBBoxMin(), 
-                                                               objects["floor2"]->getBBoxMax())) {
+    if (!wave2_spawned && CheckCollisionPointPrism(player_pos, objects["floor2"]->getBBoxMin(),
+                                                   objects["floor2"]->getBBoxMax()))
+    {
         addEnemy(glm::vec4(1.0f, 1.5f, 11.0f, 1.0f));
         addEnemy(glm::vec4(0.0f, 1.5f, 14.0f, 1.0f));
         wave2_spawned = true;
     }
 
-    if (!wave3_spawned && CheckCollisionPointPrism(player_pos, objects["floor3"]->getBBoxMin(), 
-                                                               objects["floor3"]->getBBoxMax())) {
+    if (!wave3_spawned && CheckCollisionPointPrism(player_pos, objects["floor3"]->getBBoxMin(),
+                                                   objects["floor3"]->getBBoxMax()))
+    {
         addEnemy(glm::vec4(11.5f, 1.5f, 13.5f, 1.0f));
         addEnemy(glm::vec4(11.5f, 1.5f, 15.5f, 1.0f));
         addEnemy(glm::vec4(16.0f, 1.5f, 14.0f, 1.0f));
@@ -347,13 +356,15 @@ void Game::useShader()
 void Game::resetLevel()
 {
     // Delete all enemies
-    for (auto& pair : enemies) {
+    for (auto &pair : enemies)
+    {
         // mark enemy for deletion
         pair.second->markForDeletion();
     }
 
     // Optionally delete all projectiles
-    for (auto& pair : projectiles) {
+    for (auto &pair : projectiles)
+    {
         pair.second->markForDeletion();
     }
 
@@ -427,7 +438,7 @@ void Game::deleteMarkedObjects()
 void Game::enterGodMode()
 {
     printf("Toggling God Mode\n");
-    if(!is_in_god_mode)
+    if (!is_in_god_mode)
     {
         is_in_god_mode = true;
     }
@@ -439,7 +450,7 @@ void Game::enterGodMode()
 
 void Game::manageGodMode()
 {
-    if(is_in_god_mode)
+    if (is_in_god_mode)
     {
         player.resetHit(); // Reset hit state every frame
         allowPlayerToFly();
@@ -466,7 +477,7 @@ void Game::manageEnemyShooting()
 
 void Game::managePlayerShooting()
 {
-    if(camera_mode == CameraMode::FOLLOW_PROJECTILE)
+    if (camera_mode == CameraMode::FOLLOW_PROJECTILE)
     {
         // If the camera is in FOLLOW_PROJECTILE mode, do not allow shooting
         player.updateShootingCooldown();
