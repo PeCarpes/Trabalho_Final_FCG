@@ -79,6 +79,8 @@ void main()
         vec3 Ka;   // Refletância ambiente
         float q;   // Expoente especular para o modelo de iluminação de Phong
 
+        vec4 h = normalize(l + v);
+
         vec3 diag;
         vec3 local;
         vec2 uv;
@@ -173,7 +175,20 @@ void main()
         vec3 ambient_term =  Ka * Ia; // PREENCHA AQUI o termo ambiente
 
         // Termo especular utilizando o modelo de iluminação de Phong
-        vec3 phong_specular_term  = Ks*I*pow(max(0, dot(r, v)), q); // PREENCH AQUI o termo especular de Phong
+        if( object_id == WEAPON || object_id == ENEMY || object_id == EYE )
+        {
+            vec3 blinn_specular_term = Ks * I * pow(max(0, dot(n, h)), q);
+            color.rgb = lambert_diffuse_term + ambient_term + blinn_specular_term;
+        }
+        else
+        {
+            vec3 phong_specular_term  = Ks*I*pow(max(0, dot(r, v)), q); // PREENCH AQUI o termo especular de Phong
+
+            // Cor final do fragmento calculada com uma combinação dos termos difuso,
+            // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+            color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+        }
+        
 
         // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
         // necessário:
@@ -188,11 +203,6 @@ void main()
         //    transparentes que estão mais longe da câmera).
         // Alpha default = 1 = 100% opaco = 0% transparente
         color.a = 1;
-
-        // Cor final do fragmento calculada com uma combinação dos termos difuso,
-        // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-
-        color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
         // Cor final com correção gamma, considerando monitor sRGB.
         // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas

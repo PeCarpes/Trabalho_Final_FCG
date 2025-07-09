@@ -139,17 +139,7 @@ void Game::movePlayer()
 {
     player.move(camera, objects);
     player.checkCollisionsWithProjectiles(projectiles);
-
-    static bool update = true;
-    if(Callbacks::getKeyState(GLFW_KEY_T) == GLFW_PRESS && Callbacks::getKeyState(GLFW_KEY_T) != GLFW_REPEAT)
-    {
-        update = !update; // Toggle update on T key press
-        std::cout << "Update toggled: " << (update ? "ON" : "OFF") << std::endl;
-    }
-
-    if(update){
-        player.updateTimeModifier();
-    }
+    player.updateTimeModifier();
 }
 
 /*============= GET FUNCTIONS ============*/

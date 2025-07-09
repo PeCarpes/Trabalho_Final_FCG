@@ -352,9 +352,6 @@ void TextRendering_ShowCameraInfo(GLFWwindow *window, Camera &cam, float x, floa
     snprintf(buffer, 100, "Press R to Reset.");
     TextRendering_PrintString(window, buffer, x, y - 8 * lineheight, 0.8f);
 
-    snprintf(buffer, 100, "Press T to toggle speed control");
-    TextRendering_PrintString(window, buffer, x, y - 9 * lineheight, 0.8f);
-
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
