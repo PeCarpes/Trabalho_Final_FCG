@@ -27,6 +27,6 @@ private:
     const float radius = 0.1f;
 
     const float speed = 4.0f;
-    bool is_hostile;
+    bool is_hostile;          // Used to differentiate between player and enemy projectiles
     glm::vec4 direction;
 };

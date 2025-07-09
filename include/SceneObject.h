@@ -48,6 +48,8 @@ private:
     MappingMode mapping_mode;
     
     bool to_be_deleted = false; // Flag to mark for deletion
+                                // Every SceneObject that is marked for deletion
+                                // will be removed from the scene in the next frame
     
     public:
     void setPosition(const glm::vec3 &newPosition);

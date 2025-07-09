@@ -31,6 +31,8 @@ class Player{
         float shooting_speed = 0.5f;                            // Time between shots in seconds
         float shooting_cooldown = 0.0f;                         // Cooldown timer for shooting
         
+        // These values are used to define the size of the player in the scene
+        // They are used to create a bounding box for collision detection
         const float width = 0.35f;
         const float height = 1.0f;
         const float depth = 0.5f;
