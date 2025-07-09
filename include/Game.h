@@ -39,7 +39,7 @@ typedef std::map<std::string, ma_sound *> SoundMap;
 
 class Game
 {
-    const glm::vec4 starting_position = glm::vec4(4.5f, 2.0f, 4.5f, 1.0f); // Starting position of the player
+    const glm::vec4 starting_position = glm::vec4(4.5f, 2.25f, 4.5f, 1.0f); // Starting position of the player
 
     int num_enemies = 0;
     int num_projectiles = 0;

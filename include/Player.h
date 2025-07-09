@@ -40,7 +40,7 @@ class Player{
         bool was_hit = false;
         bool is_running = false;
 
-        glm::vec3 CheckCollisions(std::map<std::string, SceneObject*> objects);
+        bool CheckCollisions(std::map<std::string, SceneObject*> objects);
         void updateObject(void);
         void updateForwardVector(const glm::vec4 &newForward);
         void updateDirection(void);
