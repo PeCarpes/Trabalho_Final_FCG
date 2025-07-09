@@ -10,6 +10,7 @@ Gabriel:
 - Introdução e tratamento das colisões
 - Lógica dos tiros e deleção de objetos 3d no cenário
 - Adição da biblioteca de som
+  
 Pedro:
 - Funcionamento da câmera
 - Tratamento de callbacks do teclado e mouse
