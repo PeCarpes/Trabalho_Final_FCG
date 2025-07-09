@@ -42,7 +42,7 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
 
-        ma_sound_set_volume(sounds["shooting_sound"], 0.5f/length(direction));
+        ma_sound_set_volume(sounds["shooting_sound"], 0.5f/norm(direction));
         ma_sound_start(sounds["shooting_sound"]);
 
         this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
@@ -58,10 +58,10 @@ void Enemy::move(std::map<std::string, SceneObject *> objects, const glm::vec4 &
 
     this->direction = target - getPosition();
 
-    if(length(this->direction) > 2.0f){
+    if(norm(this->direction) > 2.0f){
 
-            if (length(this->direction) > 0.0f)
-            this->direction = this->direction / length(this->direction);
+            if (norm(this->direction) > 0.0f)
+            this->direction = this->direction / norm(this->direction);
         this->direction.y = -1.0f;
 
         glm::vec3 collision_direction = checkCollisions(objects);
@@ -160,10 +160,10 @@ bool Enemy::targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax,
                           std::map<std::string, SceneObject *> objects) const
 {
     glm::vec4 direction = (bboxMin + bboxMax) / 2.0f - getPosition();
-    float path_length = length((bboxMin + bboxMax) / 2.0f - getPosition());
+    float path_length = norm((bboxMin + bboxMax) / 2.0f - getPosition());
 
-    if (length(direction) > 0.0f)
-        direction = direction / length(direction);
+    if (norm(direction) > 0.0f)
+        direction = direction / norm(direction);
     else
     {
         return true;
@@ -193,7 +193,7 @@ bool Enemy::targetInSight(const glm::vec4 bboxMin, const glm::vec4 bboxMax,
                 return false; // Collision detected with an object
             }
         }
-        traveled_distance += length(direction * epsilon); // Move a small step in the direction
+        traveled_distance += norm(direction * epsilon); // Move a small step in the direction
         current_point += direction * epsilon;
     }
     return true;

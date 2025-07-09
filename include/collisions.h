@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <Matrices.h>
 
 bool CheckCollisionPrisms(const glm::vec4 &a_min, const glm::vec4 &a_max,
                           const glm::vec4 &b_min, const glm::vec4 &b_max);
