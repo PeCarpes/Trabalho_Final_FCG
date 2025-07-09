@@ -27,9 +27,12 @@ Critérios e porque eles estão implementados:
 -Câmera livre e câmera look-at: A câmera do jogador é uma câmera livre e existe a possibilidade de trocar a sua visão para uma câmera look-at para o último projétil disparado.
 -Instâncias de objetos: Tanto paredes, quanto o teto e o chão são instâncias de um mesmo objeto cúbico, também os tiros e os inimigos são instâncias de um mesmo objeto.
 -Três tipos de testes de intersecção: 
-  - ponto-prisma, o mapa é dividido em 3 sub-áreas, é usado um teste de intesecção da posição do jogador com cada uma dessas sub-áreas para saber quais inimigos devem ser desenhados. Essa colisão também é usada para testar se o jogador consegue ver o inimigo, onde são testados vários pontos entre o inimigo e o jogador e, sob o caso de intersecção com algum prisma, o jogador não está sendo visto.
-  - prisma-prisma é utilizado para detectar a colisão do jogador e dos inimigos com os objetos do mapa.
-  - prisma-esfera é utilizado para testar se o tiro de um inimigo atingiu o jogador e vice-versa.
+ponto-prisma, o mapa é dividido em 3 sub-áreas, é usado um teste de intesecção da posição do jogador com cada uma dessas sub-áreas para saber quais inimigos devem ser desenhados. Essa colisão também é usada para testar se o jogador consegue ver o inimigo, onde são testados vários pontos entre o inimigo e o jogador e, sob o caso de intersecção com algum prisma, o jogador não está sendo visto.
+
+prisma-prisma é utilizado para detectar a colisão do jogador e dos inimigos com os objetos do mapa.
+
+prisma-esfera é utilizado para testar se o tiro de um inimigo atingiu o jogador e vice-versa.
+
 -Modelos de Iluminação Difusa e Blinn-Phong: enquanto as parede usam iluminação difusa, a arma, os inimigos e o olho final usam iluminação de blinn-phong
 -Modelos de Interpolação de Phong e Gouraud: Quase todos os objetos desenhados na cena são interpolados com o modelo de phong, mas exclusivamente o projétil utiliza Gouraud.
 -Mapeamento de texturas em todos os objetos: Quase todos os objetos possuem textura, o único que "não possui" uma textura dedicada é o inimigo, pois o estilo de arte do jogo no qual nos baseamos não dá texturas para os inimigos, que são coloridos de vermelho sólido, como é no nosso jogo.
