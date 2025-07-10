@@ -42,7 +42,9 @@ void Enemy::manageShooting(glm::vec4 target, VirtualScene &virtual_scene,
         virtual_scene.addObject(new_proj);
         projectiles[projectile_name] = new_proj;
 
-        ma_sound_set_volume(sounds["shooting_sound"], 0.5f/norm(direction));
+        if(norm(direction) > 1.0f)
+            ma_sound_set_volume(sounds["shooting_sound"], 0.5f/norm(direction));
+            
         ma_sound_start(sounds["shooting_sound"]);
 
         this->shooting_cooldown = 0.0f; // Reset cooldown after shooting
